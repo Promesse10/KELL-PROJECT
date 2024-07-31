@@ -1,0 +1,15 @@
+.h-545 {
+    height: 545px;
+  }
+  .text-600{
+    color: #172554;
+    
+  }
+  .bg-600{
+    background-color: #172554;
+  }
+  .bg-600:hover{
+   color: #ffffff;
+   background-color:#1725548b;
+  
+  }

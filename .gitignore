@@ -1,0 +1,32 @@
+# Node modules
+node_modules/
+
+
+dist/
+build/
+
+
+*.log
+
+
+.env
+.env.*.local
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# IDE and editor folders
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Dependency directories
+pnpm-lock.yaml
+package-lock.json
+yarn.lock
+
+# Miscellaneous
+*.tgz
+*.swp

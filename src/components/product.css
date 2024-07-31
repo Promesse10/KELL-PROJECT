@@ -1,0 +1,52 @@
+.fixed {
+  transition: transform 0.3s ease-in-out;
+}
+
+.translate-x-full {
+  transform: translateX(100%);
+}
+
+.translate-x-0 {
+  transform: translateX(0);
+}
+
+/* Media Queries for Responsive Design */
+@media (max-width: 768px) {
+  .fixed.bottom-4 {
+    bottom: 8px;
+  }
+
+  .fixed.right-4 {
+    right: 8px;
+  }
+
+  .w-440px {
+    width: 90%;
+  }
+
+  .absolute.right-1 {
+    right: 4px;
+  }
+
+  .w-10 {
+    width: 2.5rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .fixed.bottom-4 {
+    bottom: 16px;
+  }
+
+  .fixed.right-4 {
+    right: 16px;
+  }
+
+  .absolute.right-1 {
+    right: 8px;
+  }
+
+  .w-14 {
+    width: 3.5rem;
+  }
+}
