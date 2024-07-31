@@ -5,17 +5,17 @@ import icon from './image-food/icon.png';
 
 const Construction = () => {
   return (
-    <div className='bg-slate-300 mt-32 w-full '>
+    <div className='bg-slate-300 min-h-screen pt-20 flex flex-col'>
       {/* <div>
         <img src={construction} alt="Construction" className="w-full h-auto"/>
       </div> */}
 
       <div className='flex my-10 md:flex-row justify-center items-center'>
         {/* <img className='w-24 h-20 mb-4 md:mb-0' src={logo} alt="" /> */}
-        <p className='text-white font-inter text-5xl md:text-2xl text-center md:text-left'>Civil engineering projects</p>
+        <p className='text-white font-inter text-6xl md:text-2xl text-center md:text-left'>Civil engineering projects</p>
       </div>
 
-      <div className='flex flex-col lg:flex-row ml-4 md:ml-10 lg:ml-40 mb-8 my-10 lg:items-stretch'>
+      <div className='flex flex-col lg:flex-row ml-4 md:ml-10 lg:ml-40 mb-8  lg:items-stretch'>
         <div className='flex-shrink-0 w-full md:w-full lg:w-60 h-48 md:h-64 lg:h-auto mb-10 lg:mb-0'>
           <img src={plot} alt="" className='w-full h-full'/>
         </div>

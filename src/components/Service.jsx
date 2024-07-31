@@ -8,14 +8,7 @@ const Service = () => {
   const [showPopup, setShowPopup] = useState(false);
   const navigate = useNavigate();
 
-  const handleOpenPopup = () => {
-    setShowPopup(true);
-  };
-
-  const handleClosePopup = () => {
-    setShowPopup(false);
-  };
-
+ 
   return (
     <div id="services" className='pt-24'>
       <section id="service" className="my-9 ">
@@ -42,8 +35,8 @@ const Service = () => {
             <p className="text-center text-xs">Master plan and land <br /> survey</p>
             <div className="flex justify-center mt-5">
               <button 
-                className="bg-blue-950 text-white text-xs p-2 rounded-lg hover:bg-white hover:text-blue-950"
-                onClick={handleOpenPopup}
+                className="bg-blue-950 text-white text-xs p-2 rounded-lg hover:bg-white hover:text-blue-950" 
+                onClick={() => navigate('/Construction')}
               >
                 Click here
               </button>
