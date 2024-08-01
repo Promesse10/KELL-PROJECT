@@ -8,10 +8,13 @@ import Account1 from '../assets/Account1.png';
 import Account from '../assets/Account.png';
 import Cart from '../assets/Cart.png';
 import Cart1 from '../assets/Cart1.png';
+import { useSelector } from 'react-redux'; // Import useSelector to access Redux state
 
 const Navbar = () => {
   const [nav, setNav] = useState(false);
   const [dropdown, setDropdown] = useState(false);
+  const [showCart, setShowCart] = useState(false);
+  
   const navigate = useNavigate();
   const location = useLocation(); // Get the current location
 
@@ -29,6 +32,19 @@ const Navbar = () => {
   };
 
   const isLoginOrRegisterPage = location.pathname === '/login' || location.pathname === '/CreateAccount';
+
+  // Access the cart state from Redux (assuming you have a cartSlice)
+  const cartItems = useSelector((state) => state.cart.items) || []; // Ensure it's always an array
+
+  // Calculate total price
+  const calculateCartTotal = () => {
+    return cartItems.reduce((total, item) => total + item.price * item.quantity, 0).toFixed(2);
+  };
+
+  // Toggle cart display
+  const toggleCartDisplay = () => {
+    setShowCart(!showCart);
+  };
 
   return (
     <div className="fixed top-0 z-50 w-full flex justify-between items-center h-24 max-w-[2794px] mx-auto px-4 bg-gray-100 shadow-md">
@@ -94,18 +110,19 @@ const Navbar = () => {
 
       {/* Mobile navigation */}
       <div className="hidden md:flex md:items-center md:gap-5">
-        
-          <>
-            <img className="w-5 h-5" src={Account1} alt="Account" /> 
-            <RouterLink to="/login" className="md:cursor-pointer">Login</RouterLink>|
-            <RouterLink to="/CreateAccount" className="md:cursor-pointer">Register</RouterLink>
-          </>
+        <>
+          <img className="w-5 h-5" src={Account1} alt="Account" /> 
+          <RouterLink to="/login" className="md:cursor-pointer">Login</RouterLink>|
+          <RouterLink to="/CreateAccount" className="md:cursor-pointer">Register</RouterLink>
+        </>
       
-        <button className='border-blue-950 border-2 p-1 rounded-2xl flex flex-row'>
+        <button 
+          onClick={toggleCartDisplay} 
+          className='border-blue-950 border-2 p-1 rounded-2xl flex flex-row'
+        >
           <img className="w-5 h-5" src={Cart1} alt="Cart" />
           <span className='ml-2'>Cart</span>
         </button>
-        <RouterLink to="/cart"></RouterLink>
       </div>
 
       {/* Hamburger menu for mobile */}
@@ -177,6 +194,33 @@ const Navbar = () => {
               <RouterLink to="/cart"><img className="w-5 h-5 active:w-7 active:h-7" src={Cart} alt="Cart" /></RouterLink>
             </div>
           </div>
+        </div>
+      </div>
+
+      {/* Cart Popup */}
+      <div className={`fixed top-0 right-0 w-[50%] h-full bg-white shadow-lg transition-transform transform ${showCart ? 'translate-x-0' : 'translate-x-full'} ease-in-out duration-300`}>
+        <div className="p-4">
+          <h2 className="text-xl font-bold mb-4">Your Cart</h2>
+          <ul>
+            {cartItems.length === 0 ? (
+              <li>Your cart is empty</li>
+            ) : (
+              cartItems.map(item => (
+                <li key={item.id} className="border-b py-2">
+                  {item.name} - {item.quantity} x ${item.price.toFixed(2)}
+                </li>
+              ))
+            )}
+          </ul>
+          <div className="mt-4 font-bold">
+            Total: ${calculateCartTotal()}
+          </div>
+          <button 
+            onClick={toggleCartDisplay} 
+            className="mt-4 px-4 py-2 bg-blue-500 text-white rounded"
+          >
+            Close
+          </button>
         </div>
       </div>
     </div>
