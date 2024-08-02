@@ -3,7 +3,6 @@ import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import Food from './Components/Food';
 import Construction from './Components/Construction';
 import Cart from './Components/Cart';
-
 import Dashboard from './Components/Dashboard/Dashboard';
 import Products from './Components/Dashboard/Products';
 import Orders from './Components/Dashboard/Orders';
@@ -33,12 +32,6 @@ const App = () => {
 
   return (
     <Router>
-      <Routes>
-        <Route path="/" element={<Food addToCart={addToCart} />} />
-        <Route path="/cart" element={<Cart cart={cart} updateCart={updateCart} />} />
-        {/* <Route path="/construction" element={<Construction />} /> */}
-      </Routes>
-<Construction/>
       <div className="flex">
         <div className="w-1/4 h-screen bg-gray-800 text-white">
           <nav className="flex flex-col p-4">
@@ -52,17 +45,18 @@ const App = () => {
         </div>
         <div className="w-3/4 p-4">
           <Routes>
+            <Route path="/" element={<Food addToCart={addToCart} />} />
+            <Route path="/cart" element={<Cart cart={cart} updateCart={updateCart} />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/products" element={<Products />} />
             <Route path="/orders" element={<Orders />} />
             <Route path="/customers" element={<Customers />} />
             <Route path="/transactions" element={<Transactions />} />
             <Route path="/messages" element={<Messages />} />
+            <Route path="/construction" element={<Construction />} />
           </Routes>
         </div>
       </div>
-      div
-
     </Router>
   );
 };

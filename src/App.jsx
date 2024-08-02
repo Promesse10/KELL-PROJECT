@@ -21,7 +21,8 @@ import Dashboard from "./components/Dashboard";
 function App() {
   const location = useLocation();
   const isAdminRoute = location.pathname.startsWith('/admin');
-  
+  const isLandingPage = location.pathname === '/';
+
   return (
     <>
       {!isAdminRoute && <Navbar />}
@@ -47,7 +48,7 @@ function App() {
         </Route>
       </Routes>
 
-      {!isAdminRoute && <Footer />}
+      {!isAdminRoute && !isLandingPage && <Footer />}
     </>
   );
 }
