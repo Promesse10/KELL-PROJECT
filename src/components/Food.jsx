@@ -4,20 +4,10 @@ import { getProducts } from '../slices/productSlice';
 import { addToCart } from '../slices/cartSlice';
 import { useNavigate } from 'react-router-dom';
 
-import rice from './image-food/rice.jpg';
-import wheat from './image-food/wheat.avif';
-import maize from './image-food/maize.jpg';
-import sorghum from './image-food/sorghum.jpg';
-import soybean from './image-food/soybean.jpg';
-import bean from './image-food/bean.jpg';
-
-
-
 const Food = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const products = useSelector((state) => state.products.products);
-  const cart = useSelector((state) => state.cart);
 
   useEffect(() => {
     dispatch(getProducts());
@@ -31,7 +21,7 @@ const Food = () => {
   return (
     <div className='bg-gray-100 mt-20'>
       <div className="mb-12">
-        <img src={top} alt="" className="w-full h-auto" />
+        <img src={'/path/to/top-image.jpg'} alt="" className="w-full h-auto" />
       </div>
 
       <div className='flex my-10 md:flex-row justify-center items-center'>
@@ -41,7 +31,7 @@ const Food = () => {
       <div className="flex flex-wrap justify-center gap-10 mb-12 px-4 md:px-0">
         {products.map((item) => (
           <div key={item._id} className='bg-gray-300 pb-12 flex flex-col justify-center items-center w-full sm:w-72 transform transition-transform duration-500 hover:scale-105'>
-            <img className='w-full h-56' src={item.image || item.src} alt={item.name} />
+            <img className='w-full h-56' src={item.images[0].url} alt={item.name} />
             <p className='flex flex-column gap-10 mt-5'>
               <span>{item.name}</span>
             </p>

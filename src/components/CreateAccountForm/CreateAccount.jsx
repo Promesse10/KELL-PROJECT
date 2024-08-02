@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import { register } from '../../slices/authSlice';
 import image from '../images/image.jpg';
 import visible from '../images/visible.png';
 import unvisible from '../images/Unvisible.png';
-
 import './CreateAccount.css';
 
 function CreateAccount() {
@@ -17,8 +17,10 @@ function CreateAccount() {
     agreeToTerms: false,
   });
   const [passwordVisible, setPasswordVisible] = useState(false);
+  const [notification, setNotification] = useState(null);
   const dispatch = useDispatch();
   const { error } = useSelector((state) => state.auth);
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -28,13 +30,21 @@ function CreateAccount() {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!formData.agreeToTerms) {
       alert('You must agree to the Terms of Service to register.');
       return;
     }
-    dispatch(register(formData));
+    try {
+      const resultAction = await dispatch(register(formData)).unwrap();
+      setNotification(resultAction.message);
+      setTimeout(() => {
+        navigate('/login');
+      }, 2000);
+    } catch (err) {
+      setNotification(err.message);
+    }
   };
 
   const togglePasswordVisibility = () => {
@@ -49,6 +59,11 @@ function CreateAccount() {
             <img src={image} alt="Login Illustration" className="w-52 h-72" />
           </div>
           <div className="w-full md:w-1/2 space-y-6 flex flex-col justify-center">
+            {notification && (
+              <div className="p-4 mb-4 text-sm text-green-800 bg-green-100 rounded-lg" role="alert">
+                {notification}
+              </div>
+            )}
             <form onSubmit={handleSubmit} className="space-y-6">
               <h1 className="text-4xl text-600 font-semibold text-center text-custom-blue">Create Account</h1>
               <div>

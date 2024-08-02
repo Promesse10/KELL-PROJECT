@@ -8,7 +8,7 @@ import Account1 from '../assets/Account1.png';
 import Account from '../assets/Account.png';
 import Cart from '../assets/Cart.png';
 import Cart1 from '../assets/Cart1.png';
-import { useSelector } from 'react-redux'; // Import useSelector to access Redux state
+import { useSelector } from 'react-redux'; 
 
 const Navbar = () => {
   const [nav, setNav] = useState(false);
@@ -16,7 +16,7 @@ const Navbar = () => {
   const [showCart, setShowCart] = useState(false);
   
   const navigate = useNavigate();
-  const location = useLocation(); // Get the current location
+  const location = useLocation(); 
 
   const handleNav = () => {
     setNav(!nav);
@@ -27,14 +27,14 @@ const Navbar = () => {
   };
 
   const handleHomeClick = () => {
-    navigate('/'); // Navigate to the home page
-    window.scrollTo({ top: 0, behavior: 'smooth' }); // Scroll to the top
+    navigate('/'); 
+    window.scrollTo({ top: 0, behavior: 'smooth' }); 
   };
 
   const isLoginOrRegisterPage = location.pathname === '/login' || location.pathname === '/CreateAccount';
 
-  // Access the cart state from Redux (assuming you have a cartSlice)
-  const cartItems = useSelector((state) => state.cart.items) || []; // Ensure it's always an array
+
+  const cartItems = useSelector((state) => state.cart.items) || []; 
 
   // Calculate total price
   const calculateCartTotal = () => {
@@ -161,7 +161,7 @@ const Navbar = () => {
                 <ul className="ml-5 mt-2">
                   <li><RouterLink to="/infopage" className="block py-2 hover:bg-blue-500">Information and Technology</RouterLink></li>
                   <li><RouterLink to="/civil-engineering-projects" className="block py-2 hover:bg-blue-200">Civil Engineering Projects</RouterLink></li>
-                  <li><RouterLink to="/food-service" className="block py-2 hover:bg-blue-200">Food Service</RouterLink></li>
+                  <li><RouterLink to="/Food" className="block py-2 hover:bg-blue-200">Food Service</RouterLink></li>
                 </ul>
               </li>
               <li className="text-white">

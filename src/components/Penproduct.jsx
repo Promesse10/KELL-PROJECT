@@ -87,7 +87,7 @@ function Home() {
                 className="bg-white p-4 flex flex-col items-center w-40 h-60 md:w-52 md:h-72 relative"
               >
                 <img
-                  src={product.image}
+                  src={product.images[0].url}
                   className="w-24 h-24 object-cover"
                   alt={product.name}
                 />

@@ -1,9 +1,13 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { fetchProducts, createProduct } from '../sevices/api'; // Corrected spelling from 'sevices' to 'services'
+import { fetchProducts, createProduct } from '../sevices/api';
 
-// Asynchronous thunk actions for fetching and adding products
-export const getProducts = createAsyncThunk('products/getProducts', fetchProducts);
-export const addProduct = createAsyncThunk('products/addProduct', createProduct);
+export const getProducts = createAsyncThunk('products/getProducts', async (category) => {
+  return await fetchProducts(category);
+});
+
+export const addProduct = createAsyncThunk('products/addProduct', async (product) => {
+  return await createProduct(product);
+});
 
 const productSlice = createSlice({
   name: 'products',
@@ -16,16 +20,13 @@ const productSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(getProducts.pending, (state) => {
-        console.log('Fetching products...');
         state.status = 'loading';
       })
       .addCase(getProducts.fulfilled, (state, action) => {
-        console.log('Fetch successful:', action.payload);
         state.status = 'succeeded';
         state.products = action.payload;
       })
       .addCase(getProducts.rejected, (state, action) => {
-        console.log('Fetch failed:', action.error.message);
         state.status = 'failed';
         state.error = action.error.message;
       })

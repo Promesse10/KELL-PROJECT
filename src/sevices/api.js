@@ -6,8 +6,8 @@ const api = axios.create({
   baseURL: API_BASE_URL,
 });
 
-export const fetchProducts = async () => {
-  const response = await api.get('/products/get-all');
+export const fetchProducts = async (category) => {
+  const response = await api.get(`/products/get-all`);
   return response.data.products;
 };
 
