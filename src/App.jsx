@@ -1,6 +1,6 @@
+import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
-import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
 import Landingpage from "./pages/Landingpage";
 import LoginSignup from "./pages/LoginSignup";
 import Cart from "./pages/Cart";
@@ -14,15 +14,18 @@ import Construction from "./components/Construction";
 import Food from "./components/Food";
 import Terms from "./components/CreateAccountForm/terms";
 import Penproduct from "./components/Penproduct";
+import AdminLayout from "./layout/AdminLayout";
+import ProductsPage from "./pages/Product";
+import Dashboard from "./components/Dashboard";
 
 function App() {
   const location = useLocation();
-  const showFooter = location.pathname !== '/';
-
+  const isAdminRoute = location.pathname.startsWith('/admin');
+  
   return (
     <>
-      <Navbar />
-
+      {!isAdminRoute && <Navbar />}
+      
       <Routes>
         <Route path="/penproduct" element={<Penproduct />} />
         <Route path="/service" element={<Service />} />
@@ -37,9 +40,14 @@ function App() {
         <Route path='/aboutus' element={<Aboutus />} />
         <Route path='/contactus' element={<Contactus />} />
         <Route path='/terms' element={<Terms />} />
+
+        <Route path='/admin' element={<AdminLayout />}>
+          <Route path='product' element={<ProductsPage />} />
+          <Route path='dashboard' element={<Dashboard />} />
+        </Route>
       </Routes>
 
-      {showFooter && <Footer />}
+      {!isAdminRoute && <Footer />}
     </>
   );
 }

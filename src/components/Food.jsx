@@ -13,10 +13,13 @@ const Food = () => {
     dispatch(getProducts());
   }, [dispatch]);
 
-  const handleAddToCart = (item) => {
-    dispatch(addToCart(item));
-    navigate('/cart');
+  const handleAddToCart = (product) => {
+    console.log('Adding to cart:', product);
+    dispatch(addToCart(product));
+    navigate('');
   };
+  
+  
 
   return (
     <div className='bg-gray-100 mt-20'>

@@ -9,10 +9,8 @@ const productsPerPage = 5;
 function Home() {
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const [isCartVisible, setCartVisible] = useState(false);
   const dispatch = useDispatch();
   const products = useSelector((state) => state.products.products || []);
-  const cart = useSelector((state) => state.cart || []);
 
   useEffect(() => {
     dispatch(getProducts());
@@ -34,30 +32,6 @@ function Home() {
 
   const handleAddToCart = (product) => {
     dispatch(addToCart(product));
-  };
-
-  const handleRemoveFromCart = (product) => {
-    dispatch(removeFromCart(product._id));
-  };
-
-  const handleToggleCart = () => {
-    setCartVisible(!isCartVisible);
-  };
-
-  const handleCloseCart = () => {
-    setCartVisible(false);
-  };
-
-  const handleIncreaseQuantity = (product) => {
-    dispatch(addToCart(product));
-  };
-
-  const handleDecreaseQuantity = (product) => {
-    dispatch(removeFromCart(product._id));
-  };
-
-  const calculateTotalPrice = () => {
-    return cart.reduce((total, product) => total + (product.price * product.quantity), 0);
   };
 
   return (
@@ -122,34 +96,7 @@ function Home() {
           </div>
         </div>
       </div>
-
-      <ul>
-        {cart.map((product, index) => (
-          <li key={index} className="flex justify-between items-center p-4 border-b">
-            <img src={product.image} alt={product.name} className="w-10 h-10 mr-2" />
-            <span>{product.name}</span>
-            <span>{product.price} rwf</span>
-            <div className="flex items-center">
-              <button
-                onClick={() => handleDecreaseQuantity(product)}
-                className="text-red-500 text-xl mr-2"
-              >
-                -
-              </button>
-              <span>{product.quantity}</span>
-              <button
-                onClick={() => handleIncreaseQuantity(product)}
-                className="text-green-500 text-xl ml-2"
-              >
-                +
-              </button>
-            </div>
-            <span>{product.price * product.quantity} rwf</span>
-          </li>
-        ))}
-      </ul>
-    
-    </section> // Closing tag added here
+    </section>
   );
 }
 

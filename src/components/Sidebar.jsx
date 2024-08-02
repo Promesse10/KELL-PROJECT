@@ -23,7 +23,7 @@ const Sidebar = () => {
           </li>
           <li className="mb-4">
             <NavLink
-              to="/admin/products"
+              to="/admin/product"
               className={({ isActive }) =>
                 isActive
                   ? "text-gray-300 bg-gray-700 hover:bg-gray-700 hover:text-white p-3 rounded block"
