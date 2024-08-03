@@ -1,11 +1,9 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import Cookies from 'js-cookie';
 import authService from '../sevices/authService';
 
 const initialState = {
-  user: null,
-  token: Cookies.get('token') || null,
-  isLoggedIn: !!Cookies.get('token'),
+  user: null, // Ensure this is initialized properly
+  isLoggedIn: false,
   loading: false,
   error: null,
 };
@@ -47,9 +45,8 @@ const authSlice = createSlice({
   reducers: {
     logout: (state) => {
       state.user = null;
-      state.token = null;
       state.isLoggedIn = false;
-      Cookies.remove('token');
+      authService.logout();
     },
   },
   extraReducers: (builder) => {
@@ -61,7 +58,6 @@ const authSlice = createSlice({
       .addCase(register.fulfilled, (state, action) => {
         state.loading = false;
         state.user = action.payload.user;
-        state.token = action.payload.token;
         state.isLoggedIn = true;
       })
       .addCase(register.rejected, (state, action) => {
@@ -75,7 +71,6 @@ const authSlice = createSlice({
       .addCase(login.fulfilled, (state, action) => {
         state.loading = false;
         state.user = action.payload.user;
-        state.token = action.payload.token;
         state.isLoggedIn = true;
       })
       .addCase(login.rejected, (state, action) => {

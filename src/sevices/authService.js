@@ -1,8 +1,7 @@
 import axios from 'axios';
 import Cookies from 'js-cookie';
 
-
-const API_URL = 'http://localhost:8001/api/v1/users';
+const API_URL = 'http://localhost:8009/api/v1/users';
 
 const register = async (userData) => {
   const response = await axios.post(`${API_URL}/register`, userData);
@@ -12,35 +11,32 @@ const register = async (userData) => {
 const login = async (email, password) => {
   const response = await axios.post(`${API_URL}/login`, { email, password });
   if (response.data.token) {
-    Cookies.set('token', response.data.token, { expires: 15 });
+    localStorage.setItem('user', JSON.stringify(response.data));
   }
   return response.data;
 };
 
 const logout = () => {
-  Cookies.remove('token');
+  localStorage.removeItem('user');
 };
 
 const getProfile = async () => {
-  const token = Cookies.get('token');
-  if (!token) {
+  const user = JSON.parse(localStorage.getItem('user'));
+  if (!user || !user.token) {
     throw new Error('No token found');
   }
 
   const response = await axios.get(`${API_URL}/profile`, {
     headers: {
-      Authorization: `Bearer ${token}`,
+      Authorization: `Bearer ${user.token}`,
     },
   });
   return response.data;
 };
-
-const fetchUserProfile = getProfile; // Alias for getProfile
 
 export default {
   register,
   login,
   logout,
   getProfile,
-  fetchUserProfile,
 };

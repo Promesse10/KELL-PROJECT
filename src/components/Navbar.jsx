@@ -26,19 +26,19 @@ const Navbar = () => {
   };
 
   const handleDropdown = (e) => {
-    e.stopPropagation(); // Prevent click events from affecting other dropdowns
+    e.stopPropagation();
     setDropdown(!dropdown);
   };
 
   const handleAccountDropdown = (e) => {
-    e.stopPropagation(); // Prevent click events from affecting other dropdowns
+    e.stopPropagation();
     setShowAccountDropdown(!showAccountDropdown);
-    setDropdown(false); // Close product dropdown if open
+    setDropdown(false);
   };
 
   const handleProfileClick = () => {
-    navigate('/profile'); // Navigate to Profile page
-    setShowAccountDropdown(false); // Close account dropdown after navigation
+    navigate('/profile');
+    setShowAccountDropdown(false);
   };
 
   const handleHomeClick = () => {
@@ -118,10 +118,10 @@ const Navbar = () => {
             {showAccountDropdown && (
               <ul className="absolute top-full right-0 mt-2 w-48 bg-white shadow-lg" onClick={(e) => e.stopPropagation()}>
                 <li className="px-4 py-2">
-                  <p className="font-semibold">Hi, {user?.name }!</p> {/* Handle case where user is null */}
+                  <p className="font-semibold">Hi, {user.name}!</p>
                 </li>
                 <li>
-                  <button onClick={handleProfileClick} className="block px-4 py-2 hover:bg-gray-200">Profile</button>
+                <RouterLink to="/profile" className="block px-4 py-2 hover:bg-gray-200">Profile</RouterLink>
                 </li>
                 <li>
                   <RouterLink to="/settings" className="block px-4 py-2 hover:bg-gray-200">Settings</RouterLink>
@@ -171,7 +171,7 @@ const Navbar = () => {
               {showAccountDropdown && (
                 <ul className="absolute top-full right-0 mt-2 w-48 bg-white shadow-lg" onClick={(e) => e.stopPropagation()}>
                   <li className="px-4 py-2">
-                    <p className="font-semibold">Hi, {user?.name || 'Guest'}!</p> {/* Handle case where user is null */}
+                    <p className="font-semibold">Hi, {user?.name}!</p> {/* Optional chaining */}
                   </li>
                   <li>
                     <button onClick={handleProfileClick} className="block px-4 py-2 hover:bg-gray-200">Profile</button>
@@ -194,7 +194,6 @@ const Navbar = () => {
         </ul>
       </div>
 
-      {/* Cart popup */}
       {showCart && (
         <div className="fixed right-0 top-0 w-[30%] h-full bg-white text-black shadow-lg z-50">
           <button onClick={() => setShowCart(false)} className="absolute top-4 right-4 text-2xl">×</button>
