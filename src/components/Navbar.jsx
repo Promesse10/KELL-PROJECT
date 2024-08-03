@@ -118,7 +118,7 @@ const Navbar = () => {
             {showAccountDropdown && (
               <ul className="absolute top-full right-0 mt-2 w-48 bg-white shadow-lg" onClick={(e) => e.stopPropagation()}>
                 <li className="px-4 py-2">
-                  <p className="font-semibold">Hi, {user?.name || 'Guest'}!</p> {/* Handle case where user is null */}
+                  <p className="font-semibold">Hi, {user?.name }!</p> {/* Handle case where user is null */}
                 </li>
                 <li>
                   <button onClick={handleProfileClick} className="block px-4 py-2 hover:bg-gray-200">Profile</button>
