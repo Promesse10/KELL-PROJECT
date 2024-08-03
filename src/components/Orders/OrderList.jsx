@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { getOrders } from '../../redux/slices/orderSlice';
+import { getOrders } from '../../slices/orderSlice';
 
 const OrderList = () => {
   const dispatch = useDispatch();

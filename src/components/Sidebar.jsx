@@ -3,7 +3,7 @@ import { NavLink } from 'react-router-dom';
 
 const Sidebar = () => {
   return (
-    <div className="h-screen bg-gray-800 text-white w-64 flex flex-col">
+    <div className="fixed h-screen bg-gray-800 text-white w-64">
       <div className="flex items-center justify-center h-20">
         <h1 className="text-3xl font-bold">Admin</h1>
       </div>
@@ -68,6 +68,17 @@ const Sidebar = () => {
             >
               Users
             </NavLink>
+          </li>
+          <li className="mt-auto mb-4">
+            <button
+              onClick={() => {
+                // Add your logout functionality here
+                console.log('Logout');
+              }}
+              className="text-gray-300 hover:bg-gray-700 hover:text-white p-3 rounded block w-full text-left"
+            >
+              Logout
+            </button>
           </li>
         </ul>
       </nav>

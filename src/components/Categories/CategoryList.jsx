@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { getCategories } from '../../redux/slices/categorySlice';
+import { getCategories } from '../../slices/categorySlice';
 
 const CategoryList = () => {
   const dispatch = useDispatch();

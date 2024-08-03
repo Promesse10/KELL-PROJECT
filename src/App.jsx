@@ -19,6 +19,11 @@ import ProductsPage from "./pages/Product";
 import Dashboard from "./components/Dashboard";
 import ProfileManager from "./components/profileManager";
 
+import OrderList from "./components/Orders/OrderList";
+import CategoriesPage  from "./pages/CategoriesPage"
+import UserList from "./components/Users/UserList";
+
+
 function App() {
   const location = useLocation();
   const isAdminRoute = location.pathname.startsWith('/admin');
@@ -49,6 +54,10 @@ function App() {
         <Route path="/admin" element={<AdminLayout />}>
           <Route path="product" element={<ProductsPage />} />
           <Route path="dashboard" element={<Dashboard />} />
+          <Route path="orders" element={<OrderList />} />
+          <Route path="categories" element={<CategoriesPage />} />
+          <Route path="users" element={<UserList />} />
+
         </Route>
       </Routes>
 

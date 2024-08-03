@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { addCategory } from '../../redux/slices/categorySlice';
+import { addCategory } from '../../slices/categorySlice';
 
 const CreateEditCategory = () => {
   const [name, setName] = useState('');
@@ -23,7 +23,7 @@ const CreateEditCategory = () => {
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="border p-2 w-full"
+            className="border p-2 w-full shadow-md"
           />
         </div>
         <button type="submit" className="bg-blue-500 text-white p-2">Create</button>

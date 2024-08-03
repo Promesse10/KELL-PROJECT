@@ -52,8 +52,8 @@ const CreateEditProduct = () => {
   };
 
   return (
-    <div>
-      <h2 className="text-2xl font-bold mb-4">Create Product</h2>
+    <div  >
+      <h2 className="text-2xl font-inter mb-4  text-blue-950">Create Product</h2>
       <form onSubmit={handleSubmit}>
         <div className="mb-4">
           <label className="block mb-2">Name</label>
@@ -61,7 +61,7 @@ const CreateEditProduct = () => {
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="border p-2 w-full"
+            className="border p-2 w-1/2 shadow-md"
           />
         </div>
         <div className="mb-4">
@@ -70,7 +70,7 @@ const CreateEditProduct = () => {
             type="text"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            className="border p-2 w-full"
+            className="border p-2 w-1/2 shadow-md"
           />
         </div>
         <div className="mb-4">
@@ -79,7 +79,7 @@ const CreateEditProduct = () => {
             type="number"
             value={price}
             onChange={(e) => setPrice(e.target.value)}
-            className="border p-2 w-full"
+            className="border p-2 w-1/2 shadow-md"
           />
         </div>
         <div className="mb-4">
@@ -88,7 +88,7 @@ const CreateEditProduct = () => {
             type="number"
             value={stock}
             onChange={(e) => setStock(e.target.value)}
-            className="border p-2 w-full"
+            className="border p-2 w-1/2 shadow-md"
           />
         </div>
         <div className="mb-4">
@@ -96,7 +96,7 @@ const CreateEditProduct = () => {
           <select
             value={category}
             onChange={(e) => setCategory(e.target.value)}
-            className="border p-2 w-full"
+            className="border p-2 w-1/2 shadow-md"
           >
             <option value="" disabled>Select category</option>
             {categories.map((cat) => (
@@ -112,7 +112,7 @@ const CreateEditProduct = () => {
             type="file"
             multiple
             onChange={handleImageChange}
-            className="border p-2 w-full"
+            className="border p-2 w-1/2 shadow-md"
           />
         </div>
         <div className="mb-4">
