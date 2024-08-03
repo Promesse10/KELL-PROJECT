@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Link as RouterLink, useNavigate, useLocation } from 'react-router-dom';
 import { Link as ScrollLink } from 'react-scroll';
 import { AiOutlineClose, AiOutlineMenu } from 'react-icons/ai';
@@ -17,6 +17,7 @@ const Navbar = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const dispatch = useDispatch();
+  const dropdownRef = useRef(null);
 
   const { user, isLoggedIn } = useSelector((state) => state.auth);
   const cartItems = useSelector((state) => state.cart.items) || [];
@@ -56,6 +57,18 @@ const Navbar = () => {
     setShowCart(!showCart);
   };
 
+  // Close dropdown if clicked outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setShowAccountDropdown(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
   return (
     <div className="fixed top-0 z-50 w-full flex justify-between items-center h-24 max-w-[2794px] mx-auto px-4 bg-gray-100 shadow-md">
       <div className="flex items-center flex-shrink-0">
@@ -75,8 +88,8 @@ const Navbar = () => {
                 Services
               </ScrollLink>
             </li>
-            <li onMouseEnter={() => setDropdown(true)} onMouseLeave={() => setDropdown(false)} className="relative">
-              <span className="hover:border-b-4 hover:border-blue-950 cursor-pointer" onClick={(e) => e.stopPropagation()}>Products</span>
+            <li onClick={handleDropdown} className="relative">
+              <span className="hover:border-b-4 hover:border-blue-950 cursor-pointer">Products</span>
               {dropdown && (
                 <ul className="absolute top-full font-thin text-sm left-0 w-52 bg-blue-950 text-white shadow-lg">
                   <li>
@@ -116,12 +129,12 @@ const Navbar = () => {
           <>
             <img className="w-5 h-5 cursor-pointer" src={Account1} alt="Account" onClick={handleAccountDropdown} />
             {showAccountDropdown && (
-              <ul className="absolute top-full right-0 mt-2 w-48 bg-white shadow-lg" onClick={(e) => e.stopPropagation()}>
+              <ul className="absolute top-full right-0 mt-2 w-48 bg-white shadow-lg" ref={dropdownRef}>
                 <li className="px-4 py-2">
-                  <p className="font-semibold">Hi, {user.name}!</p>
+                  <p className="font-semibold">Hi, {user?.name || 'Guest'}!</p> {/* Handle case where user is null */}
                 </li>
                 <li>
-                <RouterLink to="/profile" className="block px-4 py-2 hover:bg-gray-200">Profile</RouterLink>
+                  <button onClick={handleProfileClick} className="block px-4 py-2 hover:bg-gray-200">Profile</button>
                 </li>
                 <li>
                   <RouterLink to="/settings" className="block px-4 py-2 hover:bg-gray-200">Settings</RouterLink>
@@ -169,9 +182,9 @@ const Navbar = () => {
             <>
               <img className="w-5 h-5 cursor-pointer" src={Account1} alt="Account" onClick={handleAccountDropdown} />
               {showAccountDropdown && (
-                <ul className="absolute top-full right-0 mt-2 w-48 bg-white shadow-lg" onClick={(e) => e.stopPropagation()}>
+                <ul className="absolute top-full right-0 mt-2 w-48 bg-white shadow-lg" ref={dropdownRef}>
                   <li className="px-4 py-2">
-                    <p className="font-semibold">Hi, {user?.name}!</p> {/* Optional chaining */}
+                    <p className="font-semibold">Hi, {user?.name || 'Guest'}!</p> {/* Handle case where user is null */}
                   </li>
                   <li>
                     <button onClick={handleProfileClick} className="block px-4 py-2 hover:bg-gray-200">Profile</button>

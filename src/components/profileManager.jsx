@@ -25,74 +25,67 @@ const ProfileManager = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <main className="w-full max-w-4xl p-6">
-        <div className="bg-white shadow-md rounded-lg p-6">
-          <div className="flex items-center space-x-4 mb-6">
-            <div 
-              className="w-24 h-24 bg-gray-200 rounded-full flex items-center justify-center cursor-pointer relative border border-gray-300"
-              onClick={handleAvatarClick}
-            >
-              {image ? (
-                <img src={image} alt="Avatar" className="w-full h-full object-cover rounded-full" />
-              ) : (
-                <span className="text-center text-gray-400">Upload photo</span>
-              )}
-            </div>
-            <input 
-              type="file" 
-              ref={fileInputRef} 
-              className="hidden"
-              onChange={handleFileChange}
-            />
-            <div>
-              <div className="text-gray-600 mb-2">
-                <strong>Your member ID:</strong> <span className="font-semibold">rw29000466130ysmk</span>
+    <div className="flex items-center justify-center mt-11 min-h-screen bg-gray-100">
+      <main className="w-full max-w-3xl p-6">
+        <div className="bg-white shadow-md p-8 rounded-lg border border-gray-300 mx-auto">
+          <h1 className="text-2xl font-semibold mb-6">Profile Settings</h1>
+          <div className="flex flex-row items-start">
+            {/* Photo upload section */}
+            <div className="relative flex-none w-1/3 flex flex-col items-center mb-6">
+              <div 
+                className="relative w-32 h-32 bg-gray-200 rounded-full flex items-center justify-center cursor-pointer border border-gray-300"
+                onClick={handleAvatarClick}
+              >
+                {image ? (
+                  <img src={image} alt="Avatar" className="w-full h-full object-cover rounded-full" />
+                ) : (
+                  <span className="text-center text-gray-400">Upload a picture</span>
+                )}
+                {/* Hover text */}
+                {!image && (
+                  <div className="absolute inset-0 flex items-center justify-center text-white text-xs bg-black bg-opacity-50 rounded-full opacity-0 hover:opacity-100 transition-opacity duration-300">
+                    Upload photo
+                  </div>
+                )}
               </div>
-              <div className="text-gray-600 mb-2">
-                <strong>Email:</strong> <span className="font-semibold">pro***@gmail.com</span> 
-                <a href="#" className="text-blue-500 ml-1">Change email address</a>
-              </div>
-              <div className="text-gray-600">
-                <strong>Linked Mobile:</strong> <a href="#" className="text-blue-500">Enter Mobile Number</a>
-              </div>
+              <input 
+                type="file" 
+                ref={fileInputRef} 
+                className="hidden"
+                onChange={handleFileChange}
+              />
               {image && (
-                <div className="mt-2">
-                  <a href="#" onClick={handleRemoveImage} className="text-blue-500">
-                    Remove photo
-                  </a>
-                </div>
+                <button onClick={handleRemoveImage} className="mt-2 text-blue-500">
+                  Remove photo
+                </button>
               )}
             </div>
-          </div>
-          <hr className="my-4 border-gray-300" />
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div>
-              <h2 className="font-semibold text-gray-600 mb-4">Personal Information</h2>
-              <ul className="space-y-2">
-                <li><a href="#" className="text-blue-500">My Profile</a></li>
-                <li><a href="#" className="text-blue-500">Member Profile</a></li>
-                <li><a href="#" className="text-blue-500">Upload My Photo</a></li>
-                <li><a href="#" className="text-blue-500">Privacy Settings</a></li>
-                <li><a href="#" className="text-blue-500">Email Preferences</a></li>
-                <li><a href="#" className="text-blue-500">Tax Information</a></li>
-                <li><a href="#" className="text-blue-500">Data Preferences</a></li>
-              </ul>
-            </div>
-            <div>
-              <h2 className="font-semibold text-gray-600 mb-4">Account Security</h2>
-              <ul className="space-y-2">
-                <li><a href="#" className="text-blue-500">Change Email Address</a></li>
-                <li><a href="#" className="text-blue-500">Change Password</a></li>
-                <li><a href="#" className="text-blue-500">Manage Verification Phones</a></li>
-                <li><a href="#" className="text-blue-500">Manage My Connected Accounts</a></li>
-              </ul>
-            </div>
-            <div>
-              <h2 className="font-semibold text-gray-600 mb-4">Finance Account</h2>
-              <ul className="space-y-2">
-                <li><a href="#" className="text-blue-500">My Transactions</a></li>
-              </ul>
+            {/* Form section */}
+            <div className="flex-grow">
+              <form>
+                <div className="mb-4">
+                  <label className="block text-gray-700">Your Name</label>
+                  <input type="text" className="mt-1 block w-full border border-gray-300 rounded-md p-2" value="Anthony Webb" />
+                </div>
+                <div className="mb-4">
+                  <label className="block text-gray-700">Password</label>
+                  <input type="password" className="mt-1 block w-full border border-gray-300 rounded-md p-2" value="**********" />
+                  <a href="#" className="text-blue-500 text-sm mt-1 inline-block">Change</a>
+                </div>
+                <div className="mb-4">
+                  <label className="block text-gray-700">Email Address</label>
+                  <input type="email" className="mt-1 block w-full border border-gray-300 rounded-md p-2" value="myemail@address.com" />
+                  <a href="#" className="text-blue-500 text-sm mt-1 inline-block">Change</a>
+                </div>
+                <div className="text-center">
+                  <button className="text-blue-500 mb-4">Delete Your Account</button>
+                  <p className="text-sm text-gray-600 mb-4">You will receive an email to confirm your decision. Please note, that all boards you have created will be permanently erased.</p>
+                  <div className="flex space-x-4 justify-center">
+                    <button className="px-4 py-2 bg-gray-300 text-gray-700 rounded-md">Cancel</button>
+                    <button className="px-4 py-2 bg-blue-500 text-white rounded-md">Save</button>
+                  </div>
+                </div>
+              </form>
             </div>
           </div>
         </div>

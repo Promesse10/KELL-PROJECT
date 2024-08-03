@@ -1,6 +1,7 @@
 import axios from 'axios';
 import Cookies from 'js-cookie';
 
+
 const API_URL = 'http://localhost:8001/api/v1/users';
 
 const register = async (userData) => {
@@ -34,9 +35,12 @@ const getProfile = async () => {
   return response.data;
 };
 
+const fetchUserProfile = getProfile; // Alias for getProfile
+
 export default {
   register,
   login,
   logout,
   getProfile,
+  fetchUserProfile,
 };
