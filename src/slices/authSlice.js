@@ -2,8 +2,8 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import authService from '../sevices/authService';
 
 const initialState = {
-  user: null, // Ensure this is initialized properly
-  isLoggedIn: false,
+  user: authService.getStoredUser(),
+  isLoggedIn: !!authService.getStoredUser().token,
   loading: false,
   error: null,
 };
@@ -33,6 +33,16 @@ export const fetchProfile = createAsyncThunk('auth/fetchProfile', async (_, thun
   try {
     const data = await authService.getProfile();
     return data.user;
+  } catch (error) {
+    return thunkAPI.rejectWithValue(error.response.data);
+  }
+});
+
+// Reset password
+export const resetPassword = createAsyncThunk('auth/resetPassword', async (resetData, thunkAPI) => {
+  try {
+    const data = await authService.resetPassword(resetData);
+    return data;
   } catch (error) {
     return thunkAPI.rejectWithValue(error.response.data);
   }
@@ -86,6 +96,18 @@ const authSlice = createSlice({
         state.user = action.payload;
       })
       .addCase(fetchProfile.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(resetPassword.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(resetPassword.fulfilled, (state) => {
+        state.loading = false;
+        // Optionally handle successful password reset state
+      })
+      .addCase(resetPassword.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });

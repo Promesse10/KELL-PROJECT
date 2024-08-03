@@ -22,6 +22,7 @@ import ProfileManager from "./components/profileManager";
 import OrderList from "./components/Orders/OrderList";
 import CategoriesPage  from "./pages/CategoriesPage"
 import UserList from "./components/Users/UserList";
+import ForgotPasswordForm from "./components/ForgetPassword";
 
 
 function App() {
@@ -47,9 +48,8 @@ function App() {
         <Route path="/construction" element={<Construction />} />
         <Route path="/food" element={<Food />} />
         <Route path="/infopage" element={<Infopage />} />
-        
-        {/* Updated route path */}
         <Route path="/profile" element={<ProfileManager />} />
+        <Route path="/ForgotPassword" element={<ForgotPasswordForm />} />
         
         <Route path="/admin" element={<AdminLayout />}>
           <Route path="product" element={<ProductsPage />} />

@@ -7,12 +7,13 @@ import Account1 from '../assets/Account1.png';
 import Cart1 from '../assets/Cart1.png';
 import { useSelector, useDispatch } from 'react-redux';
 import { logout } from '../slices/authSlice';
+import { increaseQuantity, decreaseQuantity } from '../slices/cartSlice';
 
 const Navbar = () => {
   const [nav, setNav] = useState(false);
-  const [dropdown, setDropdown] = useState(false);
   const [showCart, setShowCart] = useState(false);
   const [showAccountDropdown, setShowAccountDropdown] = useState(false);
+  const [dropdown, setDropdown] = useState(false); // Define dropdown state
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -25,20 +26,14 @@ const Navbar = () => {
     setNav(!nav);
   };
 
-  const handleDropdown = (e) => {
-    e.stopPropagation();
-    setDropdown(!dropdown);
-  };
-
   const handleAccountDropdown = (e) => {
-    e.stopPropagation();
+    e.stopPropagation(); // Prevent click events from affecting other dropdowns
     setShowAccountDropdown(!showAccountDropdown);
-    setDropdown(false);
   };
 
   const handleProfileClick = () => {
-    navigate('/profile');
-    setShowAccountDropdown(false);
+    navigate('/profile'); // Navigate to Profile page
+    setShowAccountDropdown(false); // Close account dropdown after navigation
   };
 
   const handleHomeClick = () => {
@@ -76,7 +71,7 @@ const Navbar = () => {
               </ScrollLink>
             </li>
             <li onMouseEnter={() => setDropdown(true)} onMouseLeave={() => setDropdown(false)} className="relative">
-              <span className="hover:border-b-4 hover:border-blue-950 cursor-pointer">Products</span>
+              <span className="hover:border-b-4 hover:border-blue-950 cursor-pointer" onClick={(e) => e.stopPropagation()}>Products</span>
               {dropdown && (
                 <ul className="absolute top-full font-thin text-sm left-0 w-52 bg-blue-950 text-white shadow-lg">
                   <li>
@@ -121,7 +116,7 @@ const Navbar = () => {
                   <p className="font-semibold">Hi, {user.name}!</p>
                 </li>
                 <li>
-                <RouterLink to="/profile" className="block px-4 py-2 hover:bg-gray-200">Profile</RouterLink>
+                  <RouterLink to="/profile" className="block px-4 py-2 hover:bg-gray-200">Profile</RouterLink>
                 </li>
                 <li>
                   <RouterLink to="/settings" className="block px-4 py-2 hover:bg-gray-200">Settings</RouterLink>
@@ -194,6 +189,7 @@ const Navbar = () => {
         </ul>
       </div>
 
+      {/* Cart popup */}
       {showCart && (
         <div className="fixed right-0 top-0 w-[30%] h-full bg-white text-black shadow-lg z-50">
           <button onClick={() => setShowCart(false)} className="absolute top-4 right-4 text-2xl">×</button>
@@ -203,9 +199,18 @@ const Navbar = () => {
               <li>Your cart is empty</li>
             ) : (
               cartItems.map((item) => (
-                <li key={item.id} className="flex justify-between py-2">
-                  <span>{item.name} (x{item.quantity})</span>
-                  <span>${item.price * item.quantity}</span>
+                <li key={item.id} className="flex items-center justify-between py-2 border-b border-gray-200">
+                  <img src={item.image} alt={item.name} className="w-12 h-12 object-cover" />
+                  <div className="flex-1 ml-2">
+                    <p>{item.name}</p>
+                    <p>${item.price}</p>
+                  </div>
+                  <div className="flex items-center">
+                    <button onClick={() => dispatch(decreaseQuantity({ id: item.id }))} className="px-2">−</button>
+                    <span className="px-2">{item.quantity}</span>
+                    <button onClick={() => dispatch(increaseQuantity({ id: item.id }))} className="px-2">+</button>
+                  </div>
+                  <div className="ml-4">${(item.price * item.quantity).toFixed(2)}</div>
                 </li>
               ))
             )}

@@ -11,17 +11,17 @@ const register = async (userData) => {
 const login = async (email, password) => {
   const response = await axios.post(`${API_URL}/login`, { email, password });
   if (response.data.token) {
-    localStorage.setItem('user', JSON.stringify(response.data));
+    Cookies.set('user', JSON.stringify(response.data), { expires: 7 }); // Store for 7 days
   }
   return response.data;
 };
 
 const logout = () => {
-  localStorage.removeItem('user');
+  Cookies.remove('user');
 };
 
 const getProfile = async () => {
-  const user = JSON.parse(localStorage.getItem('user'));
+  const user = JSON.parse(Cookies.get('user') || '{}');
   if (!user || !user.token) {
     throw new Error('No token found');
   }
@@ -34,9 +34,21 @@ const getProfile = async () => {
   return response.data;
 };
 
+const getStoredUser = () => {
+  return JSON.parse(Cookies.get('user') || '{}');
+};
+
+// Add resetPassword method
+const resetPassword = async (resetData) => {
+  const response = await axios.post(`${API_URL}/forget-password`, resetData);
+  return response.data;
+};
+
 export default {
   register,
   login,
   logout,
   getProfile,
+  getStoredUser,
+  resetPassword, 
 };

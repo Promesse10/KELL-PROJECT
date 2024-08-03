@@ -17,17 +17,17 @@ export const createProduct = async (product) => {
 };
 
 export const fetchOrders = async () => {
-  const response = await api.get('/orders/get-all');
+  const response = await api.get('/orders/my-orders');
   return response.data.orders;
 };
 
 export const fetchCategories = async () => {
-  const response = await api.get('/categories/get-all');
+  const response = await api.get('/category/get-all');
   return response.data.categories;
 };
 
 export const createCategory = async (category) => {
-  const response = await api.post('/categories/create', category);
+  const response = await api.post('/category/create', category);
   return response.data;
 };
 
