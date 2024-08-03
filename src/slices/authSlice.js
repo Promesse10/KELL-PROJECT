@@ -3,9 +3,8 @@ import Cookies from 'js-cookie';
 import authService from '../sevices/authService';
 
 const initialState = {
-  user: null,
-  token: Cookies.get('token') || null,
-  isLoggedIn: !!Cookies.get('token'),
+  user: null, // Ensure this is initialized properly
+  isLoggedIn: false,
   loading: false,
   error: null,
 };

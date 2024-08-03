@@ -1,4 +1,3 @@
-// src/components/Navbar.js
 import React, { useState } from 'react';
 import { Link as RouterLink, useNavigate, useLocation } from 'react-router-dom';
 import { Link as ScrollLink } from 'react-scroll';
@@ -7,23 +6,39 @@ import Logo from '../assets/Logo.png';
 import Account1 from '../assets/Account1.png';
 import Cart1 from '../assets/Cart1.png';
 import { useSelector, useDispatch } from 'react-redux';
-import { increaseQuantity, decreaseQuantity, removeFromCart } from '../slices/cartSlice';
+import { logout } from '../slices/authSlice';
 
 const Navbar = () => {
   const [nav, setNav] = useState(false);
   const [dropdown, setDropdown] = useState(false);
   const [showCart, setShowCart] = useState(false);
+  const [showAccountDropdown, setShowAccountDropdown] = useState(false);
 
   const navigate = useNavigate();
   const location = useLocation();
   const dispatch = useDispatch();
 
+  const { user, isLoggedIn } = useSelector((state) => state.auth);
+  const cartItems = useSelector((state) => state.cart.items) || [];
+
   const handleNav = () => {
     setNav(!nav);
   };
 
-  const handleDropdown = () => {
+  const handleDropdown = (e) => {
+    e.stopPropagation(); // Prevent click events from affecting other dropdowns
     setDropdown(!dropdown);
+  };
+
+  const handleAccountDropdown = (e) => {
+    e.stopPropagation(); // Prevent click events from affecting other dropdowns
+    setShowAccountDropdown(!showAccountDropdown);
+    setDropdown(false); // Close product dropdown if open
+  };
+
+  const handleProfileClick = () => {
+    navigate('/profile'); // Navigate to Profile page
+    setShowAccountDropdown(false); // Close account dropdown after navigation
   };
 
   const handleHomeClick = () => {
@@ -32,8 +47,6 @@ const Navbar = () => {
   };
 
   const isLoginOrRegisterPage = location.pathname === '/login' || location.pathname === '/CreateAccount';
-
-  const cartItems = useSelector((state) => state.cart.items) || [];
 
   const calculateCartTotal = () => {
     return cartItems.reduce((total, item) => total + item.price * item.quantity, 0).toFixed(2);
@@ -62,8 +75,8 @@ const Navbar = () => {
                 Services
               </ScrollLink>
             </li>
-            <li onMouseEnter={handleDropdown} onMouseLeave={handleDropdown} className="relative">
-              <span className="hover:border-b-4 hover:border-blue-950 cursor-pointer">Products</span>
+            <li onMouseEnter={() => setDropdown(true)} onMouseLeave={() => setDropdown(false)} className="relative">
+              <span className="hover:border-b-4 hover:border-blue-950 cursor-pointer" onClick={(e) => e.stopPropagation()}>Products</span>
               {dropdown && (
                 <ul className="absolute top-full font-thin text-sm left-0 w-52 bg-blue-950 text-white shadow-lg">
                   <li>
@@ -99,11 +112,32 @@ const Navbar = () => {
       </ul>
 
       <div className="hidden md:flex md:items-center md:gap-5">
-        <>
-          <img className="w-5 h-5" src={Account1} alt="Account" />
-          <RouterLink to="/login" className="md:cursor-pointer">Login</RouterLink>|
-          <RouterLink to="/CreateAccount" className="md:cursor-pointer">Register</RouterLink>
-        </>
+        {isLoggedIn ? (
+          <>
+            <img className="w-5 h-5 cursor-pointer" src={Account1} alt="Account" onClick={handleAccountDropdown} />
+            {showAccountDropdown && (
+              <ul className="absolute top-full right-0 mt-2 w-48 bg-white shadow-lg" onClick={(e) => e.stopPropagation()}>
+                <li className="px-4 py-2">
+                  <p className="font-semibold">Hi, {user.name}!</p>
+                </li>
+                <li>
+                <RouterLink to="/profile" className="block px-4 py-2 hover:bg-gray-200">Profile</RouterLink>
+                </li>
+                <li>
+                  <RouterLink to="/settings" className="block px-4 py-2 hover:bg-gray-200">Settings</RouterLink>
+                </li>
+                <li>
+                  <button className="block px-4 py-2 w-full text-left hover:bg-gray-200" onClick={() => dispatch(logout())}>Logout</button>
+                </li>
+              </ul>
+            )}
+          </>
+        ) : (
+          <>
+            <RouterLink to="/login" className="md:cursor-pointer">Login</RouterLink>|
+            <RouterLink to="/CreateAccount" className="md:cursor-pointer">Register</RouterLink>
+          </>
+        )}
 
         <button onClick={toggleCartDisplay} className="border-blue-950 border-2 p-1 rounded-2xl flex flex-row">
           <img className="w-5 h-5" src={Cart1} alt="Cart" />
@@ -115,8 +149,8 @@ const Navbar = () => {
         {nav ? <AiOutlineClose size={30} /> : <AiOutlineMenu size={30} />}
       </div>
 
-      <div className={`fixed left-0 top-0 w-[60%] h-full bg-blue-950 text-white ${nav ? 'block' : 'hidden'} z-50`}>
-        <ul className="uppercase p-4">
+      <div className={`fixed left-0 top-0 w-[60%] h-full bg-blue-950 text-white ${nav ? 'block' : 'hidden'} z-50`} onClick={() => setNav(false)}>
+        <ul className="uppercase p-4" onClick={(e) => e.stopPropagation()}>
           <li className="p-4 border-b border-gray-600" onClick={handleHomeClick}>Home</li>
           {!isLoginOrRegisterPage && (
             <>
@@ -131,53 +165,57 @@ const Navbar = () => {
               </li>
             </>
           )}
-          <li className="p-4">
-            <RouterLink to="/login" className="block px-4 py-2" onClick={handleNav}>Login</RouterLink>
-          </li>
-          <li className="p-4">
-            <RouterLink to="/CreateAccount" className="block px-4 py-2" onClick={handleNav}>Register</RouterLink>
-          </li>
-          <li className="p-4">
-            <button onClick={() => { toggleCartDisplay(); handleNav(); }} className="border-blue-950 border-2 p-1 rounded-2xl flex flex-row w-full justify-center">
-              <img className="w-5 h-5" src={Cart1} alt="Cart" />
-              <span className="ml-2">Cart</span>
-            </button>
-          </li>
+          {isLoggedIn ? (
+            <>
+              <img className="w-5 h-5 cursor-pointer" src={Account1} alt="Account" onClick={handleAccountDropdown} />
+              {showAccountDropdown && (
+                <ul className="absolute top-full right-0 mt-2 w-48 bg-white shadow-lg" onClick={(e) => e.stopPropagation()}>
+                  <li className="px-4 py-2">
+                    <p className="font-semibold">Hi, {user?.name}!</p> {/* Optional chaining */}
+                  </li>
+                  <li>
+                    <button onClick={handleProfileClick} className="block px-4 py-2 hover:bg-gray-200">Profile</button>
+                  </li>
+                  <li>
+                    <RouterLink to="/settings" className="block px-4 py-2 hover:bg-gray-200">Settings</RouterLink>
+                  </li>
+                  <li>
+                    <button className="block px-4 py-2 w-full text-left hover:bg-gray-200" onClick={() => dispatch(logout())}>Logout</button>
+                  </li>
+                </ul>
+              )}
+            </>
+          ) : (
+            <>
+              <RouterLink to="/login" className="block p-4 border-b border-gray-600">Login</RouterLink>
+              <RouterLink to="/CreateAccount" className="block p-4 border-b border-gray-600">Register</RouterLink>
+            </>
+          )}
         </ul>
       </div>
-      <div className={`fixed right-0 top-0 w-[350px] bg-white h-full shadow-2xl transition-transform transform ${showCart ? 'translate-x-0' : 'translate-x-full'}`}>
-  <button onClick={toggleCartDisplay} className="p-2 focus:outline-none">
-    <AiOutlineClose size={24} />
-  </button>
-  <h2 className="text-xl font-semibold p-4 border-b">Cart</h2>
-  {cartItems.length === 0 ? (
-    <p className="p-4">Your cart is empty</p>
-  ) : (
-    <ul className="p-4 overflow-y-auto max-h-[60vh]">
-      {cartItems.map((item, index) => (
-        <li key={index} className="flex justify-between items-center mb-4">
-          <img src={item.images[0].url} alt={item.name} className="w-16 h-16 object-cover" />
-          <div className="ml-4">
-            <p className="text-sm font-semibold">{item.name}</p>
-            <p className="text-sm text-gray-500">Price: rwf {item.price}</p>
-            <p className="text-sm text-gray-500">Quantity: {item.quantity}</p>
-            <div className="flex items-center space-x-2">
-              <button onClick={() => dispatch(increaseQuantity(item._id))} className="px-2 py-1 bg-blue-950 text-white rounded">+</button>
-              <button onClick={() => dispatch(decreaseQuantity(item._id))} className="px-2 py-1 bg-blue-950 text-white rounded">-</button>
-              <button onClick={() => dispatch(removeFromCart(item._id))} className="px-2 py-1 bg-red-500 text-white rounded">Remove</button>
-            </div>
-          </div>
-          <p className="text-sm font-semibold">  rwf{(item.price * item.quantity).toFixed(2)}</p>
-        </li>
-      ))}
-    </ul>
-  )}
-  <div className="p-4 border-t">
-    <p className="font-semibold">Total: ${calculateCartTotal()}</p>
-    <button className="w-full bg-blue-950 text-white p-2 mt-2">Checkout</button>
-  </div>
-</div>
 
+      {/* Cart popup */}
+      {showCart && (
+        <div className="fixed right-0 top-0 w-[30%] h-full bg-white text-black shadow-lg z-50">
+          <button onClick={() => setShowCart(false)} className="absolute top-4 right-4 text-2xl">×</button>
+          <h2 className="text-lg font-semibold p-4">Cart</h2>
+          <ul className="p-4">
+            {cartItems.length === 0 ? (
+              <li>Your cart is empty</li>
+            ) : (
+              cartItems.map((item) => (
+                <li key={item.id} className="flex justify-between py-2">
+                  <span>{item.name} (x{item.quantity})</span>
+                  <span>${item.price * item.quantity}</span>
+                </li>
+              ))
+            )}
+          </ul>
+          <div className="p-4 border-t">
+            <span className="font-semibold">Total: ${calculateCartTotal()}</span>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

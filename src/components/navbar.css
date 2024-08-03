@@ -1,0 +1,16 @@
+/* In your CSS file or style tag */
+.dropdown-menu {
+    position: relative;
+  }
+  
+  .dropdown-menu::before {
+    content: '';
+    position: absolute;
+    bottom: 100%; /* Position above the dropdown */
+    left: 50%; /* Center horizontally */
+    transform: translateX(-50%); /* Adjust horizontal position */
+    border-width: 8px;
+    border-style: solid;
+    border-color: transparent transparent #172554 transparent; /* Arrow pointing up */
+  }
+  
