@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import Cookies from 'js-cookie';
-import authService from '../sevices/authService';
+import authService from '../sevices/authService'; // Ensure this path is correct
 
 const initialState = {
   user: null,
@@ -14,6 +14,7 @@ const initialState = {
 export const register = createAsyncThunk('auth/register', async (userData, thunkAPI) => {
   try {
     const data = await authService.register(userData);
+    Cookies.set('token', data.token); // Save token in cookies
     return data;
   } catch (error) {
     return thunkAPI.rejectWithValue(error.response.data);
@@ -24,6 +25,7 @@ export const register = createAsyncThunk('auth/register', async (userData, thunk
 export const login = createAsyncThunk('auth/login', async ({ email, password }, thunkAPI) => {
   try {
     const data = await authService.login(email, password);
+    Cookies.set('token', data.token); // Save token in cookies
     return data;
   } catch (error) {
     return thunkAPI.rejectWithValue(error.response.data);
@@ -34,6 +36,16 @@ export const login = createAsyncThunk('auth/login', async ({ email, password }, 
 export const fetchProfile = createAsyncThunk('auth/fetchProfile', async (_, thunkAPI) => {
   try {
     const data = await authService.getProfile();
+    return data.user; // Ensure this does not include passwords
+  } catch (error) {
+    return thunkAPI.rejectWithValue(error.response.data);
+  }
+});
+
+// Update user profile
+export const updateProfile = createAsyncThunk('auth/updateProfile', async (profileData, thunkAPI) => {
+  try {
+    const data = await authService.updateProfile(profileData);
     return data.user;
   } catch (error) {
     return thunkAPI.rejectWithValue(error.response.data);
@@ -49,7 +61,7 @@ const authSlice = createSlice({
       state.user = null;
       state.token = null;
       state.isLoggedIn = false;
-      Cookies.remove('token');
+      Cookies.remove('token'); // Remove token from cookies
     },
   },
   extraReducers: (builder) => {
@@ -91,6 +103,18 @@ const authSlice = createSlice({
         state.user = action.payload;
       })
       .addCase(fetchProfile.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(updateProfile.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(updateProfile.fulfilled, (state, action) => {
+        state.loading = false;
+        state.user = action.payload;
+      })
+      .addCase(updateProfile.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });

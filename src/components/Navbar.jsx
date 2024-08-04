@@ -3,7 +3,7 @@ import { Link as RouterLink, useNavigate, useLocation } from 'react-router-dom';
 import { Link as ScrollLink } from 'react-scroll';
 import { AiOutlineClose, AiOutlineMenu } from 'react-icons/ai';
 import Logo from '../assets/Logo.png';
-import Account1 from '../assets/Account1.png';
+import Account1 from '../assets/Account1.png'; // Make sure this path is correct
 import Cart1 from '../assets/Cart1.png';
 import { useSelector, useDispatch } from 'react-redux';
 import { logout } from '../slices/authSlice';
@@ -13,7 +13,8 @@ const Navbar = () => {
   const [dropdown, setDropdown] = useState(false);
   const [showCart, setShowCart] = useState(false);
   const [showAccountDropdown, setShowAccountDropdown] = useState(false);
-
+  const [showLogoutConfirmation, setShowLogoutConfirmation] = useState(false); // New state for confirmation popup
+ 
   const navigate = useNavigate();
   const location = useLocation();
   const dispatch = useDispatch();
@@ -54,6 +55,21 @@ const Navbar = () => {
 
   const toggleCartDisplay = () => {
     setShowCart(!showCart);
+  };
+
+  const handleLogoutClick = () => {
+    setShowLogoutConfirmation(true); // Show confirmation popup
+  };
+
+  const handleConfirmLogout = () => {
+    dispatch(logout()); // Proceed with logout
+    setShowLogoutConfirmation(false); // Close confirmation popup
+    setShowAccountDropdown(false); // Close account dropdown if open
+    navigate('/'); // Redirect to home page after logout
+  };
+
+  const handleCancelLogout = () => {
+    setShowLogoutConfirmation(false); // Close confirmation popup
   };
 
   return (
@@ -114,11 +130,16 @@ const Navbar = () => {
       <div className="hidden md:flex md:items-center md:gap-5">
         {isLoggedIn ? (
           <>
-            <img className="w-5 h-5 cursor-pointer" src={Account1} alt="Account" onClick={handleAccountDropdown} />
+            <img
+              className="w-8 h-8 rounded-full border-2 border-gray-300 cursor-pointer"
+              src={user?.profilePicture || Account1} // Use profile picture if available, otherwise fallback to Account1
+              alt="Account"
+              onClick={handleAccountDropdown}
+            />
             {showAccountDropdown && (
               <ul className="absolute top-full right-0 mt-2 w-48 bg-white shadow-lg" onClick={(e) => e.stopPropagation()}>
                 <li className="px-4 py-2">
-                  <p className="font-semibold">Hi, {user?.name }!</p> {/* Handle case where user is null */}
+                  <p className="font-semibold">Hi, {user?.name}!</p> {/* Handle case where user is null */}
                 </li>
                 <li>
                   <button onClick={handleProfileClick} className="block px-4 py-2 hover:bg-gray-200">Profile</button>
@@ -127,7 +148,7 @@ const Navbar = () => {
                   <RouterLink to="/settings" className="block px-4 py-2 hover:bg-gray-200">Settings</RouterLink>
                 </li>
                 <li>
-                  <button className="block px-4 py-2 w-full text-left hover:bg-gray-200" onClick={() => dispatch(logout())}>Logout</button>
+                  <button className="block px-4 py-2 w-full text-left hover:bg-gray-200" onClick={handleLogoutClick}>Logout</button>
                 </li>
               </ul>
             )}
@@ -167,11 +188,16 @@ const Navbar = () => {
           )}
           {isLoggedIn ? (
             <>
-              <img className="w-5 h-5 cursor-pointer" src={Account1} alt="Account" onClick={handleAccountDropdown} />
+              <img
+                className="w-8 h-8 rounded-full border-2 border-gray-300 cursor-pointer"
+                src={user?.profilePicture || Account1} // Use profile picture if available, otherwise fallback to Account1
+                alt="Account"
+                onClick={handleAccountDropdown}
+              />
               {showAccountDropdown && (
                 <ul className="absolute top-full right-0 mt-2 w-48 bg-white shadow-lg" onClick={(e) => e.stopPropagation()}>
                   <li className="px-4 py-2">
-                    <p className="font-semibold">Hi, {user?.name || 'Guest'}!</p> {/* Handle case where user is null */}
+                    <p className="font-semibold">Hi, {user?.name}!</p> {/* Handle case where user is null */}
                   </li>
                   <li>
                     <button onClick={handleProfileClick} className="block px-4 py-2 hover:bg-gray-200">Profile</button>
@@ -180,7 +206,7 @@ const Navbar = () => {
                     <RouterLink to="/settings" className="block px-4 py-2 hover:bg-gray-200">Settings</RouterLink>
                   </li>
                   <li>
-                    <button className="block px-4 py-2 w-full text-left hover:bg-gray-200" onClick={() => dispatch(logout())}>Logout</button>
+                    <button className="block px-4 py-2 w-full text-left hover:bg-gray-200" onClick={handleLogoutClick}>Logout</button>
                   </li>
                 </ul>
               )}
@@ -213,6 +239,19 @@ const Navbar = () => {
           </ul>
           <div className="p-4 border-t">
             <span className="font-semibold">Total: ${calculateCartTotal()}</span>
+          </div>
+        </div>
+      )}
+
+      {/* Logout confirmation popup */}
+      {showLogoutConfirmation && (
+        <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg">
+            <h2 className="text-lg font-semibold mb-4">Are you sure you want to log out?</h2>
+            <div className="flex justify-end gap-4">
+              <button onClick={handleConfirmLogout} className="px-4 py-2 bg-blue-950 text-white rounded-lg">Confirm</button>
+              <button onClick={handleCancelLogout} className="px-4 py-2 bg-gray-300 text-black rounded-lg">Cancel</button>
+            </div>
           </div>
         </div>
       )}
