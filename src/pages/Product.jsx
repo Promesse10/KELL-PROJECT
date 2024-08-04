@@ -1,5 +1,5 @@
 import React from 'react';
-// import ProductList from '../components/products/ProductList';
+import ProductList from '../components/products/ProductList';
 import CreateEditProduct from '../components/products/CreateEditProduct';
 
 const ProductsPage = () => {
@@ -9,7 +9,7 @@ const ProductsPage = () => {
       <div className="mb-4">
         <CreateEditProduct />
       </div>
-      {/* <ProductList /> */}
+      <ProductList />
     </div>
   );
 };

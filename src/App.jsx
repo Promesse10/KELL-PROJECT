@@ -18,6 +18,10 @@ import AdminLayout from "./layout/AdminLayout";
 import ProductsPage from "./pages/Product";
 import Dashboard from "./components/Dashboard";
 import ProfileManager from "./components/profileManager";
+import OrderList from "./components/Orders/OrderList";
+import CategoriesPage  from "./pages/CategoriesPage"
+import UserList from "./components/Users/UserList";
+import ForgotPasswordForm from "./components/ForgetPassword"; // Add this import
 
 function App() {
   const location = useLocation();
@@ -42,9 +46,8 @@ function App() {
         <Route path="/construction" element={<Construction />} />
         <Route path="/food" element={<Food />} />
         <Route path="/infopage" element={<Infopage />} />
-        
-        {/* Updated route path */}
         <Route path="/profile" element={<ProfileManager />} />
+        <Route path="/ForgotPassword" element={<ForgotPasswordForm />} />
         
         <Route path="/admin" element={<AdminLayout />}>
           <Route path="product" element={<ProductsPage />} />

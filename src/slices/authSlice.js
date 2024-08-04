@@ -1,11 +1,10 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import Cookies from 'js-cookie';
-import authService from '../sevices/authService'; // Ensure this path is correct
+import authService from '../sevices/authService';
 
 const initialState = {
-  user: null,
-  token: Cookies.get('token') || null,
-  isLoggedIn: !!Cookies.get('token'),
+  user: authService.getStoredUser(),
+  isLoggedIn: !!authService.getStoredUser().token,
   loading: false,
   error: null,
 };
@@ -52,6 +51,16 @@ export const updateProfile = createAsyncThunk('auth/updateProfile', async (profi
   }
 });
 
+// Reset password
+export const resetPassword = createAsyncThunk('auth/resetPassword', async (resetData, thunkAPI) => {
+  try {
+    const data = await authService.resetPassword(resetData);
+    return data;
+  } catch (error) {
+    return thunkAPI.rejectWithValue(error.response.data);
+  }
+});
+
 // Slice creation
 const authSlice = createSlice({
   name: 'auth',
@@ -59,9 +68,8 @@ const authSlice = createSlice({
   reducers: {
     logout: (state) => {
       state.user = null;
-      state.token = null;
       state.isLoggedIn = false;
-      Cookies.remove('token'); // Remove token from cookies
+      Cookies.remove('token');
     },
   },
   extraReducers: (builder) => {
@@ -73,7 +81,6 @@ const authSlice = createSlice({
       .addCase(register.fulfilled, (state, action) => {
         state.loading = false;
         state.user = action.payload.user;
-        state.token = action.payload.token;
         state.isLoggedIn = true;
       })
       .addCase(register.rejected, (state, action) => {
@@ -87,7 +94,6 @@ const authSlice = createSlice({
       .addCase(login.fulfilled, (state, action) => {
         state.loading = false;
         state.user = action.payload.user;
-        state.token = action.payload.token;
         state.isLoggedIn = true;
       })
       .addCase(login.rejected, (state, action) => {
@@ -103,18 +109,6 @@ const authSlice = createSlice({
         state.user = action.payload;
       })
       .addCase(fetchProfile.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
-      })
-      .addCase(updateProfile.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(updateProfile.fulfilled, (state, action) => {
-        state.loading = false;
-        state.user = action.payload;
-      })
-      .addCase(updateProfile.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });

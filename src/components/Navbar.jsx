@@ -7,14 +7,14 @@ import Account1 from '../assets/Account1.png'; // Make sure this path is correct
 import Cart1 from '../assets/Cart1.png';
 import { useSelector, useDispatch } from 'react-redux';
 import { logout } from '../slices/authSlice';
+import { increaseQuantity, decreaseQuantity } from '../slices/cartSlice';
 
 const Navbar = () => {
   const [nav, setNav] = useState(false);
-  const [dropdown, setDropdown] = useState(false);
   const [showCart, setShowCart] = useState(false);
   const [showAccountDropdown, setShowAccountDropdown] = useState(false);
-  const [showLogoutConfirmation, setShowLogoutConfirmation] = useState(false); // New state for confirmation popup
- 
+  const [showLogoutConfirmation, setShowLogoutConfirmation] = useState(false); // Add state for logout confirmation
+
   const navigate = useNavigate();
   const location = useLocation();
   const dispatch = useDispatch();
@@ -26,15 +26,9 @@ const Navbar = () => {
     setNav(!nav);
   };
 
-  const handleDropdown = (e) => {
-    e.stopPropagation(); // Prevent click events from affecting other dropdowns
-    setDropdown(!dropdown);
-  };
-
   const handleAccountDropdown = (e) => {
     e.stopPropagation(); // Prevent click events from affecting other dropdowns
     setShowAccountDropdown(!showAccountDropdown);
-    setDropdown(false); // Close product dropdown if open
   };
 
   const handleProfileClick = () => {
@@ -91,9 +85,9 @@ const Navbar = () => {
                 Services
               </ScrollLink>
             </li>
-            <li onMouseEnter={() => setDropdown(true)} onMouseLeave={() => setDropdown(false)} className="relative">
-              <span className="hover:border-b-4 hover:border-blue-950 cursor-pointer">Products</span>
-              {dropdown && (
+            <li onMouseEnter={() => setShowAccountDropdown(true)} onMouseLeave={() => setShowAccountDropdown(false)} className="relative">
+              <span className="hover:border-b-4 hover:border-blue-950 cursor-pointer" onClick={(e) => e.stopPropagation()}>Products</span>
+              {showAccountDropdown && (
                 <ul className="absolute top-full font-thin text-sm left-0 w-52 bg-blue-950 text-white shadow-lg">
                   <li>
                     <RouterLink to="/infopage" className="block px-4 py-2 hover:bg-blue-900">
@@ -139,10 +133,10 @@ const Navbar = () => {
             {showAccountDropdown && (
               <ul className="absolute top-full right-0 mt-2 w-48 bg-white shadow-lg" onClick={(e) => e.stopPropagation()}>
                 <li className="px-4 py-2">
-                  <p className="font-semibold">Hi, {user?.name}!</p> {/* Handle case where user is null */}
+                  <p className="font-semibold">Hi, {user?.name }!</p> {/* Handle case where user is null */}
                 </li>
                 <li>
-                  <button onClick={handleProfileClick} className="block px-4 py-2 hover:bg-gray-200">Profile</button>
+                  <RouterLink to="/profile" className="block px-4 py-2 hover:bg-gray-200">Profile</RouterLink>
                 </li>
                 <li>
                   <RouterLink to="/settings" className="block px-4 py-2 hover:bg-gray-200">Settings</RouterLink>
@@ -197,7 +191,7 @@ const Navbar = () => {
               {showAccountDropdown && (
                 <ul className="absolute top-full right-0 mt-2 w-48 bg-white shadow-lg" onClick={(e) => e.stopPropagation()}>
                   <li className="px-4 py-2">
-                    <p className="font-semibold">Hi, {user?.name}!</p> {/* Handle case where user is null */}
+                    <p className="font-semibold">Hi, {user?.name || 'Guest'}!</p> {/* Handle case where user is null */}
                   </li>
                   <li>
                     <button onClick={handleProfileClick} className="block px-4 py-2 hover:bg-gray-200">Profile</button>
@@ -230,9 +224,18 @@ const Navbar = () => {
               <li>Your cart is empty</li>
             ) : (
               cartItems.map((item) => (
-                <li key={item.id} className="flex justify-between py-2">
-                  <span>{item.name} (x{item.quantity})</span>
-                  <span>${item.price * item.quantity}</span>
+                <li key={item.id} className="flex items-center justify-between py-2 border-b border-gray-200">
+                  <img src={item.image} alt={item.name} className="w-12 h-12 object-cover" />
+                  <div className="flex-1 ml-2">
+                    <p>{item.name}</p>
+                    <p>${item.price}</p>
+                  </div>
+                  <div className="flex items-center">
+                    <button onClick={() => dispatch(decreaseQuantity({ id: item.id }))} className="px-2">−</button>
+                    <span className="px-2">{item.quantity}</span>
+                    <button onClick={() => dispatch(increaseQuantity({ id: item.id }))} className="px-2">+</button>
+                  </div>
+                  <div className="ml-4">${(item.price * item.quantity).toFixed(2)}</div>
                 </li>
               ))
             )}
