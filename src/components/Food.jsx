@@ -10,7 +10,7 @@ const Food = () => {
   const products = useSelector((state) => state.products.products);
 
   useEffect(() => {
-    dispatch(getProducts());
+    dispatch(getProducts('foodservices'));
   }, [dispatch]);
 
   const handleAddToCart = (product) => {

@@ -13,7 +13,7 @@ function Home() {
   const products = useSelector((state) => state.products.products || []);
 
   useEffect(() => {
-    dispatch(getProducts());
+    dispatch(getProducts('schoolmatetial')); 
   }, [dispatch]);
 
   const filteredProducts = products.filter(product =>

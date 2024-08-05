@@ -7,7 +7,7 @@ const api = axios.create({
 });
 
 export const fetchProducts = async (category) => {
-  const response = await api.get('/products/get-all');
+  const response = await api.get(`/products/get-all?category=${category}`);
   return response.data.products;
 };
 
