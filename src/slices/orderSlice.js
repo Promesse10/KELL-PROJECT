@@ -5,6 +5,7 @@ import {
   fetchTotalOrders,
   fetchTotalCustomers,
   fetchRecentOrders,
+  fetchPopularProducts // Import the new function
 } from '../sevices/api';
 
 export const getOrders = createAsyncThunk('orders/getOrders', fetchOrders);
@@ -12,6 +13,7 @@ export const getTotalSales = createAsyncThunk('orders/getTotalSales', fetchTotal
 export const getTotalOrders = createAsyncThunk('orders/getTotalOrders', fetchTotalOrders);
 export const getTotalCustomers = createAsyncThunk('orders/getTotalCustomers', fetchTotalCustomers);
 export const getRecentOrders = createAsyncThunk('orders/getRecentOrders', fetchRecentOrders);
+export const getPopularProducts = createAsyncThunk('orders/getPopularProducts', fetchPopularProducts); // Add this line
 
 const orderSlice = createSlice({
   name: 'orders',
@@ -21,6 +23,7 @@ const orderSlice = createSlice({
     totalOrders: 0,
     totalCustomers: 0,
     recentOrders: [],
+    popularProducts: [], // Add this line
     status: 'idle',
     error: null,
   },
@@ -49,6 +52,9 @@ const orderSlice = createSlice({
       })
       .addCase(getRecentOrders.fulfilled, (state, action) => {
         state.recentOrders = action.payload;
+      })
+      .addCase(getPopularProducts.fulfilled, (state, action) => {
+        state.popularProducts = action.payload;
       });
   },
 });

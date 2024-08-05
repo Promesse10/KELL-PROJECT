@@ -164,7 +164,7 @@ const Dashboard = () => {
             {popularProducts.map((product) => (
               <li key={product._id} className="flex justify-between items-center mb-2">
                 <div className="flex items-center">
-                  <img src={product.imageUrl} alt="image" className="w-10 h-10 object-cover rounded mr-2" />
+                  <img src={product.images[0].url} alt="image" className="w-10 h-10 object-cover rounded mr-2" />
                   <span>{product.name}</span>
                 </div>
                 <div className="text-right pt-3">

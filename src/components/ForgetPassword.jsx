@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { resetPassword } from '../slices/authSlice';
-import useNavigate from 'react-router-dom'
+import {useNavigate} from 'react-router-dom'
 
 function ForgotPasswordForm() {
   const [email, setEmail] = useState('');
