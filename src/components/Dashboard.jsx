@@ -1,14 +1,44 @@
-import React from 'react';
-import Mkelia from '../assets/Mkelia.png'
-import bean from './image-food/bean.jpg'
-import rice from './image-food/rice.jpg'
-import maize from './image-food/maize.jpg'
-import sorghum from './image-food/sorghum.jpg'
-import soybean from './image-food/soybean.jpg'
-import shopping from '../assets/shopping.png'
-import basket from '../assets/basket.png'
-import user from '../assets/user.png'
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { getTotalSales, getTotalOrders, getTotalCustomers, getRecentOrders, getPopularProducts } from '../slices/orderSlice';
+import Mkelia from '../assets/Mkelia.png';
+import bean from './image-food/bean.jpg';
+import rice from './image-food/rice.jpg';
+import maize from './image-food/maize.jpg';
+import sorghum from './image-food/sorghum.jpg';
+import soybean from './image-food/soybean.jpg';
+import shopping from '../assets/shopping.png';
+import basket from '../assets/basket.png';
+import user from '../assets/user.png';
+
 const Dashboard = () => {
+  const dispatch = useDispatch();
+  const {
+    totalSales,
+    totalOrders,
+    totalCustomers,
+    recentOrders,
+    popularProducts, // Add this line
+    status,
+    error
+  } = useSelector((state) => state.orders);
+
+  useEffect(() => {
+    dispatch(getTotalSales());
+    dispatch(getTotalOrders());
+    dispatch(getTotalCustomers());
+    dispatch(getRecentOrders());
+    dispatch(getPopularProducts()); // Fetch popular products
+  }, [dispatch]);
+
+  if (status === 'loading') {
+    return <div>Loading...</div>;
+  }
+
+  if (status === 'failed') {
+    return <div>Error: {error}</div>;
+  }
+
   return (
     <div className="p-4 bg-slate-100">
       {/* Header */}
@@ -67,31 +97,31 @@ const Dashboard = () => {
       <p>Welcome to the admin dashboard!</p>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 mt-4">
-        <div className="bg-white p-4 rounded shadow text-center flex flex-row gap-6  pt-10  pl-14">
-      <div><img src={basket} alt="image"  className='w-16 h-16' /></div>
-       <div><h2 className="text-xl">Total Sales</h2>
-          <p className="text-2xl text-blue-500">$232</p>
-          <p className="text-green-500">+343</p></div>
-        </div>
-        {/* <div className="bg-white p-4 rounded shadow text-center">
-        
-          <h2 className="text-xl">Total Expenses</h2>
-          <p className="text-2xl text-red-500">$123</p>
-          <p className=
-          "text-green-500">+343</p>
-        </div> */}
-        <div className="bg-white p-4 rounded shadow text-center flex flex-row gap-6  pt-10  pl-7">
-        <div><img src={user} alt="image" className='w-16 h-16'  /></div>
-         <div> <h2 className="text-xl">Total Customers</h2>
-          <p className="text-2xl text-blue-500">313</p>
-          <p className="text-red-500">-30</p></div>
+        <div className="bg-white p-4 rounded shadow text-center flex flex-row gap-6 pt-10 pl-14">
+          <div><img src={basket} alt="image" className="w-16 h-16" /></div>
+          <div>
+            <h2 className="text-xl">Total Sales</h2>
+            <p className="text-2xl text-blue-500">${totalSales}</p>
+            <p className="text-green-500">+343</p>
+          </div>
         </div>
 
-        <div className="bg-white p-4 rounded shadow text-center w  flex flex-row gap-6  pt-10  pl-14">
-       <div><img src={shopping} alt="image" className='w-16 h-16'  /></div>
-       <div>   <h2 className="text-xl">Total Orders</h2>
-          <p className="text-2xl text-blue-500">100</p>
-          <p className="text-red-500">-43</p></div>
+        <div className="bg-white p-4 rounded shadow text-center flex flex-row gap-6 pt-10 pl-7">
+          <div><img src={user} alt="image" className="w-16 h-16" /></div>
+          <div>
+            <h2 className="text-xl">Total Customers</h2>
+            <p className="text-2xl text-blue-500">{totalCustomers}</p>
+            <p className="text-red-500">-30</p>
+          </div>
+        </div>
+
+        <div className="bg-white p-4 rounded shadow text-center flex flex-row gap-6 pt-10 pl-14">
+          <div><img src={shopping} alt="image" className="w-16 h-16" /></div>
+          <div>
+            <h2 className="text-xl">Total Orders</h2>
+            <p className="text-2xl text-blue-500">{totalOrders}</p>
+            <p className="text-red-500">-43</p>
+          </div>
         </div>
       </div>
 
@@ -112,42 +142,17 @@ const Dashboard = () => {
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td className="border px-4 py-2">#1</td>
-                <td className="border px-4 py-2">#4324</td>
-                <td className="border px-4 py-2">Irakoze promesse</td>
-                <td className="border px-4 py-2">17 August 2024</td>
-                <td className="border px-4 py-2">40,000rwf</td>
-                <td className="border px-4 py-2">Kabuga</td>
-                <td className="border px-4 py-2">Placed</td>
-              </tr>
-              <tr>
-                <td className="border px-4 py-2">#2</td>
-                <td className="border px-4 py-2">#7453</td>
-                <td className="border px-4 py-2">Munezero josue</td>
-                <td className="border px-4 py-2">15 August 2024</td>
-                <td className="border px-4 py-2">15,000rwf</td>
-                <td className="border px-4 py-2">Masaka</td>
-                <td className="border px-4 py-2">Confirmed</td>
-              </tr>
-              <tr>
-                <td className="border px-4 py-2">#3</td>
-                <td className="border px-4 py-2">#5434</td>
-                <td className="border px-4 py-2">Dushime christian</td>
-                <td className="border px-4 py-2">11 septmber 2024</td>
-                <td className="border px-4 py-2">50,000rwf</td>
-                <td className="border px-4 py-2">Gakenyeri</td>
-                <td className="border px-4 py-2">Shipped</td>
-              </tr>
-              <tr>
-                <td className="border px-4 py-2">#4</td>
-                <td className="border px-4 py-2">#9854</td>
-                <td className="border px-4 py-2">Umutoni vanessa</td>
-                <td className="border px-4 py-2">26 august 2024</td>
-                <td className="border px-4 py-2">100,000rwf</td>
-                <td className="border px-4 py-2">Rusekabuye</td>
-                <td className="border px-4 py-2">Shipped</td>
-              </tr>
+              {recentOrders.map((order) => (
+                <tr key={order._id}>
+                  <td className="border px-4 py-2">#{order._id}</td>
+                  <td className="border px-4 py-2">#{order.orderItems[0]?.product}</td>
+                  <td className="border px-4 py-2">{order.user}</td>
+                  <td className="border px-4 py-2">{new Date(order.createdAt).toLocaleDateString()}</td>
+                  <td className="border px-4 py-2">{order.totalAmount} rwf</td>
+                  <td className="border px-4 py-2">{order.shippingInfo.address}, {order.shippingInfo.city}</td>
+                  <td className="border px-4 py-2">{order.orderStatus}</td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>
@@ -156,57 +161,20 @@ const Dashboard = () => {
         <div className="bg-white p-4 rounded shadow">
           <h2 className="text-xl mb-4 text-gray-600">Popular Products</h2>
           <ul>
-            <li className="flex justify-between items-center mb-2">
-              <div className="flex items-center">
-                <img src={bean} alt="image" className="w-10 h-10 object-cover rounded mr-2" />
-                <span>Sack of beans</span>
-              </div>
-              <div className="text-right pt-3">
-                <p>35,000 rwf</p>
-                <p className="text-green-500">120 in Stock</p>
-              </div>
-            </li>
-
-            <li className="flex justify-between items-center mb-2">
-              <div className="flex items-center">
-                <img src={maize} alt="image" className="w-10 h-10 object-cover rounded mr-2" />
-                <span>Sack of maize</span>
-              </div>
-              <div className="text-right pt-3">
-                <p>15,000 rwf</p>
-                <p className="text-yellow-500">24 in Stock</p>
-              </div>
-            </li>
-            <li className="flex justify-between items-center mb-2">
-              <div className="flex items-center">
-                <img src={rice} alt="image" className="w-10 h-10 object-cover rounded mr-2" />
-                <span>Sack of rice</span>
-              </div>
-              <div className="text-right pt-3">
-                <p>45,000 rwf</p>
-                <p className="text-green-500">56 in Stock</p>
-              </div>
-            </li>
-            <li className="flex justify-between items-center mb-2">
-              <div className="flex items-center">
-                <img src={sorghum} alt="image" className="w-10 h-10 object-cover rounded mr-2" />
-                <span>sack of sorghum</span>
-              </div>
-              <div className="text-right pt-3">
-                <p>40,000 rwf</p>
-                <p className="text-green-500">98 in Stock</p>
-              </div>
-            </li>
-            <li className="flex justify-between items-center mb-2">
-              <div className="flex items-center">
-                <img src={soybean} alt="image" className="w-10 h-10 object-cover rounded mr-2" />
-                <span>sack of soybean</span>
-              </div>
-              <div className="text-right pt-3">
-                <p>15,000 rwf</p>
-                <p className="text-red-500">Out of Stock</p>
-              </div>
-            </li>
+            {popularProducts.map((product) => (
+              <li key={product._id} className="flex justify-between items-center mb-2">
+                <div className="flex items-center">
+                  <img src={product.imageUrl} alt="image" className="w-10 h-10 object-cover rounded mr-2" />
+                  <span>{product.name}</span>
+                </div>
+                <div className="text-right pt-3">
+                  <p>{product.price} rwf</p>
+                  <p className={product.stock > 0 ? "text-green-500" : "text-red-500"}>
+                    {product.stock > 0 ? `${product.stock} in Stock` : "Out of Stock"}
+                  </p>
+                </div>
+              </li>
+            ))}
           </ul>
         </div>
       </div>

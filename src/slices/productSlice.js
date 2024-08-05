@@ -1,4 +1,4 @@
-// src/slices/productSlice.js
+
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { fetchProducts, createProduct } from '../sevices/api';
 
@@ -10,10 +10,15 @@ export const addProduct = createAsyncThunk('products/addProduct', async (product
   return await createProduct(product);
 });
 
+export const getPopularProducts = createAsyncThunk('products/getPopularProducts', async () => {
+  return await fetchProducts();
+});
+
 const productSlice = createSlice({
   name: 'products',
   initialState: {
     products: [],
+    popularProducts: [],
     status: 'idle',
     error: null,
   },
@@ -33,8 +38,10 @@ const productSlice = createSlice({
       })
       .addCase(addProduct.fulfilled, (state, action) => {
         state.products.push(action.payload);
+      })
+      .addCase(getPopularProducts.fulfilled, (state, action) => {
+        state.popularProducts = action.payload; // Assuming the endpoint returns popular products
       });
   },
 });
-
 export default productSlice.reducer;
