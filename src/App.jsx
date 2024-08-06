@@ -25,6 +25,7 @@ import UserList from "./components/Users/UserList";
 import ForgotPasswordForm from "./components/ForgetPassword";
 
 
+
 function App() {
   const location = useLocation();
   const isAdminRoute = location.pathname.startsWith('/admin');
@@ -32,6 +33,7 @@ function App() {
 
   return (
     <>
+    
       {!isAdminRoute && <Navbar />}
       
       <Routes>

@@ -1,6 +1,9 @@
+
+
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { login } from '../../slices/authSlice';
 import image from '../images/image.jpg';
 import visible from '../images/visible.png';
@@ -12,6 +15,7 @@ function LoginForm() {
   const [passwordVisible, setPasswordVisible] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const { loading, error } = useSelector((state) => state.auth);
 
   const handleChange = (e) => {
@@ -54,12 +58,12 @@ function LoginForm() {
       <div className="flex flex-col md:flex-row w-full h-full max-w-4xl p-10 bg-white rounded-lg shadow-md flex-grow mt-44 mb-44">
         <div className="w-full md:w-1/2 space-y-6 flex flex-col justify-center">
           <form onSubmit={handleSubmit} className="space-y-6">
-            <h1 className="text-4xl font-semibold text-center text-600">Log In</h1>
+            <h1 className="text-4xl font-semibold text-center text-600">{t('login.title')}</h1>
             <div>
               <input
                 type="text"
                 name="email"
-                placeholder="Username/Email"
+                placeholder={t('login.emailPlaceholder')}
                 onChange={handleChange}
                 required
                 className="w-full p-3 border border-gray-300 rounded-lg bg-gray-200 focus:outline-none focus:ring focus:ring-blue-200"
@@ -69,7 +73,7 @@ function LoginForm() {
               <input
                 type={passwordVisible ? 'text' : 'password'}
                 name="password"
-                placeholder="Password"
+                placeholder={t('login.passwordPlaceholder')}
                 onChange={handleChange}
                 required
                 className="w-full p-3 border border-gray-300 rounded-lg bg-gray-200 focus:outline-none focus:ring focus:ring-blue-200"
@@ -80,9 +84,9 @@ function LoginForm() {
                 className="absolute inset-y-0 right-0 flex items-center pr-3"
               >
                 {passwordVisible ? (
-                  <img src={visible} className="w-7" alt="Visible" />
+                  <img src={visible} className="w-7" alt={t('login.visibleAlt')} />
                 ) : (
-                  <img src={unvisible} className="w-7" alt="Invisible" />
+                  <img src={unvisible} className="w-7" alt={t('login.invisibleAlt')} />
                 )}
               </button>
             </div>
@@ -92,20 +96,20 @@ function LoginForm() {
                 disabled={loading}
                 className="w-full md:w-40 p-3 text-white bg-600 rounded-lg focus:outline-none focus:ring focus:ring-blue-200"
               >
-                {loading ? <Spinner /> : 'Log In'}
+                {loading ? <Spinner /> : t('login.button')}
               </button>
             </div>
-            {error && <p className="text-red-500 text-center">{error.message}</p>}
+            {error && <p className="text-red-500 text-center">{t(`login.errors.${error.message}`)}</p>}
           </form>
           <p className="text-center text-gray-400">
-            <a href="/ForgotPassword" className="text-600 hover:underline">Forgot Password?</a>
+            <a href="/ForgotPassword" className="text-600 hover:underline">{t('login.forgotPassword')}</a>
           </p>
           <p className="text-center text-gray-400">
-            New user? <a href="/CreateAccount" className="text-600 hover:underline">Create account</a>
+            {t('login.newUser')} <a href="/CreateAccount" className="text-600 hover:underline">{t('login.createAccount')}</a>
           </p>
         </div>
         <div className="hidden md:flex justify-center items-center w-1/2">
-          <img src={image} alt="Login Illustration" className="w-52 h-72" />
+          <img src={image} alt={t('login.imageAlt')} className="w-52 h-72" />
         </div>
       </div>
     </div>

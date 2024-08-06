@@ -1,3 +1,6 @@
+
+
+
 import React, { useState } from 'react';
 import { Link as RouterLink, useNavigate, useLocation } from 'react-router-dom';
 import { Link as ScrollLink } from 'react-scroll';
@@ -8,13 +11,16 @@ import Cart1 from '../assets/Cart1.png';
 import { useSelector, useDispatch } from 'react-redux';
 import { logout } from '../slices/authSlice';
 import { increaseQuantity, decreaseQuantity } from '../slices/cartSlice';
+import { useTranslation } from 'react-i18next';
+import LanguageSwitcher from './LanguageSwitcher';
 
 const Navbar = () => {
   const [nav, setNav] = useState(false);
   const [showCart, setShowCart] = useState(false);
   const [showAccountDropdown, setShowAccountDropdown] = useState(false);
-  const [dropdown, setDropdown] = useState(false); // Define dropdown state
+  const [dropdown, setDropdown] = useState(false);
 
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
   const dispatch = useDispatch();
@@ -27,13 +33,13 @@ const Navbar = () => {
   };
 
   const handleAccountDropdown = (e) => {
-    e.stopPropagation(); // Prevent click events from affecting other dropdowns
+    e.stopPropagation();
     setShowAccountDropdown(!showAccountDropdown);
   };
 
   const handleProfileClick = () => {
-    navigate('/profile'); // Navigate to Profile page
-    setShowAccountDropdown(false); // Close account dropdown after navigation
+    navigate('/profile');
+    setShowAccountDropdown(false);
   };
 
   const handleHomeClick = () => {
@@ -60,33 +66,33 @@ const Navbar = () => {
       <ul className={`hidden md:flex md:ml-14 md:space-x-12 md:text-blue-950 md:cursor-pointer md:font-semibold ${isLoginOrRegisterPage ? 'hidden' : ''}`}>
         <li>
           <span onClick={handleHomeClick} className="hover:border-b-4 hover:border-blue-950 cursor-pointer">
-            Home
+            {t('navbar.home')}
           </span>
         </li>
         {!isLoginOrRegisterPage && (
           <>
             <li>
               <ScrollLink to="services" smooth={true} duration={500} className="hover:border-b-4 hover:border-blue-950">
-                Services
+                {t('navbar.services')}
               </ScrollLink>
             </li>
             <li onMouseEnter={() => setDropdown(true)} onMouseLeave={() => setDropdown(false)} className="relative">
-              <span className="hover:border-b-4 hover:border-blue-950 cursor-pointer" onClick={(e) => e.stopPropagation()}>Products</span>
+              <span className="hover:border-b-4 hover:border-blue-950 cursor-pointer" onClick={(e) => e.stopPropagation()}>{t('navbar.products')}</span>
               {dropdown && (
                 <ul className="absolute top-full font-thin text-sm left-0 w-52 bg-blue-950 text-white shadow-lg">
                   <li>
                     <RouterLink to="/infopage" className="block px-4 py-2 hover:bg-blue-900">
-                      Information and Technology
+                      {t('navbar.it')}
                     </RouterLink>
                   </li>
                   <li>
                     <RouterLink to="/Construction" className="block px-4 py-2 hover:bg-blue-900">
-                      Civil Engineering Projects
+                      {t('navbar.civil')}
                     </RouterLink>
                   </li>
                   <li>
                     <RouterLink to="/Food" className="block px-4 py-2 hover:bg-blue-900">
-                      Food Service
+                      {t('navbar.food')}
                     </RouterLink>
                   </li>
                 </ul>
@@ -94,12 +100,12 @@ const Navbar = () => {
             </li>
             <li>
               <ScrollLink to="aboutus" smooth={true} duration={500} className="hover:border-b-4 hover:border-blue-950">
-                About us
+                {t('navbar.about')}
               </ScrollLink>
             </li>
             <li>
               <ScrollLink to="contactus" smooth={true} duration={500} className="hover:border-b-4 hover:border-blue-950">
-                Contact us
+                {t('navbar.contact')}
               </ScrollLink>
             </li>
           </>
@@ -107,36 +113,37 @@ const Navbar = () => {
       </ul>
 
       <div className="hidden md:flex md:items-center md:gap-5">
+        <LanguageSwitcher />
         {isLoggedIn ? (
           <>
             <img className="w-5 h-5 cursor-pointer" src={Account1} alt="Account" onClick={handleAccountDropdown} />
             {showAccountDropdown && (
               <ul className="absolute top-full right-0 mt-2 w-48 bg-white shadow-lg" onClick={(e) => e.stopPropagation()}>
                 <li className="px-4 py-2">
-                  <p className="font-semibold">Hi, {user.name}!</p>
+                  <p className="font-semibold">{t('navbar.hi')}, {user.name}!</p>
                 </li>
                 <li>
-                  <RouterLink to="/profile" className="block px-4 py-2 hover:bg-gray-200">Profile</RouterLink>
+                  <RouterLink to="/profile" className="block px-4 py-2 hover:bg-gray-200">{t('navbar.profile')}</RouterLink>
                 </li>
                 <li>
-                  <RouterLink to="/settings" className="block px-4 py-2 hover:bg-gray-200">Settings</RouterLink>
+                  <RouterLink to="/settings" className="block px-4 py-2 hover:bg-gray-200">{t('navbar.settings')}</RouterLink>
                 </li>
                 <li>
-                  <button className="block px-4 py-2 w-full text-left hover:bg-gray-200" onClick={() => dispatch(logout())}>Logout</button>
+                  <button className="block px-4 py-2 w-full text-left hover:bg-gray-200" onClick={() => dispatch(logout())}>{t('navbar.logout')}</button>
                 </li>
               </ul>
             )}
           </>
         ) : (
           <>
-            <RouterLink to="/login" className="md:cursor-pointer">Login</RouterLink>|
-            <RouterLink to="/CreateAccount" className="md:cursor-pointer">Register</RouterLink>
+            <RouterLink to="/login" className="md:cursor-pointer">{t('navbar.login')}</RouterLink>|
+            <RouterLink to="/CreateAccount" className="md:cursor-pointer">{t('navbar.register')}</RouterLink>
           </>
         )}
 
         <button onClick={toggleCartDisplay} className="border-blue-950 border-2 p-1 rounded-2xl flex flex-row">
           <img className="w-5 h-5" src={Cart1} alt="Cart" />
-          <span className="ml-2">Cart</span>
+          <span className="ml-2">{t('navbar.cart')}</span>
         </button>
       </div>
 
@@ -144,48 +151,55 @@ const Navbar = () => {
         {nav ? <AiOutlineClose size={30} /> : <AiOutlineMenu size={30} />}
       </div>
 
-      <div className={`fixed left-0 top-0 w-[60%] h-full bg-blue-950 text-white ${nav ? 'block' : 'hidden'} z-50`} onClick={() => setNav(false)}>
+      <div className={`fixed left-0 top-0 w-[60%] h-full bg-blue-950 text-white transition-transform duration-300 ease-in-out ${nav ? 'translate-x-0' : '-translate-x-full'} z-50`} onClick={() => setNav(false)}>
         <ul className="uppercase p-4" onClick={(e) => e.stopPropagation()}>
-          <li className="p-4 border-b border-gray-600" onClick={handleHomeClick}>Home</li>
+          <li className="p-4 border-b border-gray-600" onClick={handleHomeClick}>{t('navbar.home')}</li>
           {!isLoginOrRegisterPage && (
             <>
               <li className="p-4 border-b border-gray-600">
-                <ScrollLink to="services" smooth={true} duration={500} onClick={handleNav}>Services</ScrollLink>
+                <ScrollLink to="services" smooth={true} duration={500} onClick={handleNav}>{t('navbar.services')}</ScrollLink>
               </li>
               <li className="p-4 border-b border-gray-600">
-                <ScrollLink to="aboutus" smooth={true} duration={500} onClick={handleNav}>About us</ScrollLink>
+                <ScrollLink to="aboutus" smooth={true} duration={500} onClick={handleNav}>{t('navbar.about')}</ScrollLink>
               </li>
               <li className="p-4 border-b border-gray-600">
-                <ScrollLink to="contactus" smooth={true} duration={500} onClick={handleNav}>Contact us</ScrollLink>
+                <ScrollLink to="contactus" smooth={true} duration={500} onClick={handleNav}>{t('navbar.contact')}</ScrollLink>
               </li>
             </>
           )}
           {isLoggedIn ? (
             <>
-              <img className="w-5 h-5 cursor-pointer" src={Account1} alt="Account" onClick={handleAccountDropdown} />
-              {showAccountDropdown && (
-                <ul className="absolute top-full right-0 mt-2 w-48 bg-white shadow-lg" onClick={(e) => e.stopPropagation()}>
-                  <li className="px-4 py-2">
-                    <p className="font-semibold">Hi, {user?.name}!</p> {/* Optional chaining */}
-                  </li>
-                  <li>
-                    <button onClick={handleProfileClick} className="block px-4 py-2 hover:bg-gray-200">Profile</button>
-                  </li>
-                  <li>
-                    <RouterLink to="/settings" className="block px-4 py-2 hover:bg-gray-200">Settings</RouterLink>
-                  </li>
-                  <li>
-                    <button className="block px-4 py-2 w-full text-left hover:bg-gray-200" onClick={() => dispatch(logout())}>Logout</button>
-                  </li>
-                </ul>
-              )}
+              <li className="p-4 border-b border-gray-600">
+                <img className="w-5 h-5 cursor-pointer" src={Account1} alt="Account" onClick={handleAccountDropdown} />
+                {showAccountDropdown && (
+                  <ul className="absolute top-full right-0 mt-2 w-48 bg-white shadow-lg" onClick={(e) => e.stopPropagation()}>
+                    <li className="px-4 py-2">
+                      <p className="font-semibold">{t('navbar.hi')}, {user?.name}!</p>
+                    </li>
+                    <li>
+                      <button onClick={handleProfileClick} className="block px-4 py-2 hover:bg-gray-200">{t('navbar.profile')}</button>
+                    </li>
+                    <li>
+                      <RouterLink to="/settings" className="block px-4 py-2 hover:bg-gray-200">{t('navbar.settings')}</RouterLink>
+                    </li>
+                    <li>
+                      <button className="block px-4 py-2 w-full text-left hover:bg-gray-200" onClick={() => dispatch(logout())}>{t('navbar.logout')}</button>
+                    </li>
+                  </ul>
+                )}
+              </li>
             </>
           ) : (
             <>
-              <RouterLink to="/login" className="block p-4 border-b border-gray-600">Login</RouterLink>
-              <RouterLink to="/CreateAccount" className="block p-4 border-b border-gray-600">Register</RouterLink>
+              <RouterLink to="/login" className="block p-4 border-b border-gray-600">{t('navbar.login')}</RouterLink>
+              <RouterLink to="/CreateAccount" className="block p-4 border-b border-gray-600">{t('navbar.register')}</RouterLink>
             </>
           )}
+          <li className="p-4 border-t border-gray-600">
+            <div className="bg-white text-blue-950 rounded-lg p-2">
+              <LanguageSwitcher/>
+            </div>
+          </li>
         </ul>
       </div>
 
@@ -193,10 +207,10 @@ const Navbar = () => {
       {showCart && (
         <div className="fixed right-0 top-0 w-[30%] h-full bg-white text-black shadow-lg z-50">
           <button onClick={() => setShowCart(false)} className="absolute top-4 right-4 text-2xl">×</button>
-          <h2 className="text-lg font-semibold p-4">Cart</h2>
+          <h2 className="text-lg font-semibold p-4">{t('navbar.cart')}</h2>
           <ul className="p-4">
             {cartItems.length === 0 ? (
-              <li>Your cart is empty</li>
+              <li>{t('navbar.cartEmpty')}</li>
             ) : (
               cartItems.map((item) => (
                 <li key={item.id} className="flex items-center justify-between py-2 border-b border-gray-200">
@@ -216,7 +230,7 @@ const Navbar = () => {
             )}
           </ul>
           <div className="p-4 border-t">
-            <span className="font-semibold">Total: ${calculateCartTotal()}</span>
+            <span className="font-semibold">{t('navbar.total')}: ${calculateCartTotal()}</span>
           </div>
         </div>
       )}

@@ -1,4 +1,8 @@
+
+
+
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import background1 from "../assets/printer-background.jpg";
 import background2 from "../assets/Civil 1.jpg";
 import background3 from "../assets/grains.jpg";
@@ -6,6 +10,7 @@ import background3 from "../assets/grains.jpg";
 const backgrounds = [background1, background2, background3];
 
 const Hero = () => {
+  const { t } = useTranslation();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [prevIndex, setPrevIndex] = useState(null);
   const [isAnimating, setIsAnimating] = useState(false);
@@ -53,10 +58,10 @@ const Hero = () => {
       <div className="absolute inset-0 bg-blue-950 bg-opacity-50"></div>
       <div className="relative z-10 flex items-center justify-center h-full text-center text-white">
         <div>
-          <h1 className="text-xl md:text-5xl font-extrabold shadow-2xl">Welcome to KarKelly ltd</h1>
+          <h1 className="text-xl md:text-5xl font-extrabold shadow-2xl">{t('hero.welcome')}</h1>
           <p className="mt-4 text-xs font-thin md:text-lg">
-            We offer the best services in IT, Food Supply, and Construction. <br />
-            "Karkelly Bright Future ahead"
+            {t('hero.description')} <br />
+            {t('hero.tagline')}
           </p>
         </div>
       </div>

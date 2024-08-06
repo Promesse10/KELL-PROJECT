@@ -1,7 +1,12 @@
+
+
 import React, { useState, useRef } from 'react';
 
 const ProfileManager = () => {
   const [image, setImage] = useState(null);
+  const [name, setName] = useState('Anthony Webb');
+  const [email, setEmail] = useState('myemail@address.com');
+  const [password, setPassword] = useState('**********');
   const fileInputRef = useRef(null);
 
   const handleAvatarClick = () => {
@@ -24,6 +29,12 @@ const ProfileManager = () => {
     setImage(null);
   };
 
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // Add logic for form submission
+    alert('Profile updated successfully');
+  };
+
   return (
     <div className="flex items-center justify-center mt-11 min-h-screen bg-gray-100">
       <main className="w-full max-w-3xl p-6">
@@ -35,6 +46,8 @@ const ProfileManager = () => {
               <div 
                 className="relative w-32 h-32 bg-gray-200 rounded-full flex items-center justify-center cursor-pointer border border-gray-300"
                 onClick={handleAvatarClick}
+                role="button"
+                aria-label="Upload profile picture"
               >
                 {image ? (
                   <img src={image} alt="Avatar" className="w-full h-full object-cover rounded-full" />
@@ -53,6 +66,7 @@ const ProfileManager = () => {
                 ref={fileInputRef} 
                 className="hidden"
                 onChange={handleFileChange}
+                accept="image/*"
               />
               {image && (
                 <button onClick={handleRemoveImage} className="mt-2 text-blue-500">
@@ -62,27 +76,42 @@ const ProfileManager = () => {
             </div>
             {/* Form section */}
             <div className="flex-grow">
-              <form>
+              <form onSubmit={handleSubmit}>
                 <div className="mb-4">
                   <label className="block text-gray-700">Your Name</label>
-                  <input type="text" className="mt-1 block w-full border border-gray-300 rounded-md p-2" value="Anthony Webb" />
+                  <input
+                    type="text"
+                    className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                  />
                 </div>
                 <div className="mb-4">
                   <label className="block text-gray-700">Password</label>
-                  <input type="password" className="mt-1 block w-full border border-gray-300 rounded-md p-2" value="**********" />
+                  <input
+                    type="password"
+                    className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                  />
                   <a href="#" className="text-blue-500 text-sm mt-1 inline-block">Change</a>
                 </div>
                 <div className="mb-4">
                   <label className="block text-gray-700">Email Address</label>
-                  <input type="email" className="mt-1 block w-full border border-gray-300 rounded-md p-2" value="myemail@address.com" />
+                  <input
+                    type="email"
+                    className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                  />
                   <a href="#" className="text-blue-500 text-sm mt-1 inline-block">Change</a>
                 </div>
                 <div className="text-center">
                   <button className="text-blue-500 mb-4">Delete Your Account</button>
                   <p className="text-sm text-gray-600 mb-4">You will receive an email to confirm your decision. Please note, that all boards you have created will be permanently erased.</p>
                   <div className="flex space-x-4 justify-center">
-                    <button className="px-4 py-2 bg-gray-300 text-gray-700 rounded-md">Cancel</button>
-                    <button className="px-4 py-2 bg-blue-500 text-white rounded-md">Save</button>
+                    <button type="button" className="px-4 py-2 bg-gray-300 text-gray-700 rounded-md">Cancel</button>
+                    <button type="submit" className="px-4 py-2 bg-blue-500 text-white rounded-md">Save</button>
                   </div>
                 </div>
               </form>
