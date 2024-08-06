@@ -1,3 +1,4 @@
+// src/components/Navbar.jsx
 import React, { useState } from 'react';
 import { Link as RouterLink, useNavigate, useLocation } from 'react-router-dom';
 import { Link as ScrollLink } from 'react-scroll';
@@ -13,7 +14,7 @@ const Navbar = () => {
   const [nav, setNav] = useState(false);
   const [showCart, setShowCart] = useState(false);
   const [showAccountDropdown, setShowAccountDropdown] = useState(false);
-  const [showLogoutConfirmation, setShowLogoutConfirmation] = useState(false); // Add state for logout confirmation
+  const [showLogoutConfirmation, setShowLogoutConfirmation] = useState(false);
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -27,13 +28,13 @@ const Navbar = () => {
   };
 
   const handleAccountDropdown = (e) => {
-    e.stopPropagation(); // Prevent click events from affecting other dropdowns
+    e.stopPropagation();
     setShowAccountDropdown(!showAccountDropdown);
   };
 
   const handleProfileClick = () => {
-    navigate('/profile'); // Navigate to Profile page
-    setShowAccountDropdown(false); // Close account dropdown after navigation
+    navigate('/profile');
+    setShowAccountDropdown(false);
   };
 
   const handleHomeClick = () => {
@@ -42,6 +43,7 @@ const Navbar = () => {
   };
 
   const isLoginOrRegisterPage = location.pathname === '/login' || location.pathname === '/CreateAccount';
+  const isNotFoundPage = location.pathname === '*';
 
   const calculateCartTotal = () => {
     return cartItems.reduce((total, item) => total + item.price * item.quantity, 0).toFixed(2);
@@ -52,18 +54,18 @@ const Navbar = () => {
   };
 
   const handleLogoutClick = () => {
-    setShowLogoutConfirmation(true); // Show confirmation popup
+    setShowLogoutConfirmation(true);
   };
 
   const handleConfirmLogout = () => {
-    dispatch(logout()); // Proceed with logout
-    setShowLogoutConfirmation(false); // Close confirmation popup
-    setShowAccountDropdown(false); // Close account dropdown if open
-    navigate('/'); // Redirect to home page after logout
+    dispatch(logout());
+    setShowLogoutConfirmation(false);
+    setShowAccountDropdown(false);
+    navigate('/');
   };
 
   const handleCancelLogout = () => {
-    setShowLogoutConfirmation(false); // Close confirmation popup
+    setShowLogoutConfirmation(false);
   };
 
   return (
@@ -72,7 +74,7 @@ const Navbar = () => {
         <img className="w-28" src={Logo} alt="Logo" />
       </div>
 
-      <ul className={`hidden md:flex md:ml-14 md:space-x-12 md:text-blue-950 md:cursor-pointer md:font-semibold ${isLoginOrRegisterPage ? 'hidden' : ''}`}>
+      <ul className={`hidden md:flex md:ml-14 md:space-x-12 md:text-blue-950 md:cursor-pointer md:font-semibold ${isLoginOrRegisterPage || isNotFoundPage ? 'hidden' : ''}`}>
         <li>
           <span onClick={handleHomeClick} className="hover:border-b-4 hover:border-blue-950 cursor-pointer">
             Home
@@ -126,14 +128,14 @@ const Navbar = () => {
           <>
             <img
               className="w-8 h-8 rounded-full border-2 border-gray-300 cursor-pointer"
-              src={user?.profilePicture || Account1} // Use profile picture if available, otherwise fallback to Account1
+              src={user?.profilePicture || Account1}
               alt="Account"
               onClick={handleAccountDropdown}
             />
             {showAccountDropdown && (
               <ul className="absolute top-full right-0 mt-2 w-48 bg-white shadow-lg" onClick={(e) => e.stopPropagation()}>
                 <li className="px-4 py-2">
-                  <p className="font-semibold">Hi, {user?.name }!</p> {/* Handle case where user is null */}
+                  <p className="font-semibold">Hi, {user?.name}!</p>
                 </li>
                 <li>
                   <RouterLink to="/profile" className="block px-4 py-2 hover:bg-gray-200">Profile</RouterLink>
@@ -184,14 +186,14 @@ const Navbar = () => {
             <>
               <img
                 className="w-8 h-8 rounded-full border-2 border-gray-300 cursor-pointer"
-                src={user?.profilePicture || Account1} // Use profile picture if available, otherwise fallback to Account1
+                src={user?.profilePicture || Account1}
                 alt="Account"
                 onClick={handleAccountDropdown}
               />
               {showAccountDropdown && (
                 <ul className="absolute top-full right-0 mt-2 w-48 bg-white shadow-lg" onClick={(e) => e.stopPropagation()}>
                   <li className="px-4 py-2">
-                    <p className="font-semibold">Hi, {user?.name || 'Guest'}!</p> {/* Handle case where user is null */}
+                    <p className="font-semibold">Hi, {user?.name || 'Guest'}!</p>
                   </li>
                   <li>
                     <button onClick={handleProfileClick} className="block px-4 py-2 hover:bg-gray-200">Profile</button>
@@ -214,7 +216,6 @@ const Navbar = () => {
         </ul>
       </div>
 
-      {/* Cart popup */}
       {showCart && (
         <div className="fixed right-0 top-0 w-[30%] h-full bg-white text-black shadow-lg z-50">
           <button onClick={() => setShowCart(false)} className="absolute top-4 right-4 text-2xl">×</button>
@@ -246,7 +247,6 @@ const Navbar = () => {
         </div>
       )}
 
-      {/* Logout confirmation popup */}
       {showLogoutConfirmation && (
         <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white p-6 rounded-lg shadow-lg">
