@@ -1,12 +1,29 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { fetchOrders } from '..//sevices/api';
+import {
+  fetchOrders,
+  fetchTotalSales,
+  fetchTotalOrders,
+  fetchTotalCustomers,
+  fetchRecentOrders,
+  fetchPopularProducts // Import the new function
+} from '../sevices/api';
 
 export const getOrders = createAsyncThunk('orders/getOrders', fetchOrders);
+export const getTotalSales = createAsyncThunk('orders/getTotalSales', fetchTotalSales);
+export const getTotalOrders = createAsyncThunk('orders/getTotalOrders', fetchTotalOrders);
+export const getTotalCustomers = createAsyncThunk('orders/getTotalCustomers', fetchTotalCustomers);
+export const getRecentOrders = createAsyncThunk('orders/getRecentOrders', fetchRecentOrders);
+export const getPopularProducts = createAsyncThunk('orders/getPopularProducts', fetchPopularProducts); // Add this line
 
 const orderSlice = createSlice({
   name: 'orders',
   initialState: {
     orders: [],
+    totalSales: 0,
+    totalOrders: 0,
+    totalCustomers: 0,
+    recentOrders: [],
+    popularProducts: [], // Add this line
     status: 'idle',
     error: null,
   },
@@ -23,6 +40,21 @@ const orderSlice = createSlice({
       .addCase(getOrders.rejected, (state, action) => {
         state.status = 'failed';
         state.error = action.error.message;
+      })
+      .addCase(getTotalSales.fulfilled, (state, action) => {
+        state.totalSales = action.payload;
+      })
+      .addCase(getTotalOrders.fulfilled, (state, action) => {
+        state.totalOrders = action.payload;
+      })
+      .addCase(getTotalCustomers.fulfilled, (state, action) => {
+        state.totalCustomers = action.payload;
+      })
+      .addCase(getRecentOrders.fulfilled, (state, action) => {
+        state.recentOrders = action.payload;
+      })
+      .addCase(getPopularProducts.fulfilled, (state, action) => {
+        state.popularProducts = action.payload;
       });
   },
 });

@@ -1,8 +1,6 @@
-
-
-
-import React from 'react';
-import { useTranslation } from 'react-i18next';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { getTotalSales, getTotalOrders, getTotalCustomers, getRecentOrders, getPopularProducts } from '../slices/orderSlice';
 import Mkelia from '../assets/Mkelia.png';
 import bean from './image-food/bean.jpg';
 import rice from './image-food/rice.jpg';
@@ -14,7 +12,32 @@ import basket from '../assets/basket.png';
 import user from '../assets/user.png';
 
 const Dashboard = () => {
-  const { t } = useTranslation();
+  const dispatch = useDispatch();
+  const {
+    totalSales,
+    totalOrders,
+    totalCustomers,
+    recentOrders,
+    popularProducts, // Add this line
+    status,
+    error
+  } = useSelector((state) => state.orders);
+
+  useEffect(() => {
+    dispatch(getTotalSales());
+    dispatch(getTotalOrders());
+    dispatch(getTotalCustomers());
+    dispatch(getRecentOrders());
+    dispatch(getPopularProducts()); // Fetch popular products
+  }, [dispatch]);
+
+  if (status === 'loading') {
+    return <div>Loading...</div>;
+  }
+
+  if (status === 'failed') {
+    return <div>Error: {error}</div>;
+  }
 
   return (
     <div className="p-4 bg-slate-100">
@@ -23,7 +46,7 @@ const Dashboard = () => {
         <div className="flex items-center space-x-4">
           <input
             type="text"
-            placeholder={t('dashboard.search')}
+            placeholder="Search..."
             className="px-4 py-2 border rounded focus:outline-none"
           />
         </div>
@@ -63,44 +86,40 @@ const Dashboard = () => {
           <div className="w-10 h-10 rounded-full overflow-hidden">
             <img
               src={Mkelia}
-              alt="User"
+              alt="Image"
               className="w-full h-full object-cover"
             />
           </div>
         </div>
       </header>
 
-      <h1 className="text-2xl font-bold mb-4">{t('dashboard.title')}</h1>
-      <p>{t('dashboard.welcome')}</p>
+      <h1 className="text-2xl font-bold mb-4">Dashboard</h1>
+      <p>Welcome to the admin dashboard!</p>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 mt-4">
         <div className="bg-white p-4 rounded shadow text-center flex flex-row gap-6 pt-10 pl-14">
-          <div><img src={basket} alt="Total Sales" className='w-16 h-16' /></div>
+          <div><img src={basket} alt="image" className="w-16 h-16" /></div>
           <div>
-            <h2 className="text-xl">{t('dashboard.totalSales')}</h2>
-            <p className="text-2xl text-blue-500">$232</p>
+            <h2 className="text-xl">Total Sales</h2>
+            <p className="text-2xl text-blue-500">${totalSales}</p>
             <p className="text-green-500">+343</p>
           </div>
         </div>
-        {/* <div className="bg-white p-4 rounded shadow text-center">
-          <h2 className="text-xl">{t('dashboard.totalExpenses')}</h2>
-          <p className="text-2xl text-red-500">$123</p>
-          <p className="text-green-500">+343</p>
-        </div> */}
+
         <div className="bg-white p-4 rounded shadow text-center flex flex-row gap-6 pt-10 pl-7">
-          <div><img src={user} alt="Total Customers" className='w-16 h-16' /></div>
+          <div><img src={user} alt="image" className="w-16 h-16" /></div>
           <div>
-            <h2 className="text-xl">{t('dashboard.totalCustomers')}</h2>
-            <p className="text-2xl text-blue-500">313</p>
+            <h2 className="text-xl">Total Customers</h2>
+            <p className="text-2xl text-blue-500">{totalCustomers}</p>
             <p className="text-red-500">-30</p>
           </div>
         </div>
 
         <div className="bg-white p-4 rounded shadow text-center flex flex-row gap-6 pt-10 pl-14">
-          <div><img src={shopping} alt="Total Orders" className='w-16 h-16' /></div>
+          <div><img src={shopping} alt="image" className="w-16 h-16" /></div>
           <div>
-            <h2 className="text-xl">{t('dashboard.totalOrders')}</h2>
-            <p className="text-2xl text-blue-500">100</p>
+            <h2 className="text-xl">Total Orders</h2>
+            <p className="text-2xl text-blue-500">{totalOrders}</p>
             <p className="text-red-500">-43</p>
           </div>
         </div>
@@ -109,115 +128,53 @@ const Dashboard = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mt-6">
         {/* Recent Orders */}
         <div className="lg:col-span-2 bg-white p-4 rounded shadow-sm">
-          <h2 className="text-xl mb-4 text-gray-600">{t('dashboard.recentOrders')}</h2>
+          <h2 className="text-xl mb-4 text-gray-600">Recent Orders</h2>
           <table className="w-full table-auto">
             <thead>
               <tr className="bg-gray-200">
-                <th className="border px-4 py-2">{t('dashboard.id')}</th>
-                <th className="border px-4 py-2">{t('dashboard.productId')}</th>
-                <th className="border px-4 py-2">{t('dashboard.customerName')}</th>
-                <th className="border px-4 py-2">{t('dashboard.orderDate')}</th>
-                <th className="border px-4 py-2">{t('dashboard.orderTotal')}</th>
-                <th className="border px-4 py-2">{t('dashboard.shippingAddress')}</th>
-                <th className="border px-4 py-2">{t('dashboard.orderStatus')}</th>
+                <th className="border px-4 py-2">ID</th>
+                <th className="border px-4 py-2">Product ID</th>
+                <th className="border px-4 py-2">Customer Name</th>
+                <th className="border px-4 py-2">Order Date</th>
+                <th className="border px-4 py-2">Order Total</th>
+                <th className="border px-4 py-2">Shipping Address</th>
+                <th className="border px-4 py-2">Order Status</th>
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td className="border px-4 py-2">#1</td>
-                <td className="border px-4 py-2">#4324</td>
-                <td className="border px-4 py-2">Irakoze promesse</td>
-                <td className="border px-4 py-2">17 August 2024</td>
-                <td className="border px-4 py-2">40,000 {t('dashboard.currency')}</td>
-                <td className="border px-4 py-2">Kabuga</td>
-                <td className="border px-4 py-2">{t('dashboard.placed')}</td>
-              </tr>
-              <tr>
-                <td className="border px-4 py-2">#2</td>
-                <td className="border px-4 py-2">#7453</td>
-                <td className="border px-4 py-2">Munezero josue</td>
-                <td className="border px-4 py-2">15 August 2024</td>
-                <td className="border px-4 py-2">15,000 {t('dashboard.currency')}</td>
-                <td className="border px-4 py-2">Masaka</td>
-                <td className="border px-4 py-2">{t('dashboard.confirmed')}</td>
-              </tr>
-              <tr>
-                <td className="border px-4 py-2">#3</td>
-                <td className="border px-4 py-2">#5434</td>
-                <td className="border px-4 py-2">Dushime christian</td>
-                <td className="border px-4 py-2">11 September 2024</td>
-                <td className="border px-4 py-2">50,000 {t('dashboard.currency')}</td>
-                <td className="border px-4 py-2">Gakenyeri</td>
-                <td className="border px-4 py-2">{t('dashboard.shipped')}</td>
-              </tr>
-              <tr>
-                <td className="border px-4 py-2">#4</td>
-                <td className="border px-4 py-2">#9854</td>
-                <td className="border px-4 py-2">Umutoni vanessa</td>
-                <td className="border px-4 py-2">26 August 2024</td>
-                <td className="border px-4 py-2">100,000 {t('dashboard.currency')}</td>
-                <td className="border px-4 py-2">Rusekabuye</td>
-                <td className="border px-4 py-2">{t('dashboard.shipped')}</td>
-              </tr>
+              {recentOrders.map((order) => (
+                <tr key={order._id}>
+                  <td className="border px-4 py-2">#{order._id}</td>
+                  <td className="border px-4 py-2">#{order.orderItems[0]?.product}</td>
+                  <td className="border px-4 py-2">{order.user}</td>
+                  <td className="border px-4 py-2">{new Date(order.createdAt).toLocaleDateString()}</td>
+                  <td className="border px-4 py-2">{order.totalAmount} rwf</td>
+                  <td className="border px-4 py-2">{order.shippingInfo.address}, {order.shippingInfo.city}</td>
+                  <td className="border px-4 py-2">{order.orderStatus}</td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>
 
         {/* Popular Products */}
         <div className="bg-white p-4 rounded shadow">
-          <h2 className="text-xl mb-4 text-gray-600">{t('dashboard.popularProducts')}</h2>
+          <h2 className="text-xl mb-4 text-gray-600">Popular Products</h2>
           <ul>
-            <li className="flex justify-between items-center mb-2">
-              <div className="flex items-center">
-                <img src={bean} alt="Sack of beans" className="w-10 h-10 object-cover rounded mr-2" />
-                <span>{t('dashboard.sackOfBeans')}</span>
-              </div>
-              <div className="text-right pt-3">
-                <p>35,000 {t('dashboard.currency')}</p>
-                <p className="text-green-500">120 {t('dashboard.inStock')}</p>
-              </div>
-            </li>
-
-            <li className="flex justify-between items-center mb-2">
-              <div className="flex items-center">
-                <img src={maize} alt="Sack of maize" className="w-10 h-10 object-cover rounded mr-2" />
-                <span>{t('dashboard.sackOfMaize')}</span>
-              </div>
-              <div className="text-right pt-3">
-                <p>15,000 {t('dashboard.currency')}</p>
-                <p className="text-yellow-500">24 {t('dashboard.inStock')}</p>
-              </div>
-            </li>
-            <li className="flex justify-between items-center mb-2">
-              <div className="flex items-center">
-                <img src={rice} alt="Sack of rice" className="w-10 h-10 object-cover rounded mr-2" />
-                <span>{t('dashboard.sackOfRice')}</span>
-              </div>
-              <div className="text-right pt-3">
-                <p>45,000 {t('dashboard.currency')}</p>
-                <p className="text-green-500">56 {t('dashboard.inStock')}</p>
-              </div>
-            </li>
-            <li className="flex justify-between items-center mb-2">
-              <div className="flex items-center">
-                <img src={sorghum} alt="Sack of sorghum" className="w-10 h-10 object-cover rounded mr-2" />
-                <span>{t('dashboard.sackOfSorghum')}</span>
-              </div>
-              <div className="text-right pt-3">
-                <p>40,000 {t('dashboard.currency')}</p>
-                <p className="text-green-500">98 {t('dashboard.inStock')}</p>
-              </div>
-            </li>
-            <li className="flex justify-between items-center mb-2">
-              <div className="flex items-center">
-                <img src={soybean} alt="Sack of soybean" className="w-10 h-10 object-cover rounded mr-2" />
-                <span>{t('dashboard.sackOfSoybean')}</span>
-              </div>
-              <div className="text-right pt-3">
-                <p>15,000 {t('dashboard.currency')}</p>
-                <p className="text-red-500">{t('dashboard.outOfStock')}</p>
-              </div>
-            </li>
+            {popularProducts.map((product) => (
+              <li key={product._id} className="flex justify-between items-center mb-2">
+                <div className="flex items-center">
+                  <img src={product.images[0].url} alt="image" className="w-10 h-10 object-cover rounded mr-2" />
+                  <span>{product.name}</span>
+                </div>
+                <div className="text-right pt-3">
+                  <p>{product.price} rwf</p>
+                  <p className={product.stock > 0 ? "text-green-500" : "text-red-500"}>
+                    {product.stock > 0 ? `${product.stock} in Stock` : "Out of Stock"}
+                  </p>
+                </div>
+              </li>
+            ))}
           </ul>
         </div>
       </div>
@@ -226,4 +183,3 @@ const Dashboard = () => {
 };
 
 export default Dashboard;
-

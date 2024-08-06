@@ -7,7 +7,7 @@ const api = axios.create({
 });
 
 export const fetchProducts = async (category) => {
-  const response = await api.get(`/products/get-all`);
+  const response = await api.get('/products/get-all');
   return response.data.products;
 };
 
@@ -19,6 +19,11 @@ export const createProduct = async (product) => {
 export const fetchOrders = async () => {
   const response = await api.get('/orders/my-orders');
   return response.data.orders;
+};
+
+export const fetchPopularProducts = async () => {
+  const response = await api.get('/products/top'); 
+  return response.data.products;
 };
 
 export const fetchCategories = async () => {
@@ -34,6 +39,26 @@ export const createCategory = async (category) => {
 export const fetchUsers = async () => {
   const response = await api.get('/users/get-all');
   return response.data.users;
+};
+
+export const fetchTotalSales = async () => {
+  const response = await api.get('/orders/admin/total-sales');
+  return response.data;
+};
+
+export const fetchTotalOrders = async () => {
+  const response = await api.get('/orders/admin/total-orders');
+  return response.data;
+};
+
+export const fetchTotalCustomers = async () => {
+  const response = await api.get('/orders/admin/total-customers');
+  return response.data;
+};
+
+export const fetchRecentOrders = async () => {
+  const response = await api.get('/orders/admin/recent-orders');
+  return response.data;
 };
 
 export default api;
