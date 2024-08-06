@@ -205,6 +205,16 @@
     "currency": "rwf",
     "inStock": "in Stock",
     "outOfStock": "Out of Stock"
+  },
+  "forgotPassword": {
+    "title": "Forgot Password",
+    "emailPlaceholder": "Email",
+    "newPasswordPlaceholder": "New Password",
+    "answerPlaceholder": "Security Answer",
+    "resetPasswordButton": "Reset Password",
+    "processingButton": "Processing...",
+    "resetSuccess": "Password reset successful, please login.",
+    "resetError": "Error resetting password: {{error}}"
   }
   }
   

@@ -20,7 +20,7 @@ function ForgotPasswordForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await dispatch(resetPassword({ email, newPassword })).unwrap();
+      await dispatch(resetPassword({ email, answer, newPassword })).unwrap();
       alert('Password reset successful, please login.');
       navigate("/login");
     } catch (err) {

@@ -204,6 +204,16 @@
     "currency": "rwf",
     "inStock": "mu bubiko",
     "outOfStock": "Ntibiboneka"
+  },
+  "forgotPassword": {
+    "title": "Wibagiwe Ijambo Ry'ibanga",
+    "emailPlaceholder": "Imeyili",
+    "newPasswordPlaceholder": "Ijambo Ry'ibanga Rishya",
+    "answerPlaceholder": "Igisubizo Cy'umutekano",
+    "resetPasswordButton": "Simbuza Ijambo Ry'ibanga",
+    "processingButton": "Turimo Kubikora...",
+    "resetSuccess": "Guhindura ijambo ry'ibanga byagenze neza, nyamuneka winjire.",
+    "resetError": "Ikosa ryo guhindura ijambo ry'ibanga: {{error}}"
   }
   }
   
