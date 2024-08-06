@@ -1,10 +1,14 @@
+
+
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import LoginForm from './Loginform/Loginform'; // Adjust the import path if necessary
 import CreateAccount from './CreateAccountForm/CreateAccount'; // Adjust the import path if necessary
 
 function AuthPopup() {
   const [showLogin, setShowLogin] = useState(false);
   const [showCreateAccount, setShowCreateAccount] = useState(false);
+  const { t } = useTranslation();
 
   const toggleLogin = () => {
     setShowLogin(!showLogin);
@@ -19,10 +23,10 @@ function AuthPopup() {
   return (
     <div>
       <button onClick={toggleLogin} className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-700">
-        Log In
+        {t('auth.logIn')}
       </button>
       <button onClick={toggleCreateAccount} className="bg-green-500 text-white py-2 px-4 rounded hover:bg-green-700">
-        Create Account
+        {t('auth.createAccount')}
       </button>
 
       {showLogin && (

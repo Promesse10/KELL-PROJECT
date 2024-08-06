@@ -1,13 +1,13 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'http://localhost:8009/api/v1';
+const API_BASE_URL = 'http://localhost:8002/api/v1';
 
 const api = axios.create({
   baseURL: API_BASE_URL,
 });
 
 export const fetchProducts = async (category) => {
-  const response = await api.get('/products/get-all');
+  const response = await api.get(`/products/get-all?category=${category}`);
   return response.data.products;
 };
 

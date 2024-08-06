@@ -1,13 +1,10 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchProfile, updateProfile } from '../slices/authSlice'; // Ensure these actions exist
 
 const ProfileManager = () => {
   const [image, setImage] = useState(null);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [isEditing, setIsEditing] = useState(false); // State to toggle edit mode
   const fileInputRef = useRef(null);
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth); // Adjust based on your state structure
@@ -25,7 +22,7 @@ const ProfileManager = () => {
       setImage(profilePicture || null);
     }
   }, []);
-  
+
   const handleAvatarClick = () => {
     fileInputRef.current.click();
   };
@@ -42,21 +39,18 @@ const ProfileManager = () => {
   };
 
   const handleRemoveImage = (event) => {
-    event.preventDefault();
-    setImage(null); // Clear image state
+    event.preventDefault(); // Prevents the default link behavior
+    setImage(null);
   };
 
-  const handleSave = (event) => {
-    event.preventDefault();
-    dispatch(updateProfile({ name, email, password, profilePicture: image }))
-      .then(() => {
-        dispatch(fetchProfile()); // Fetch updated profile data to reflect changes
-        setIsEditing(false); // Exit edit mode after saving
-  
-        // Save credentials to localStorage
-        localStorage.setItem('user', JSON.stringify({ name, email, profilePicture: image }));
-      });
+  const handleNameChange = (event) => {
+    setName(event.target.value);
   };
+
+  const handleEmailChange = (event) => {
+    setEmail(event.target.value);
+  };
+
   return (
     <div className="flex items-center justify-center mt-11 min-h-screen bg-gray-100">
       <main className="w-full max-w-3xl p-6">
@@ -68,6 +62,8 @@ const ProfileManager = () => {
               <div 
                 className="relative w-32 h-32 bg-gray-200 rounded-full flex items-center justify-center cursor-pointer border border-gray-300"
                 onClick={handleAvatarClick}
+                role="button"
+                aria-label="Upload profile picture"
               >
                 {image ? (
                   <img src={image} alt="Avatar" className="w-full h-full object-cover rounded-full" />
@@ -86,6 +82,7 @@ const ProfileManager = () => {
                 ref={fileInputRef} 
                 className="hidden"
                 onChange={handleFileChange}
+                accept="image/*"
               />
               {image && (
                 <button onClick={handleRemoveImage} className="mt-2 text-blue-950">
@@ -95,50 +92,40 @@ const ProfileManager = () => {
             </div>
             {/* Form section */}
             <div className="flex-grow">
-              <form onSubmit={handleSave}>
+              <form>
                 <div className="mb-4">
                   <label className="block text-gray-700">Your Name</label>
                   <input 
                     type="text" 
+                    className="mt-1 block w-full border border-gray-300 rounded-md p-2" 
                     value={name} 
-                    onChange={(e) => setName(e.target.value)} 
-                    className="mt-1 block w-full border border-gray-300 rounded-md p-2" 
-                    disabled={!isEditing} // Disable input if not editing
-                  />
-                  {!isEditing && (
-                    <button 
-                      type="button" 
-                      onClick={() => setIsEditing(true)}
-                      className="mt-2 text-blue-950"
-                    >
-                      Change all Credentials
-                    </button>
-                  )}
-                </div>
-                <div className="mb-4">
-                  <label className="block text-gray-700">Email Address</label>
-                  <input 
-                    type="email" 
-                    value={email} 
-                    onChange={(e) => setEmail(e.target.value)} 
-                    className="mt-1 block w-full border border-gray-300 rounded-md p-2" 
-                    disabled={!isEditing} // Disable input if not editing
+                    onChange={handleNameChange} 
                   />
                 </div>
                 <div className="mb-4">
                   <label className="block text-gray-700">Password</label>
                   <input 
                     type="password" 
-                    value={password} 
-                    onChange={(e) => setPassword(e.target.value)} 
                     className="mt-1 block w-full border border-gray-300 rounded-md p-2" 
-                    placeholder="Enter new password if changing"
+                    value="**********" 
+                    readOnly 
                   />
+                  <a href="#" className="text-blue-500 text-sm mt-1 inline-block">Change</a>
+                </div>
+                <div className="mb-4">
+                  <label className="block text-gray-700">Email Address</label>
+                  <input 
+                    type="email" 
+                    className="mt-1 block w-full border border-gray-300 rounded-md p-2" 
+                    value={email} 
+                    onChange={handleEmailChange} 
+                  />
+                  <a href="#" className="text-blue-500 text-sm mt-1 inline-block">Change</a>
                 </div>
                 <div className="text-center">
                   <div className="flex space-x-4 justify-center">
-                    <button type="button" className="px-4 py-2 bg-gray-300 text-gray-700 rounded-md" onClick={() => setIsEditing(false)}>Cancel</button>
-                    <button  className="px-4 py-2 bg-blue-950 text-white rounded-md">Save</button>
+                    <button className="px-4 py-2 bg-gray-300 text-gray-700 rounded-md">Cancel</button>
+                    <button className="px-4 py-2 bg-blue-500 text-white rounded-md">Save</button>
                   </div>
                 </div>
               </form>

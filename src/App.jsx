@@ -9,22 +9,22 @@ import Cart from './pages/Cart';
 import CreateAccount from './components/CreateAccountForm/CreateAccount';
 import Service from './components/Service';
 import Infopage from './components/Infopage';
-import Hero from './components/Hero';
-import Aboutus from './components/Aboutus';
-import Contactus from './components/Contactus';
-import Construction from './components/Construction';
-import Food from './components/Food';
-import Terms from './components/CreateAccountForm/terms';
-import Penproduct from './components/Penproduct';
-import AdminLayout from './layout/AdminLayout';
-import ProductsPage from './pages/Product';
-import Dashboard from './components/Dashboard';
-import ProfileManager from './components/profileManager';
-import OrderList from './components/Orders/OrderList';
-import CategoriesPage from './pages/CategoriesPage';
-import UserList from './components/Users/UserList';
-import ForgotPasswordForm from './components/ForgetPassword';
-import NotFound from './components/NotFound';
+import Hero from "./components/Hero";
+import Aboutus from "./components/Aboutus";
+import Contactus from "./components/Contactus";
+import Construction from "./components/Construction";
+import Food from "./components/Food";
+import Terms from "./components/CreateAccountForm/terms";
+import Penproduct from "./components/Penproduct";
+import AdminLayout from "./layout/AdminLayout";
+import ProductsPage from "./pages/Product";
+import Dashboard from "./components/Dashboard";
+import ProfileManager from "./components/profileManager";
+import OrderList from "./components/Orders/OrderList";
+import CategoriesPage from "./pages/CategoriesPage";
+import UserList from "./components/Users/UserList";
+import ForgotPasswordForm from "./components/ForgetPassword";
+import NotFound from './components/NotFound'; // Ensure this import is present
 
 function App() {
   const location = useLocation();
@@ -32,8 +32,8 @@ function App() {
   const isNotFoundPage = location.pathname === '/404'; // Ensure this matches the route you want to use for the NotFound page
 
   return (
-    <div className="app-container">
-      {!isAdminRoute && !isNotFoundPage && <Navbar />}
+    <>
+      {!isAdminRoute && <Navbar />}
       
       <Routes>
         <Route path="/" element={<Landingpage />} />
@@ -58,12 +58,11 @@ function App() {
         </Route>
         
         {/* Catch all unmatched routes */}
-        
         <Route path="*" element={<NotFound />} />
       </Routes>
 
       {!isAdminRoute && !isNotFoundPage && <Footer />}
-    </div>
+    </>
   );
 }
 

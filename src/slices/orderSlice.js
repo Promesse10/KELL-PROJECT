@@ -5,7 +5,7 @@ import {
   fetchTotalOrders,
   fetchTotalCustomers,
   fetchRecentOrders,
-  fetchPopularProducts // Import the new function
+  fetchPopularProducts 
 } from '../sevices/api';
 
 export const getOrders = createAsyncThunk('orders/getOrders', fetchOrders);
@@ -23,7 +23,7 @@ const orderSlice = createSlice({
     totalOrders: 0,
     totalCustomers: 0,
     recentOrders: [],
-    popularProducts: [], // Add this line
+    popularProducts: [],
     status: 'idle',
     error: null,
   },
