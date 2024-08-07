@@ -35,23 +35,23 @@ function Home() {
   };
 
   return (
-    <section className="min-h-screen flex flex-col bg-slate-200">
+    <section className="min-h-screen flex flex-col bg-gray-200">
       <div className="flex flex-col items-center w-full p-4 mt-28">
         <div className="text-center mb-8">
-          <h1 className="text-blue-600 text-4xl font-semibold">Products</h1>
-          <hr className="w-20 h-1 mx-auto my-4 bg-blue-500 border-0 rounded dark:bg-blue-500" />
+          <h1 className="text-blue-950 text-4xl font-semibold">Products</h1>
+          <hr className="w-20 h-1 mx-auto my-4 bg-blue-950 border-0 rounded dark:bg-blue-950" />
         </div>
 
         <div className="flex flex-col items-center w-full mb-6">
           <form className="w-full max-w-md relative mb-4">
             <input
               type="search"
-              placeholder="Search here"
-              className="w-full p-4 rounded-full bg-slate-300"
+              placeholder="Search here..."
+              className="w-full p-4 rounded-full bg-gray-100"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
-            <img src={search} className="absolute right-2 top-1/2 transform -translate-y-1/2 p-2 bg-blue-500 rounded-full w-8 md:w-10" alt="Search icon" />
+            <img src={search} className="absolute right-2 top-1/2 transform -translate-y-1/2 p-2 bg-blue-950 rounded-full w-8 md:w-10" alt="Search icon" />
           </form>
 
           <div className="flex flex-wrap justify-center gap-4">
@@ -68,7 +68,7 @@ function Home() {
                 <p className="mt-2 text-lg font-semibold">{product.name}</p>
                 <p className="text-gray-600">1pcs/{product.price} rwf</p>
                 <button
-                  className="absolute top-2 right-2 p-2 bg-blue-600 rounded-full text-white text-xl"
+                  className="absolute top-2 right-2 p-2 bg-blue-950 rounded-full text-white text-xl"
                   onClick={() => handleAddToCart(product)}
                 >
                   <i className="fas fa-shopping-cart"></i>
@@ -81,17 +81,17 @@ function Home() {
             {[...Array(totalPages).keys()].map(page => (
               <div
                 key={page}
-                className={`w-8 h-8 flex items-center justify-center rounded-full cursor-pointer ${currentPage === page + 1 ? 'bg-slate-300' : 'bg-blue-500'}`}
+                className={`w-8 h-8 flex items-center justify-center rounded-full cursor-pointer ${currentPage === page + 1 ? 'bg-gray-100' : 'bg-blue-950'}`}
                 onClick={() => handlePageChange(page + 1)}
               >
-                <span className="text-white">{page + 1}</span>
+                <span className="text-black">{page + 1}</span>
               </div>
             ))}
             <div
-              className={`w-8 h-8 flex items-center justify-center rounded-full cursor-pointer ${currentPage === totalPages ? 'bg-slate-300' : 'bg-blue-500'}`}
+              className={`w-8 h-8 flex items-center justify-center rounded-full cursor-pointer ${currentPage === totalPages ? 'bg-gray-100' : 'bg-blue-950'}`}
               onClick={() => handlePageChange(totalPages)}
             >
-              <span className="text-white">All</span>
+              <span className="text-black">All</span>
             </div>
           </div>
         </div>

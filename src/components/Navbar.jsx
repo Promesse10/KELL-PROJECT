@@ -213,16 +213,16 @@ const Navbar = () => {
               <li>{t('navbar.cartEmpty')}</li>
             ) : (
               cartItems.map((item) => (
-                <li key={item.id} className="flex items-center justify-between py-2 border-b border-gray-200">
-                  <img src={item.image} alt={item.name} className="w-12 h-12 object-cover" />
+                <li key={item._id} className="flex items-center justify-between py-2 border-b border-gray-200">
+                  <img src={item.images[0].url} alt={item.name} className="w-12 h-12 object-cover" />
                   <div className="flex-1 ml-2">
                     <p>{item.name}</p>
                     <p>${item.price}</p>
                   </div>
                   <div className="flex items-center">
-                    <button onClick={() => dispatch(decreaseQuantity({ id: item.id }))} className="px-2">−</button>
+                    <button onClick={() => dispatch(decreaseQuantity({ id: item._id }))} className="px-2">−</button>
                     <span className="px-2">{item.quantity}</span>
-                    <button onClick={() => dispatch(increaseQuantity({ id: item.id }))} className="px-2">+</button>
+                    <button onClick={() => dispatch(increaseQuantity({ id: item._id }))} className="px-2">+</button>
                   </div>
                   <div className="ml-4">${(item.price * item.quantity).toFixed(2)}</div>
                 </li>
