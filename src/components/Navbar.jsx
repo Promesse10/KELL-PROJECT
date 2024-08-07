@@ -3,7 +3,7 @@ import { Link as RouterLink, useNavigate, useLocation } from 'react-router-dom';
 import { Link as ScrollLink } from 'react-scroll';
 import { AiOutlineClose, AiOutlineMenu } from 'react-icons/ai';
 import Logo from '../assets/Logo.png';
-import Account1 from '../assets/Account1.png'; // Make sure this path is correct
+import Account1 from '../assets/Account1.png';
 import Cart1 from '../assets/Cart1.png';
 import { useSelector, useDispatch } from 'react-redux';
 import { logout } from '../slices/authSlice';
@@ -15,8 +15,8 @@ const Navbar = () => {
   const [nav, setNav] = useState(false);
   const [showCart, setShowCart] = useState(false);
   const [showAccountDropdown, setShowAccountDropdown] = useState(false);
-  const [dropdown, setDropdown] = useState(false); // Define dropdown state
-  const [showLogoutConfirmation, setShowLogoutConfirmation] = useState(false); // Add this line
+  const [dropdown, setDropdown] = useState(false);
+  const [showLogoutConfirmation, setShowLogoutConfirmation] = useState(false);
 
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -46,7 +46,7 @@ const Navbar = () => {
   };
 
   const isLoginOrRegisterPage = location.pathname === '/login' || location.pathname === '/CreateAccount';
-  const isNotFoundPage = location.pathname === '*';
+  const isProfilePage = location.pathname === '/profile';
 
   const calculateCartTotal = () => {
     return cartItems.reduce((total, item) => total + item.price * item.quantity, 0).toFixed(2);
@@ -77,7 +77,7 @@ const Navbar = () => {
         <img className="w-28" src={Logo} alt="Logo" />
       </div>
 
-      <ul className={`hidden md:flex md:ml-14 md:space-x-12 md:text-blue-950 md:cursor-pointer md:font-semibold ${isLoginOrRegisterPage || isNotFoundPage ? 'hidden' : ''}`}>
+      <ul className={`hidden md:flex md:ml-14 md:space-x-12 md:text-blue-950 md:cursor-pointer md:font-semibold ${isLoginOrRegisterPage || isProfilePage ? 'hidden' : ''}`}>
         <li>
           <span onClick={handleHomeClick} className="hover:border-b-4 hover:border-blue-950 cursor-pointer">
             {t('navbar.home')}
@@ -173,7 +173,7 @@ const Navbar = () => {
       <div className={`fixed left-0 top-0 w-[60%] h-full bg-blue-950 text-white transition-transform duration-300 ease-in-out ${nav ? 'translate-x-0' : '-translate-x-full'} z-50`} onClick={() => setNav(false)}>
         <ul className="uppercase p-4" onClick={(e) => e.stopPropagation()}>
           <li className="p-4 border-b border-gray-600" onClick={handleHomeClick}>{t('navbar.home')}</li>
-          {!isLoginOrRegisterPage && (
+          {!isLoginOrRegisterPage && !isProfilePage && (
             <>
               <li className="p-4 border-b border-gray-600">
                 <ScrollLink to="services" smooth={true} duration={500} onClick={handleNav}>{t('navbar.services')}</ScrollLink>
@@ -192,7 +192,7 @@ const Navbar = () => {
               {showAccountDropdown && (
                 <ul className="absolute top-full right-0 mt-2 w-48 bg-white shadow-lg" onClick={(e) => e.stopPropagation()}>
                   <li className="px-4 py-2">
-                    <p className="font-semibold">Hi, {user?.name}!</p> {/* Optional chaining */}
+                    <p className="font-semibold">Hi, {user?.name}!</p>
                   </li>
                   <li>
                     <button onClick={handleProfileClick} className="block px-4 py-2 hover:bg-gray-200">Profile</button>
@@ -214,7 +214,7 @@ const Navbar = () => {
           )}
           <li className="p-4 border-t border-gray-600">
             <div className="bg-white text-blue-950 rounded-lg p-2">
-              <LanguageSwitcher/>
+              <LanguageSwitcher />
             </div>
           </li>
         </ul>

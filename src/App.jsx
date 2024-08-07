@@ -1,4 +1,3 @@
-// src/App.jsx
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import Navbar from './components/Navbar';
@@ -24,16 +23,16 @@ import OrderList from "./components/Orders/OrderList";
 import CategoriesPage from "./pages/CategoriesPage";
 import UserList from "./components/Users/UserList";
 import ForgotPasswordForm from "./components/ForgetPassword";
-import NotFound from './components/NotFound'; // Ensure this import is present
+import NotFound from './components/NotFound';
 
 function App() {
   const location = useLocation();
   const isAdminRoute = location.pathname.startsWith('/admin');
-  const isNotFoundPage = location.pathname === '/404'; // Ensure this matches the route you want to use for the NotFound page
+  const isNotFoundPage = location.pathname === '/404';
 
   return (
     <>
-      {!isAdminRoute && <Navbar />}
+      <Navbar isAdminRoute={isAdminRoute} />
       
       <Routes>
         <Route path="/" element={<Landingpage />} />
@@ -57,7 +56,6 @@ function App() {
           <Route path="dashboard" element={<Dashboard />} />
         </Route>
         
-        {/* Catch all unmatched routes */}
         <Route path="*" element={<NotFound />} />
       </Routes>
 

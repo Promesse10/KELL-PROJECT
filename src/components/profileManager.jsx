@@ -1,16 +1,29 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+// Import fetchProfile if it's defined in another module
+// import { fetchProfile } from 'path_to_actions_or_services'; 
 
 const ProfileManager = () => {
   const [image, setImage] = useState(null);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
+  const [oldPassword, setOldPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [isEditingName, setIsEditingName] = useState(false);
+  const [isEditingEmail, setIsEditingEmail] = useState(false);
+  const [isEditingPassword, setIsEditingPassword] = useState(false);
   const fileInputRef = useRef(null);
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth); // Adjust based on your state structure
 
   useEffect(() => {
-    dispatch(fetchProfile()); // Fetch profile data on component mount
+    if (typeof fetchProfile === 'function') {
+      dispatch(fetchProfile()); // Fetch profile data on component mount
+    } else {
+      console.error('fetchProfile is not defined');
+    }
   }, [dispatch]);
 
   useEffect(() => {
@@ -22,6 +35,14 @@ const ProfileManager = () => {
       setImage(profilePicture || null);
     }
   }, []);
+
+  useEffect(() => {
+    if (user) {
+      setName(user.name || '');
+      setEmail(user.email || '');
+      setImage(user.profilePicture || null);
+    }
+  }, [user]);
 
   const handleAvatarClick = () => {
     fileInputRef.current.click();
@@ -51,10 +72,41 @@ const ProfileManager = () => {
     setEmail(event.target.value);
   };
 
+  const handleOldPasswordChange = (event) => {
+    setOldPassword(event.target.value);
+  };
+
+  const handleNewPasswordChange = (event) => {
+    setNewPassword(event.target.value);
+  };
+
+  const toggleEditName = () => {
+    setIsEditingName(!isEditingName);
+  };
+
+  const toggleEditEmail = () => {
+    setIsEditingEmail(!isEditingEmail);
+  };
+
+  const toggleEditPassword = () => {
+    setIsEditingPassword(!isEditingPassword);
+  };
+
+  const handleSavePassword = () => {
+    // Example check for incorrect old password
+    if (oldPassword !== 'expectedOldPassword') {
+      toast.error('Incorrect old password');
+    } else {
+      // Proceed with password change logic
+      toggleEditPassword();
+    }
+  };
+
   return (
     <div className="flex items-center justify-center mt-11 min-h-screen bg-gray-100">
       <main className="w-full max-w-3xl p-6">
         <div className="bg-white shadow-md p-8 rounded-lg border border-gray-300 mx-auto">
+          <ToastContainer />
           <h1 className="text-2xl font-semibold mb-6 text-blue-950">Profile Settings</h1>
           <div className="flex flex-row items-start">
             {/* Photo upload section */}
@@ -95,37 +147,114 @@ const ProfileManager = () => {
               <form>
                 <div className="mb-4">
                   <label className="block text-gray-700">Your Name</label>
-                  <input 
-                    type="text" 
-                    className="mt-1 block w-full border border-gray-300 rounded-md p-2" 
-                    value={name} 
-                    onChange={handleNameChange} 
-                  />
+                  {isEditingName ? (
+                    <>
+                      <input 
+                        type="text" 
+                        className="mt-1 block w-full border border-gray-300 rounded-md p-2" 
+                        value={name} 
+                        onChange={handleNameChange} 
+                      />
+                      <button 
+                        type="button" 
+                        className="text-blue-500 text-sm mt-1" 
+                        onClick={toggleEditName}
+                      >
+                        Save
+                      </button>
+                    </>
+                  ) : (
+                    <div>
+                      <span>{name}</span>
+                      <button 
+                        type="button" 
+                        className="text-blue-500 text-sm ml-2" 
+                        onClick={toggleEditName}
+                      >
+                        Change
+                      </button>
+                    </div>
+                  )}
                 </div>
                 <div className="mb-4">
                   <label className="block text-gray-700">Password</label>
-                  <input 
-                    type="password" 
-                    className="mt-1 block w-full border border-gray-300 rounded-md p-2" 
-                    value="**********" 
-                    readOnly 
-                  />
-                  <a href="#" className="text-blue-500 text-sm mt-1 inline-block">Change</a>
+                  {isEditingPassword ? (
+                    <>
+                      <input 
+                        type="password" 
+                        className="mt-1 block w-full border border-gray-300 rounded-md p-2" 
+                        placeholder="Old Password"
+                        value={oldPassword} 
+                        onChange={handleOldPasswordChange} 
+                      />
+                      <input 
+                        type="password" 
+                        className="mt-1 block w-full border border-gray-300 rounded-md p-2" 
+                        placeholder="New Password"
+                        value={newPassword} 
+                        onChange={handleNewPasswordChange} 
+                      />
+                      <button 
+                        type="button" 
+                        className="text-blue-500 text-sm mt-1" 
+                        onClick={handleSavePassword}
+                      >
+                        Save
+                      </button>
+                    </>
+                  ) : (
+                    <div>
+                      <input 
+                        type="password" 
+                        className="mt-1 block w-full border border-gray-300 rounded-md p-2" 
+                        value="**********" 
+                        readOnly 
+                      />
+                      <button 
+                        type="button" 
+                        className="text-blue-500 text-sm ml-2" 
+                        onClick={toggleEditPassword}
+                      >
+                        Change
+                      </button>
+                    </div>
+                  )}
                 </div>
                 <div className="mb-4">
                   <label className="block text-gray-700">Email Address</label>
-                  <input 
-                    type="email" 
-                    className="mt-1 block w-full border border-gray-300 rounded-md p-2" 
-                    value={email} 
-                    onChange={handleEmailChange} 
-                  />
-                  <a href="#" className="text-blue-500 text-sm mt-1 inline-block">Change</a>
+                  {isEditingEmail ? (
+                    <>
+                      <input 
+                        type="email" 
+                        className="mt-1 block w-full border border-gray-300 rounded-md p-2" 
+                        value={email} 
+                        onChange={handleEmailChange} 
+                      />
+                      <button 
+                        type="button" 
+                        className="text-blue-500 text-sm mt-1" 
+                        onClick={toggleEditEmail}
+                      >
+                        Save
+                      </button>
+                    </>
+                  ) : (
+                    <div>
+                      <span>{email}</span>
+                      <button 
+                        type="button" 
+                        className="text-blue-500 text-sm ml-2" 
+                        onClick={toggleEditEmail}
+                      >
+                        Change
+                      </button>
+                    </div>
+                  )}
                 </div>
                 <div className="text-center">
                   <div className="flex space-x-4 justify-center">
                     <button className="px-4 py-2 bg-gray-300 text-gray-700 rounded-md">Cancel</button>
-                    <button className="px-4 py-2 bg-blue-500 text-white rounded-md">Save</button>
+                    <button className="px-4 py-2 bg-blue-950 text-white rounded-md">Save</button>
                   </div>
                 </div>
               </form>
