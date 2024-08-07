@@ -1,4 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import Cookies from 'js-cookie';
 import authService from '../sevices/authService';
 
 const initialState = {
@@ -12,6 +13,7 @@ const initialState = {
 export const register = createAsyncThunk('auth/register', async (userData, thunkAPI) => {
   try {
     const data = await authService.register(userData);
+    Cookies.set('token', data.token); // Save token in cookies
     return data;
   } catch (error) {
     return thunkAPI.rejectWithValue(error.response.data);
@@ -22,6 +24,7 @@ export const register = createAsyncThunk('auth/register', async (userData, thunk
 export const login = createAsyncThunk('auth/login', async ({ email, password }, thunkAPI) => {
   try {
     const data = await authService.login(email, password);
+    Cookies.set('token', data.token); // Save token in cookies
     return data;
   } catch (error) {
     return thunkAPI.rejectWithValue(error.response.data);
@@ -32,6 +35,16 @@ export const login = createAsyncThunk('auth/login', async ({ email, password }, 
 export const fetchProfile = createAsyncThunk('auth/fetchProfile', async (_, thunkAPI) => {
   try {
     const data = await authService.getProfile();
+    return data.user; // Ensure this does not include passwords
+  } catch (error) {
+    return thunkAPI.rejectWithValue(error.response.data);
+  }
+});
+
+// Update user profile
+export const updateProfile = createAsyncThunk('auth/updateProfile', async (profileData, thunkAPI) => {
+  try {
+    const data = await authService.updateProfile(profileData);
     return data.user;
   } catch (error) {
     return thunkAPI.rejectWithValue(error.response.data);
@@ -56,7 +69,7 @@ const authSlice = createSlice({
     logout: (state) => {
       state.user = null;
       state.isLoggedIn = false;
-      authService.logout();
+      Cookies.remove('token');
     },
   },
   extraReducers: (builder) => {
@@ -96,18 +109,6 @@ const authSlice = createSlice({
         state.user = action.payload;
       })
       .addCase(fetchProfile.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
-      })
-      .addCase(resetPassword.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(resetPassword.fulfilled, (state) => {
-        state.loading = false;
-        // Optionally handle successful password reset state
-      })
-      .addCase(resetPassword.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });
