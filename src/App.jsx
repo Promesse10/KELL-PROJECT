@@ -24,7 +24,6 @@ import CategoriesPage from "./pages/CategoriesPage";
 import UserList from "./components/Users/UserList";
 import ForgotPasswordForm from "./components/ForgetPassword";
 import NotFound from './components/NotFound';
-import OrderForm from './components/OrderForm'; // Import the OrderForm component
 
 function App() {
   const location = useLocation();
@@ -51,8 +50,7 @@ function App() {
         <Route path="/infopage" element={<Infopage />} />
         <Route path="/profile" element={<ProfileManager />} />
         <Route path="/ForgotPassword" element={<ForgotPasswordForm />} />
-        <Route path="/orderform" element={<OrderForm />} /> {/* Add route for OrderForm */}
-
+      
         <Route path="/admin" element={<AdminLayout />}>
           <Route path="product" element={<ProductsPage />} />
           <Route path="dashboard" element={<Dashboard />} />
