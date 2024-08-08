@@ -24,7 +24,7 @@ import CategoriesPage from "./pages/CategoriesPage";
 import UserList from "./components/Users/UserList";
 import ForgotPasswordForm from "./components/ForgetPassword";
 import NotFound from './components/NotFound';
-import Payment from './payment/UserPayment';
+import {Payment} from './payment/UserPayment';
 
 function App() {
   const location = useLocation();
