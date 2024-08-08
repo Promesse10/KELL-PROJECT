@@ -24,6 +24,8 @@ import CategoriesPage from "./pages/CategoriesPage";
 import UserList from "./components/Users/UserList";
 import ForgotPasswordForm from "./components/ForgetPassword";
 import NotFound from './components/NotFound';
+import {Payment} from './payment/UserPayment';
+
 
 function App() {
   const location = useLocation();
@@ -50,6 +52,7 @@ function App() {
         <Route path="/infopage" element={<Infopage />} />
         <Route path="/profile" element={<ProfileManager />} />
         <Route path="/ForgotPassword" element={<ForgotPasswordForm />} />
+        <Route path="/payment" element={<Payment />} />
       
         <Route path="/admin" element={<AdminLayout />}>
           <Route path="product" element={<ProductsPage />} />
