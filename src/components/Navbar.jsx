@@ -1,6 +1,3 @@
-
-
-
 import React, { useState } from 'react';
 import { Link as RouterLink, useNavigate, useLocation } from 'react-router-dom';
 import { Link as ScrollLink } from 'react-scroll';
@@ -10,7 +7,7 @@ import Account1 from '../assets/Account1.png';
 import Cart1 from '../assets/Cart1.png';
 import { useSelector, useDispatch } from 'react-redux';
 import { logout } from '../slices/authSlice';
-import { increaseQuantity, decreaseQuantity } from '../slices/cartSlice';
+import { increaseQuantity, decreaseQuantity,removeFromCart } from '../slices/cartSlice';
 import { useTranslation } from 'react-i18next';
 import LanguageSwitcher from './LanguageSwitcher';
 
@@ -30,6 +27,10 @@ const Navbar = () => {
 
   const handleNav = () => {
     setNav(!nav);
+  };
+
+  const handleRemoveFromCart = (itemId) => {
+    dispatch(removeFromCart(itemId));
   };
 
   const handleAccountDropdown = (e) => {
@@ -55,6 +56,13 @@ const Navbar = () => {
 
   const toggleCartDisplay = () => {
     setShowCart(!showCart);
+  };
+
+  const handleCheckout = () => {
+    // Implement your checkout logic here
+    // For example, navigate to the checkout page
+    navigate('/checkout');
+    setShowCart(false); // Optionally close the cart after checkout
   };
 
   return (
@@ -205,10 +213,14 @@ const Navbar = () => {
 
       {/* Cart popup */}
       {showCart && (
-        <div className="fixed right-0 top-0 w-[30%] h-full bg-white text-black shadow-lg z-50">
-          <button onClick={() => setShowCart(false)} className="absolute top-4 right-4 text-2xl">×</button>
-          <h2 className="text-lg font-semibold p-4">{t('navbar.cart')}</h2>
-          <ul className="p-4">
+    
+      <div className="fixed right-0 top-0 w-[30%] h-full bg-white text-black shadow-lg z-50">
+        <button onClick={() => setShowCart(false)} className="absolute top-4 right-4 text-2xl">×</button>
+        <h2 className="text-lg font-semibold p-4">{t('navbar.cart')}</h2>
+    
+        {/* Scrollable container for cart items */}
+        <div className="overflow-y-auto h-[calc(100%-150px)] p-4">
+          <ul>
             {cartItems.length === 0 ? (
               <li>{t('navbar.cartEmpty')}</li>
             ) : (
@@ -220,20 +232,29 @@ const Navbar = () => {
                     <p>${item.price}</p>
                   </div>
                   <div className="flex items-center">
-                    <button onClick={() => dispatch(decreaseQuantity({ id: item._id }))} className="px-2">−</button>
+                    <button onClick={() => dispatch(decreaseQuantity(item._id))} className="px-2">−</button>
                     <span className="px-2">{item.quantity}</span>
-                    <button onClick={() => dispatch(increaseQuantity({ id: item._id }))} className="px-2">+</button>
+                    <button onClick={() => dispatch(increaseQuantity(item._id))} className="px-2">+</button>
                   </div>
                   <div className="ml-4">${(item.price * item.quantity).toFixed(2)}</div>
+                  <button onClick={() => handleRemoveFromCart(item._id)} className="ml-4 text-red-500">Remove</button>
                 </li>
               ))
             )}
           </ul>
-          <div className="p-4 border-t">
-            <span className="font-semibold">{t('navbar.total')}: ${calculateCartTotal()}</span>
-          </div>
         </div>
-      )}
+    
+        {/* Fixed "Checkout" button */}
+        <div className="absolute bottom-0 left-0 w-full p-4 border-t">
+          <span className="font-semibold">{t('navbar.total')}: ${calculateCartTotal()}</span>
+          <button onClick={handleCheckout} className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-lg w-full">
+            {t('navbar.checkout')}
+          </button>
+        </div>
+      </div>
+    )}
+    
+    
     </div>
   );
 };
