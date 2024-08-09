@@ -216,6 +216,33 @@
     "processingButton": "Processing...",
     "resetSuccess": "Password reset successful, please login.",
     "resetError": "Error resetting password: {{error}}"
+  },
+ "food": {
+    "services": "Food Services",
+    "topImageAlt": "Top Image",
+    "addToCart": "Add to Cart",
+    "buyNow": "Buy Now",
+    "products": {
+      "sack_of_rice": "Sack of Rice",
+      "sack_of_beans": "Sack of Beans",
+      "sack_of_maize": "Sack of Maize",
+      "sack_of_wheat": "Sack of Wheat",
+      "sack_of_soy_bean": "Sack of Soybeans",
+      "sack_of_sorghum": "Sack of Sorghum"
+    }
+  
+  },
+  "products": "Products",
+  "search_placeholder": "Search here...",
+  "per_piece": "1pcs",
+  "currency": "RWF",
+  "all": "All",
+  "search_icon_alt": "Search icon",
+  "product_names": {
+    "product_id_1": "Notebook",
+    "product_id_2": "Pen",
+    "product_id_3": "Pencil"
   }
-  }
+  
+}
   

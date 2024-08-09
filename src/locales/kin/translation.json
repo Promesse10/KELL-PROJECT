@@ -215,6 +215,32 @@
     "processingButton": "Turimo Kubikora...",
     "resetSuccess": "Guhindura ijambo ry'ibanga byagenze neza, nyamuneka winjire.",
     "resetError": "Ikosa ryo guhindura ijambo ry'ibanga: {{error}}"
+  },
+  "food": {
+    "services": "Serivisi z'ibiryo",
+    "topImageAlt": "Ifoto Nyamukuru",
+    "addToCart": "Ongeramo",
+    "buyNow": "Gura",
+    "products": {
+      "sack_of_rice": "Umufuka w'umuceri",
+      "sack_of_beans": "Umufuka w'ibishyimbo",
+      "sack_of_maize": "Umufuka w'ibigori",
+      "sack_of_wheat": "Umufuka w'ingano",
+      "sack_of_soy_bean": "Umufuka wa Soya",
+      "sack_of_sorghum": "Umufuka wa Masaka"
+    }
+    
+  },
+  "products": "Ibicuruzwa",
+  "search_placeholder": "Shakisha hano...",
+  "per_piece": "1pc",
+  "currency": "RWF",
+  "all": "All",
+  "search_icon_alt": "Ikirango cyo gushakisha",
+  "product_names": {
+    "product_id_1": "Ikaramu",
+    "product_id_2": "Pen",
+    "product_id_3": "Ipeneli"
   }
-  }
+}
   
