@@ -1,5 +1,3 @@
-
-
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -7,6 +5,9 @@ import { useTranslation } from 'react-i18next';
 const Cart = ({ cart, updateCart }) => {
   const navigate = useNavigate();
   const { t } = useTranslation();
+
+  // Debugging: Log the cart contents to verify it has items
+  console.log("Cart items:", cart);
 
   const handleIncrease = (index) => {
     const newCart = [...cart];
@@ -28,7 +29,8 @@ const Cart = ({ cart, updateCart }) => {
   };
 
   const handleCheckout = () => {
-    // Implement checkout functionality here
+    // Debugging: Log when checkout is initiated
+    console.log("Proceeding to checkout");
     alert(t('cart.proceedingToCheckout'));
   };
 
@@ -52,9 +54,19 @@ const Cart = ({ cart, updateCart }) => {
                   <p>{item.price} {t('cart.currency')}</p>
                 </div>
                 <div className='flex items-center'>
-                  <button className='font-bold' onClick={() => handleDecrease(index)}>-</button>
+                  <button 
+                    className='font-bold' 
+                    onClick={() => handleDecrease(index)}
+                  >
+                    -
+                  </button>
                   <span className='mx-2'>{item.quantity}</span>
-                  <button className='font-bold' onClick={() => handleIncrease(index)}>+</button>
+                  <button 
+                    className='font-bold' 
+                    onClick={() => handleIncrease(index)}
+                  >
+                    +
+                  </button>
                 </div>
                 <div>
                   <p className='font-bold'>{item.price * item.quantity} {t('cart.currency')}</p>

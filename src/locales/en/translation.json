@@ -17,7 +17,8 @@
     "register": "Register",
     "cart": "Cart",
     "cartEmpty": "Your cart is empty",
-    "total": "Total"
+    "total": "Total",
+    "checkout":"Checkout"
   },
   "hero": {
     "welcome": "Welcome to KarKelly ltd",

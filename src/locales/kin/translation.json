@@ -16,8 +16,9 @@
     "login": "Injira",
     "register": "Iyandikishe",
     "cart": "Igitebo",
-    "cartEmpty": "Igitebo cyawe kiracyuzuye",
-    "total": "Igiteranyo"
+    "cartEmpty": "Igitebo cyawe kirimo ubusa",
+    "total": "Igiteranyo",
+    "checkout":"kwishyura"
   },
   "hero": {
     "welcome": "Murakaza neza muri KarKelly ltd",
