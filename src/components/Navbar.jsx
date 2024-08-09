@@ -7,7 +7,7 @@ import Account1 from '../assets/Account1.png';
 import Cart1 from '../assets/Cart1.png';
 import { useSelector, useDispatch } from 'react-redux';
 import { logout } from '../slices/authSlice';
-import { increaseQuantity, decreaseQuantity,removeFromCart } from '../slices/cartSlice';
+import { increaseQuantity, decreaseQuantity, removeFromCart } from '../slices/cartSlice';
 import { useTranslation } from 'react-i18next';
 import LanguageSwitcher from './LanguageSwitcher';
 
@@ -16,6 +16,7 @@ const Navbar = () => {
   const [showCart, setShowCart] = useState(false);
   const [showAccountDropdown, setShowAccountDropdown] = useState(false);
   const [dropdown, setDropdown] = useState(false);
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false); // Add state for confirmation popup
 
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -59,10 +60,22 @@ const Navbar = () => {
   };
 
   const handleCheckout = () => {
-    // Implement your checkout logic here
-    // For example, navigate to the checkout page
     navigate('/checkout');
-    setShowCart(false); // Optionally close the cart after checkout
+    setShowCart(false);
+  };
+
+  const handleLogoutClick = () => {
+    setShowLogoutConfirm(true); // Show the confirmation popup
+  };
+
+  const handleConfirmLogout = () => {
+    dispatch(logout());
+    setShowLogoutConfirm(false);
+    navigate('/'); // Redirect to the home page
+  };
+
+  const handleCancelLogout = () => {
+    setShowLogoutConfirm(false);
   };
 
   return (
@@ -134,10 +147,10 @@ const Navbar = () => {
                   <RouterLink to="/profile" className="block px-4 py-2 hover:bg-gray-200">{t('navbar.profile')}</RouterLink>
                 </li>
                 <li>
-                  <RouterLink to="/settings" className="block px-4 py-2 hover:bg-gray-200">{t('navbar.settings')}</RouterLink>
+                <RouterLink to="/my-orders" className="block px-4 py-2 hover:bg-gray-200">My Orders</RouterLink>
                 </li>
                 <li>
-                  <button className="block px-4 py-2 w-full text-left hover:bg-gray-200" onClick={() => dispatch(logout())}>{t('navbar.logout')}</button>
+                  <button className="block px-4 py-2 w-full text-left hover:bg-gray-200" onClick={handleLogoutClick}>{t('navbar.logout')}</button>
                 </li>
               </ul>
             )}
@@ -185,13 +198,13 @@ const Navbar = () => {
                       <p className="font-semibold">{t('navbar.hi')}, {user?.name}!</p>
                     </li>
                     <li>
-                      <button onClick={handleProfileClick} className="block px-4 py-2 hover:bg-gray-200">{t('navbar.profile')}</button>
+                      <RouterLink to="/profile" className="block px-4 py-2 hover:bg-gray-200">{t('navbar.profile')}</RouterLink>
                     </li>
                     <li>
                       <RouterLink to="/settings" className="block px-4 py-2 hover:bg-gray-200">{t('navbar.settings')}</RouterLink>
                     </li>
                     <li>
-                      <button className="block px-4 py-2 w-full text-left hover:bg-gray-200" onClick={() => dispatch(logout())}>{t('navbar.logout')}</button>
+                      <button onClick={handleLogoutClick} className="block px-4 py-2 w-full text-left hover:bg-gray-200">{t('navbar.logout')}</button>
                     </li>
                   </ul>
                 )}
@@ -213,48 +226,58 @@ const Navbar = () => {
 
       {/* Cart popup */}
       {showCart && (
-    
-      <div className="fixed right-0 top-0 w-[30%] h-full bg-white text-black shadow-lg z-50">
-        <button onClick={() => setShowCart(false)} className="absolute top-4 right-4 text-2xl">×</button>
-        <h2 className="text-lg font-semibold p-4">{t('navbar.cart')}</h2>
-    
-        {/* Scrollable container for cart items */}
-        <div className="overflow-y-auto h-[calc(100%-150px)] p-4">
-          <ul>
-            {cartItems.length === 0 ? (
-              <li>{t('navbar.cartEmpty')}</li>
-            ) : (
-              cartItems.map((item) => (
-                <li key={item._id} className="flex items-center justify-between py-2 border-b border-gray-200">
-                  <img src={item.images[0].url} alt={item.name} className="w-12 h-12 object-cover" />
-                  <div className="flex-1 ml-2">
-                    <p>{item.name}</p>
-                    <p>${item.price}</p>
-                  </div>
-                  <div className="flex items-center">
-                    <button onClick={() => dispatch(decreaseQuantity(item._id))} className="px-2">−</button>
-                    <span className="px-2">{item.quantity}</span>
-                    <button onClick={() => dispatch(increaseQuantity(item._id))} className="px-2">+</button>
-                  </div>
-                  <div className="ml-4">${(item.price * item.quantity).toFixed(2)}</div>
-                  <button onClick={() => handleRemoveFromCart(item._id)} className="ml-4 text-red-500">Remove</button>
-                </li>
-              ))
-            )}
-          </ul>
+        <div className="fixed right-0 top-0 w-[30%] h-full bg-white text-black shadow-lg z-50">
+          <button onClick={() => setShowCart(false)} className="absolute top-4 right-4 text-2xl">×</button>
+          <h2 className="text-lg font-semibold p-4">{t('navbar.cart')}</h2>
+
+          {/* Scrollable container for cart items */}
+          <div className="overflow-y-auto h-[calc(100%-150px)] p-4">
+            <ul>
+              {cartItems.length === 0 ? (
+                <li>{t('navbar.cartEmpty')}</li>
+              ) : (
+                cartItems.map((item) => (
+                  <li key={item._id} className="flex items-center justify-between py-2 border-b border-gray-200">
+                    <img src={item.images[0].url} alt={item.name} className="w-12 h-12 object-cover" />
+                    <div className="flex-1 ml-2">
+                      <p>{item.name}</p>
+                      <p>${item.price}</p>
+                    </div>
+                    <div className="flex items-center">
+                      <button onClick={() => dispatch(decreaseQuantity(item._id))} className="px-2">−</button>
+                      <span className="px-2">{item.quantity}</span>
+                      <button onClick={() => dispatch(increaseQuantity(item._id))} className="px-2">+</button>
+                    </div>
+                    <div className="ml-4">${(item.price * item.quantity).toFixed(2)}</div>
+                    <button onClick={() => handleRemoveFromCart(item._id)} className="ml-4 text-red-500">Remove</button>
+                  </li>
+                ))
+              )}
+            </ul>
+          </div>
+
+          {/* Fixed "Checkout" button */}
+          <div className="absolute bottom-0 left-0 w-full p-4 border-t">
+            <span className="font-semibold">{t('navbar.total')}: ${calculateCartTotal()}</span>
+            <button onClick={handleCheckout} className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-lg w-full">
+              {t('navbar.checkout')}
+            </button>
+          </div>
         </div>
-    
-        {/* Fixed "Checkout" button */}
-        <div className="absolute bottom-0 left-0 w-full p-4 border-t">
-          <span className="font-semibold">{t('navbar.total')}: ${calculateCartTotal()}</span>
-          <button onClick={handleCheckout} className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-lg w-full">
-            {t('navbar.checkout')}
-          </button>
+      )}
+
+      {/* Confirmation Popup */}
+      {showLogoutConfirm && (
+        <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg">
+            <h3 className="text-lg font-semibold mb-4">{t('Are you sure you want to Logout ?')}</h3>
+            <div className="flex justify-end gap-4">
+              <button onClick={handleCancelLogout} className="px-4 py-2 bg-gray-300 rounded-lg">{t('cancel')}</button>
+              <button onClick={handleConfirmLogout} className="px-4 py-2 bg-blue-950 text-white rounded-lg">{t('confirm')}</button>
+            </div>
+          </div>
         </div>
-      </div>
-    )}
-    
-    
+      )}
     </div>
   );
 };
