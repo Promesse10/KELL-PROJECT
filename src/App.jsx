@@ -24,8 +24,7 @@ import CategoriesPage from "./pages/CategoriesPage";
 import UserList from "./components/Users/UserList";
 import ForgotPasswordForm from "./components/ForgetPassword";
 import NotFound from './components/NotFound';
-import { Payment } from './payment/UserPayment';
-import MyOrders from './components/myorders'; // Import the MyOrders component
+import {Payment} from './payment/UserPayment';
 
 function App() {
   const location = useLocation();
@@ -53,8 +52,7 @@ function App() {
         <Route path="/profile" element={<ProfileManager />} />
         <Route path="/ForgotPassword" element={<ForgotPasswordForm />} />
         <Route path="/payment" element={<Payment />} />
-        <Route path="/my-orders" element={<MyOrders />} /> {/* Add this line for MyOrders route */}
-        
+      
         <Route path="/admin" element={<AdminLayout />}>
           <Route path="product" element={<ProductsPage />} />
           <Route path="dashboard" element={<Dashboard />} />
