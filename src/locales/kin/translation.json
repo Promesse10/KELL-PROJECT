@@ -241,6 +241,11 @@
     "product_id_1": "Ikaramu",
     "product_id_2": "Pen",
     "product_id_3": "Ipeneli"
+  },
+  "loginPopup": {
+    "message": "Mbere yo kongera igicuruzwa mu gitebo banza winjire kuri Konti yawe cyangwa uyifungure",
+    "loginButton": "Injira",
+    "createAccountButton": "Fungura Konti"
   }
 }
   
