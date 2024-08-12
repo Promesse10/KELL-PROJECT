@@ -54,7 +54,7 @@ function App() {
         <Route path="/profile" element={<ProfileManager />} />
         <Route path="/ForgotPassword" element={<ForgotPasswordForm />} />
         <Route path="/payment" element={<Payment />} />
-        <Route path="/my-orders" element={<MyOrders />} />
+        <Route path="/myorders" element={<MyOrders />} />
         <Route path="/admin" element={<AdminLayout />}>
           <Route path="product" element={<ProductsPage />} />
           <Route path="dashboard" element={<Dashboard />} />
