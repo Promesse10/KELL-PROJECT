@@ -13,7 +13,7 @@ const Popup = ({ title, content, onClose }) => (
     <div className="bg-white p-8 rounded-lg shadow-lg max-w-lg w-full">
       <h3 className="text-2xl font-bold text-blue-950 mb-4">{title}</h3>
       <p className="mb-4">{content}</p>
-      <button onClick={onClose} className="bg-red-600 text-white py-2 px-4 rounded-md">{title}</button>
+      <button onClick={onClose} className="bg-red-600 text-white py-2 px-4 rounded-md">close</button>
     </div>
   </div>
 );

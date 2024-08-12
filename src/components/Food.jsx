@@ -156,7 +156,6 @@
 // };
 
 // export default Food;
-
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getProducts } from '../slices/productSlice';
@@ -201,7 +200,9 @@ const Food = () => {
 
   return (
     <div className='bg-gray-100 mt-20 min-h-screen flex flex-col'>
-      {showPopup && <LoginPopup onClose={handleClosePopup} />}
+      {/* Only render the popup if the user is not authenticated */}
+      {!isAuthenticated && showPopup && <LoginPopup onClose={handleClosePopup} />}
+      
       <div className="mb-12">
         <img src={'/path/to/top-image.jpg'} alt={t('food.topImageAlt')} className="w-full h-auto" />
       </div>
@@ -240,5 +241,3 @@ const Food = () => {
 };
 
 export default Food;
-
-

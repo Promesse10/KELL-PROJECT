@@ -24,17 +24,19 @@ import CategoriesPage from "./pages/CategoriesPage";
 import UserList from "./components/Users/UserList";
 import ForgotPasswordForm from "./components/ForgetPassword";
 import NotFound from './components/NotFound';
-import {Payment} from './payment/UserPayment';
+import { Payment } from './payment/UserPayment';
+import MyOrders from './components/myorders';
 
 function App() {
   const location = useLocation();
   const isAdminRoute = location.pathname.startsWith('/admin');
   const isNotFoundPage = location.pathname === '/404';
+  const isLandingPage = location.pathname === '/';
 
   return (
     <>
       <Navbar isAdminRoute={isAdminRoute} />
-      
+
       <Routes>
         <Route path="/" element={<Landingpage />} />
         <Route path="/login" element={<LoginSignup />} />
@@ -52,16 +54,16 @@ function App() {
         <Route path="/profile" element={<ProfileManager />} />
         <Route path="/ForgotPassword" element={<ForgotPasswordForm />} />
         <Route path="/payment" element={<Payment />} />
-      
+        <Route path="/my-orders" element={<MyOrders />} />
         <Route path="/admin" element={<AdminLayout />}>
           <Route path="product" element={<ProductsPage />} />
           <Route path="dashboard" element={<Dashboard />} />
         </Route>
-        
         <Route path="*" element={<NotFound />} />
       </Routes>
 
-      {!isAdminRoute && !isNotFoundPage && <Footer />}
+      {/* Render Footer only if not on the Landingpage, Admin route, or NotFound page */}
+      {!isAdminRoute && !isNotFoundPage && !isLandingPage && <Footer />}
     </>
   );
 }
