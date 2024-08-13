@@ -52,51 +52,51 @@ const CreateEditProduct = () => {
   };
 
   return (
-    <div  >
-      <h2 className="text-2xl font-inter mb-4  text-blue-950">Create Product</h2>
-      <form onSubmit={handleSubmit}>
+    <div className="p-4 lg:p-8 max-w-screen-lg mx-auto lg:mx-0">
+      <h2 className="text-2xl font-bold mb-4 text-blue-950">Create Product</h2>
+      <form onSubmit={handleSubmit} className="space-y-4 lg:w-1/2">
         <div className="mb-4">
-          <label className="block mb-2">Name</label>
+          <label className="block mb-1 text-sm font-medium">Name</label>
           <input
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="border p-2 w-1/2 shadow-md"
+            className="border p-2 w-full shadow-md rounded"
           />
         </div>
         <div className="mb-4">
-          <label className="block mb-2">Description</label>
+          <label className="block mb-1 text-sm font-medium">Description</label>
           <input
             type="text"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            className="border p-2 w-1/2 shadow-md"
+            className="border p-2 w-full shadow-md rounded"
           />
         </div>
         <div className="mb-4">
-          <label className="block mb-2">Price</label>
+          <label className="block mb-1 text-sm font-medium">Price</label>
           <input
             type="number"
             value={price}
             onChange={(e) => setPrice(e.target.value)}
-            className="border p-2 w-1/2 shadow-md"
+            className="border p-2 w-full shadow-md rounded"
           />
         </div>
         <div className="mb-4">
-          <label className="block mb-2">Stock</label>
+          <label className="block mb-1 text-sm font-medium">Stock</label>
           <input
             type="number"
             value={stock}
             onChange={(e) => setStock(e.target.value)}
-            className="border p-2 w-1/2 shadow-md"
+            className="border p-2 w-full shadow-md rounded"
           />
         </div>
         <div className="mb-4">
-          <label className="block mb-2">Category</label>
+          <label className="block mb-1 text-sm font-medium">Category</label>
           <select
             value={category}
             onChange={(e) => setCategory(e.target.value)}
-            className="border p-2 w-1/2 shadow-md"
+            className="border p-2 w-full shadow-md rounded"
           >
             <option value="" disabled>Select category</option>
             {categories.map((cat) => (
@@ -107,20 +107,25 @@ const CreateEditProduct = () => {
           </select>
         </div>
         <div className="mb-4">
-          <label className="block mb-2">Images</label>
+          <label className="block mb-1 text-sm font-medium">Images</label>
           <input
             type="file"
             multiple
             onChange={handleImageChange}
-            className="border p-2 w-1/2 shadow-md"
+            className="border p-2 w-full shadow-md rounded"
           />
         </div>
-        <div className="mb-4">
+        <div className="mb-4 flex flex-wrap gap-2">
           {images.map((img, index) => (
-            <img key={index} src={img.url} alt={img.public_id} className="w-32 h-32 object-cover" />
+            <img
+              key={index}
+              src={img.url}
+              alt={img.public_id}
+              className="w-24 h-24 object-cover rounded"
+            />
           ))}
         </div>
-        <button type="submit" className="bg-blue-500 text-white p-2">Create</button>
+        <button type="submit" className="bg-blue-500 text-white p-2 rounded hover:bg-blue-600">Create</button>
       </form>
     </div>
   );
