@@ -1,43 +1,31 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import visible from '../assets/visible.png'; // Update with the correct path to your visible icon
-import unvisible from '../assets/Unvisible.png'; // Update with the correct path to your unvisible icon
+import visible from '../assets/visible.png';
+import unvisible from '../assets/Unvisible.png';
+import { useAuth } from '../context/authContext';
 
-const Login = ({ onLogin }) => {
+const LoginAdmin = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [passwordVisible, setPasswordVisible] = useState(false);
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // Replace with actual authentication logic
-    if (username === 'Kelia' && password === '123') {
-      toast.success('Login successful!', {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
-      onLogin(true);
-    } else {
-      toast.error('Username or Password incorrect', {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
-    }
-  };
+  const { loginUser } = useAuth();
+  const navigate = useNavigate();
 
   const togglePasswordVisibility = () => {
     setPasswordVisible(!passwordVisible);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      await loginUser({ email: username, password });
+      navigate('/admin'); // Redirect to admin dashboard on successful login
+      toast.success('Login successful!');
+    } catch (error) {
+      toast.error(error.message || 'Login failed');
+    }
   };
 
   return (
@@ -84,4 +72,4 @@ const Login = ({ onLogin }) => {
   );
 };
 
-export default Login;
+export default LoginAdmin;

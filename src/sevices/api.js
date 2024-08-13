@@ -6,8 +6,15 @@ const api = axios.create({
   baseURL: API_BASE_URL,
 });
 
+// Existing API methods
+
 export const fetchProducts = async (category) => {
   const response = await api.get(`/products/get-all?category=${category}`);
+  return response.data.products;
+};
+
+export const fetchAllProducts = async () => {
+  const response = await api.get(`/products/get-all`);
   return response.data.products;
 };
 
@@ -15,6 +22,19 @@ export const createProduct = async (product) => {
   const response = await api.post('/products/create', product);
   return response.data;
 };
+
+// New API methods
+
+export const deleteProduct = async (id) => {
+  await api.delete(`/products/delete/${id}`);
+};
+
+export const updateProduct = async (product) => {
+  const response = await api.put(`/products/${product.id}`, product);
+  return response.data;
+};
+
+// Additional API methods
 
 export const fetchOrders = async () => {
   const response = await api.get('/orders/my-orders');
