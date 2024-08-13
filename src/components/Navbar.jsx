@@ -153,6 +153,9 @@ const Navbar = () => {
                 </li>
                 <li>
                   <RouterLink to="/myorders" className="block px-4 py-2 hover:bg-gray-200">{t('navbar.myOrders')}</RouterLink>
+
+                <RouterLink to="/myorders" className="block px-4 py-2 hover:bg-gray-200">My Orders</RouterLink>
+
                 </li>
                 <li>
                   <button className="block px-4 py-2 w-full text-left hover:bg-gray-200" onClick={handleLogoutClick}>{t('navbar.logout')}</button>
