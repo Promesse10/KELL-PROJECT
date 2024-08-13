@@ -102,7 +102,6 @@
 
 // export default Home;
 
-
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from 'react-redux';
 import { getProducts } from '../slices/productSlice';
@@ -120,10 +119,9 @@ function Home() {
   const { t } = useTranslation();
 
   useEffect(() => {
-    dispatch(getProducts('schoolmatetial')); 
+    dispatch(getProducts('schoolmatetial')); // Correct spelling
   }, [dispatch]);
 
-  // Translate product names
   const translateProductName = (product) => {
     return t(`product_names.${product._id}`, { defaultValue: product.name });
   };
