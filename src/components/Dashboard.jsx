@@ -2,11 +2,6 @@ import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getTotalSales, getTotalOrders, getTotalCustomers, getRecentOrders, getPopularProducts } from '../slices/orderSlice';
 import Mkelia from '../assets/Mkelia.png';
-import bean from './image-food/bean.jpg';
-import rice from './image-food/rice.jpg';
-import maize from './image-food/maize.jpg';
-import sorghum from './image-food/sorghum.jpg';
-import soybean from './image-food/soybean.jpg';
 import shopping from '../assets/shopping.png';
 import basket from '../assets/basket.png';
 import user from '../assets/user.png';
@@ -18,7 +13,7 @@ const Dashboard = () => {
     totalOrders,
     totalCustomers,
     recentOrders,
-    popularProducts, // Add this line
+    popularProducts,
     status,
     error
   } = useSelector((state) => state.orders);
@@ -28,26 +23,26 @@ const Dashboard = () => {
     dispatch(getTotalOrders());
     dispatch(getTotalCustomers());
     dispatch(getRecentOrders());
-    dispatch(getPopularProducts()); // Fetch popular products
+    dispatch(getPopularProducts());
   }, [dispatch]);
 
   if (status === 'loading') {
-    return <div>Loading...</div>;
+    return <div className="text-center py-4">Loading...</div>;
   }
 
   if (status === 'failed') {
-    return <div>Error: {error}</div>;
+    return <div className="text-center py-4">Error: {error}</div>;
   }
 
   return (
     <div className="p-4 bg-slate-100">
       {/* Header */}
-      <header className="flex justify-between items-center p-4 bg-white shadow mb-4">
-        <div className="flex items-center space-x-4">
+      <header className="flex flex-col md:flex-row justify-between items-center p-4 bg-white shadow mb-4">
+        <div className="flex items-center space-x-4 mb-4 md:mb-0">
           <input
             type="text"
             placeholder="Search..."
-            className="px-4 py-2 border rounded focus:outline-none"
+            className="px-4 py-2 border rounded focus:outline-none w-full md:w-64"
           />
         </div>
         <div className="flex items-center space-x-4">
@@ -86,7 +81,7 @@ const Dashboard = () => {
           <div className="w-10 h-10 rounded-full overflow-hidden">
             <img
               src={Mkelia}
-              alt="Image"
+              alt="Profile"
               className="w-full h-full object-cover"
             />
           </div>
@@ -94,30 +89,30 @@ const Dashboard = () => {
       </header>
 
       <h1 className="text-2xl font-bold mb-4">Dashboard</h1>
-      <p>Welcome to the admin dashboard!</p>
+      <p className="mb-6">Welcome to the admin dashboard!</p>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 mt-4">
-        <div className="bg-white p-4 rounded shadow text-center flex flex-row gap-6 pt-10 pl-14">
-          <div><img src={basket} alt="image" className="w-16 h-16" /></div>
-          <div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
+        <div className="bg-white p-4 rounded shadow flex items-center justify-between">
+          <div><img src={basket} alt="Total Sales" className="w-16 h-16" /></div>
+          <div className="text-center">
             <h2 className="text-xl">Total Sales</h2>
             <p className="text-2xl text-blue-500">${totalSales}</p>
             <p className="text-green-500">+343</p>
           </div>
         </div>
 
-        <div className="bg-white p-4 rounded shadow text-center flex flex-row gap-6 pt-10 pl-7">
-          <div><img src={user} alt="image" className="w-16 h-16" /></div>
-          <div>
+        <div className="bg-white p-4 rounded shadow flex items-center justify-between">
+          <div><img src={user} alt="Total Customers" className="w-16 h-16" /></div>
+          <div className="text-center">
             <h2 className="text-xl">Total Customers</h2>
             <p className="text-2xl text-blue-500">{totalCustomers}</p>
             <p className="text-red-500">-30</p>
           </div>
         </div>
 
-        <div className="bg-white p-4 rounded shadow text-center flex flex-row gap-6 pt-10 pl-14">
-          <div><img src={shopping} alt="image" className="w-16 h-16" /></div>
-          <div>
+        <div className="bg-white p-4 rounded shadow flex items-center justify-between">
+          <div><img src={shopping} alt="Total Orders" className="w-16 h-16" /></div>
+          <div className="text-center">
             <h2 className="text-xl">Total Orders</h2>
             <p className="text-2xl text-blue-500">{totalOrders}</p>
             <p className="text-red-500">-43</p>
@@ -125,36 +120,38 @@ const Dashboard = () => {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mt-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Recent Orders */}
-        <div className="lg:col-span-2 bg-white p-4 rounded shadow-sm">
+        <div className="lg:col-span-2 bg-white p-4 rounded shadow">
           <h2 className="text-xl mb-4 text-gray-600">Recent Orders</h2>
-          <table className="w-full table-auto">
-            <thead>
-              <tr className="bg-gray-200">
-                <th className="border px-4 py-2">ID</th>
-                <th className="border px-4 py-2">Product ID</th>
-                <th className="border px-4 py-2">Customer Name</th>
-                <th className="border px-4 py-2">Order Date</th>
-                <th className="border px-4 py-2">Order Total</th>
-                <th className="border px-4 py-2">Shipping Address</th>
-                <th className="border px-4 py-2">Order Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              {recentOrders.map((order) => (
-                <tr key={order._id}>
-                  <td className="border px-4 py-2">#{order._id}</td>
-                  <td className="border px-4 py-2">#{order.orderItems[0]?.product}</td>
-                  <td className="border px-4 py-2">{order.user}</td>
-                  <td className="border px-4 py-2">{new Date(order.createdAt).toLocaleDateString()}</td>
-                  <td className="border px-4 py-2">{order.totalAmount} rwf</td>
-                  <td className="border px-4 py-2">{order.shippingInfo.address}, {order.shippingInfo.city}</td>
-                  <td className="border px-4 py-2">{order.orderStatus}</td>
+          <div className="overflow-x-auto">
+            <table className="min-w-full table-auto">
+              <thead className="bg-gray-200">
+                <tr>
+                  <th className="border px-2 py-1 text-left text-sm sm:text-base">ID</th>
+                  <th className="border px-2 py-1 text-left text-sm sm:text-base">Product ID</th>
+                  <th className="border px-2 py-1 text-left text-sm sm:text-base">Customer Name</th>
+                  <th className="border px-2 py-1 text-left text-sm sm:text-base">Order Date</th>
+                  <th className="border px-2 py-1 text-left text-sm sm:text-base">Order Total</th>
+                  <th className="border px-2 py-1 text-left text-sm sm:text-base">Shipping Address</th>
+                  <th className="border px-2 py-1 text-left text-sm sm:text-base">Order Status</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {recentOrders.map((order) => (
+                  <tr key={order._id}>
+                    <td className="border px-2 py-1 text-sm sm:text-base">#{order._id}</td>
+                    <td className="border px-2 py-1 text-sm sm:text-base">#{order.orderItems[0]?.product}</td>
+                    <td className="border px-2 py-1 text-sm sm:text-base">{order.user}</td>
+                    <td className="border px-2 py-1 text-sm sm:text-base">{new Date(order.createdAt).toLocaleDateString()}</td>
+                    <td className="border px-2 py-1 text-sm sm:text-base">{order.totalAmount} rwf</td>
+                    <td className="border px-2 py-1 text-sm sm:text-base">{order.shippingInfo.address}, {order.shippingInfo.city}</td>
+                    <td className="border px-2 py-1 text-sm sm:text-base">{order.orderStatus}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
 
         {/* Popular Products */}
@@ -162,14 +159,14 @@ const Dashboard = () => {
           <h2 className="text-xl mb-4 text-gray-600">Popular Products</h2>
           <ul>
             {popularProducts.map((product) => (
-              <li key={product._id} className="flex justify-between items-center mb-2">
+              <li key={product._id} className="flex items-center justify-between mb-4">
                 <div className="flex items-center">
-                  <img src={product.images[0].url} alt="image" className="w-10 h-10 object-cover rounded mr-2" />
-                  <span>{product.name}</span>
+                  <img src={product.images[0].url} alt={product.name} className="w-12 h-12 object-cover rounded mr-3" />
+                  <span className="text-sm sm:text-base">{product.name}</span>
                 </div>
-                <div className="text-right pt-3">
-                  <p>{product.price} rwf</p>
-                  <p className={product.stock > 0 ? "text-green-500" : "text-red-500"}>
+                <div className="text-right">
+                  <p className="text-sm sm:text-base">{product.price} rwf</p>
+                  <p className={`text-sm ${product.stock > 0 ? "text-green-500" : "text-red-500"}`}>
                     {product.stock > 0 ? `${product.stock} in Stock` : "Out of Stock"}
                   </p>
                 </div>
