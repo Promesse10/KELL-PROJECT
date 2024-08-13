@@ -108,9 +108,9 @@ const ProfileManager = () => {
         <div className="bg-white shadow-md p-8 rounded-lg border border-gray-300 mx-auto">
           <ToastContainer />
           <h1 className="text-2xl font-semibold mb-6 text-blue-950">Profile Settings</h1>
-          <div className="flex flex-row items-start">
+          <div className="flex flex-col md:flex-row items-start">
             {/* Photo upload section */}
-            <div className="relative flex-none w-1/3 flex flex-col items-center mb-6">
+            <div className="relative flex-none w-full md:w-1/3 flex flex-col items-center mb-6">
               <div 
                 className="relative w-32 h-32 bg-gray-200 rounded-full flex items-center justify-center cursor-pointer border border-gray-300"
                 onClick={handleAvatarClick}
@@ -143,7 +143,7 @@ const ProfileManager = () => {
               )}
             </div>
             {/* Form section */}
-            <div className="flex-grow">
+            <div className="flex-grow w-full md:w-2/3">
               <form>
                 <div className="mb-4">
                   <label className="block text-gray-700">Your Name</label>

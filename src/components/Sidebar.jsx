@@ -1,7 +1,17 @@
 import React from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { logout } from '../slices/authSlice';
 
 const Sidebar = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    dispatch(logout()); // Dispatch the logout action
+    navigate('/login-admin'); // Redirect to the landing page
+  };
+
   return (
     <div className="fixed h-screen bg-gray-800 text-white w-64">
       <div className="flex items-center justify-center h-20">
@@ -71,10 +81,7 @@ const Sidebar = () => {
           </li>
           <li className="mt-auto mb-4">
             <button
-              onClick={() => {
-                // Add your logout functionality here
-                console.log('Logout');
-              }}
+              onClick={handleLogout}
               className="text-gray-300 hover:bg-gray-700 hover:text-white p-3 rounded block w-full text-left"
             >
               Logout
