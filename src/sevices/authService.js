@@ -1,58 +1,38 @@
-import axios from 'axios';
-import Cookies from 'js-cookie';
+import axios from '../../axiosConfig'; // Use the axios instance with headers
 
-const API_URL = 'http://localhost:8009/api/v1/users';
+const API_URL = '/users';
 
 const register = async (userData) => {
-  try {
-    const response = await axios.post(`${API_URL}/register`, userData);
-    return response.data;
-  } catch (error) {
-    throw new Error(error.response?.data?.message || 'Registration failed');
-  }
+  const response = await axios.post(`${API_URL}/register`, userData);
+  return response.data;
 };
 
 const login = async (email, password) => {
   const response = await axios.post(`${API_URL}/login`, { email, password });
-  if (response.data.token) {
-    Cookies.set('token', response.data.token, { expires: 15 });
-  }
   return response.data;
-};
-
-const logout = () => {
-  Cookies.remove('user');
 };
 
 const getProfile = async () => {
-  const user = JSON.parse(Cookies.get('user') || '{}');
-  if (!user || !user.token) {
-    throw new Error('No token found');
-  }
-
-  const response = await axios.get(`${API_URL}/profile`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
+  const response = await axios.get(`${API_URL}/profile`);
   return response.data;
 };
 
-const getStoredUser = () => {
-  return JSON.parse(Cookies.get('user') || '{}');
+const updateProfile = async (profileData) => {
+  const response = await axios.put(`${API_URL}/profile`, profileData);
+  return response.data;
 };
 
-// Add resetPassword method
 const resetPassword = async (resetData) => {
-  const response = await axios.post(`${API_URL}/forget-password`, resetData);
+  const response = await axios.post(`${API_URL}/reset-password`, resetData);
   return response.data;
 };
 
-export default {
+const authService = {
   register,
   login,
-  logout,
   getProfile,
-  getStoredUser,
-  resetPassword, 
+  updateProfile,
+  resetPassword,
 };
+
+export default authService;

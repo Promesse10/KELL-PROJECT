@@ -16,7 +16,7 @@ const Navbar = () => {
   const [showCart, setShowCart] = useState(false);
   const [showAccountDropdown, setShowAccountDropdown] = useState(false);
   const [dropdown, setDropdown] = useState(false);
-  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false); // Add state for confirmation popup
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
 
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -24,6 +24,8 @@ const Navbar = () => {
   const dispatch = useDispatch();
 
   const { user, isLoggedIn } = useSelector((state) => state.auth);
+  console.log('User object:', user); // Log user object
+  console.log('User name:', user?.name);
   const cartItems = useSelector((state) => state.cart.items) || [];
 
   const handleNav = () => {
@@ -65,13 +67,13 @@ const Navbar = () => {
   };
 
   const handleLogoutClick = () => {
-    setShowLogoutConfirm(true); // Show the confirmation popup
+    setShowLogoutConfirm(true);
   };
 
   const handleConfirmLogout = () => {
     dispatch(logout());
     setShowLogoutConfirm(false);
-    navigate('/'); // Redirect to the home page
+    navigate('/');
   };
 
   const handleCancelLogout = () => {
@@ -141,13 +143,19 @@ const Navbar = () => {
             {showAccountDropdown && (
               <ul className="absolute top-full right-0 mt-2 w-48 bg-white shadow-lg" onClick={(e) => e.stopPropagation()}>
                 <li className="px-4 py-2">
-                  <p className="font-semibold">{t('navbar.hi')}, {user.name}!</p>
+                <p className="font-semibold">
+              {t('navbar.hi')}, {user.name ? user.name : 'Guest'}!
+            </p>
+
                 </li>
                 <li>
                   <RouterLink to="/profile" className="block px-4 py-2 hover:bg-gray-200">{t('navbar.profile')}</RouterLink>
                 </li>
                 <li>
+                  <RouterLink to="/myorders" className="block px-4 py-2 hover:bg-gray-200">{t('navbar.myOrders')}</RouterLink>
+
                 <RouterLink to="/myorders" className="block px-4 py-2 hover:bg-gray-200">My Orders</RouterLink>
+
                 </li>
                 <li>
                   <button className="block px-4 py-2 w-full text-left hover:bg-gray-200" onClick={handleLogoutClick}>{t('navbar.logout')}</button>
@@ -195,13 +203,13 @@ const Navbar = () => {
                 {showAccountDropdown && (
                   <ul className="absolute top-full right-0 mt-2 w-48 bg-white shadow-lg" onClick={(e) => e.stopPropagation()}>
                     <li className="px-4 py-2">
-                      <p className="font-semibold">{t('navbar.hi')}, {user?.name}!</p>
+                      <p className="font-semibold">{t('navbar.hi')}, {user.name}!</p>
                     </li>
                     <li>
-                      <RouterLink to="/profile" className="block px-4 py-2 hover:bg-gray-200">{t('navbar.profile')}</RouterLink>
+                      <RouterLink to="/profile" className="block px-4 py-2 hover:bg-gray-200" onClick={handleNav}>{t('navbar.profile')}</RouterLink>
                     </li>
                     <li>
-                      <RouterLink to="/settings" className="block px-4 py-2 hover:bg-gray-200">{t('navbar.settings')}</RouterLink>
+                      <RouterLink to="/myorders" className="block px-4 py-2 hover:bg-gray-200" onClick={handleNav}>{t('navbar.myOrders')}</RouterLink>
                     </li>
                     <li>
                       <button onClick={handleLogoutClick} className="block px-4 py-2 w-full text-left hover:bg-gray-200">{t('navbar.logout')}</button>
@@ -218,7 +226,7 @@ const Navbar = () => {
           )}
           <li className="p-4 border-t border-gray-600">
             <div className="bg-white text-blue-950 rounded-lg p-2">
-              <LanguageSwitcher/>
+              <LanguageSwitcher />
             </div>
           </li>
         </ul>

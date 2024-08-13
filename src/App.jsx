@@ -25,7 +25,13 @@ import UserList from "./components/Users/UserList";
 import ForgotPasswordForm from "./components/ForgetPassword";
 import NotFound from './components/NotFound';
 import { Payment } from './payment/UserPayment';
+
+import PrivateRoute from './components/PrivateRoute';
+import { AuthProvider } from './context/authContext';
+import LoginAdmin from './layout/Login';
+
 import MyOrders from './components/myorders';
+
 
 function App() {
   const location = useLocation();
@@ -35,11 +41,16 @@ function App() {
 
   return (
     <>
+
+      {!isAdminRoute && <Navbar isAdminRoute={isAdminRoute} />}
+
       <Navbar isAdminRoute={isAdminRoute} />
+
 
       <Routes>
         <Route path="/" element={<Landingpage />} />
         <Route path="/login" element={<LoginSignup />} />
+        <Route path="/login-admin" element={<LoginAdmin/>} />
         <Route path="/cart" element={<Cart />} />
         <Route path="/createAccount" element={<CreateAccount />} />
         <Route path="/hero" element={<Hero />} />
@@ -54,11 +65,25 @@ function App() {
         <Route path="/profile" element={<ProfileManager />} />
         <Route path="/ForgotPassword" element={<ForgotPasswordForm />} />
         <Route path="/payment" element={<Payment />} />
+
+
+        <Route element={<PrivateRoute isAdminRoute />}>
+          <Route path="/admin" element={<AdminLayout />}>
+            <Route path="product" element={<ProductsPage />} />
+            <Route path="dashboard" element={<Dashboard />} />
+            <Route path="orders" element={<OrderList />} />
+            <Route path="categories" element={<CategoriesPage />} />
+            <Route path="users" element={<UserList />} />
+          </Route>
+        </Route>
+
+
         <Route path="/myorders" element={<MyOrders />} />
         <Route path="/admin" element={<AdminLayout />}>
           <Route path="product" element={<ProductsPage />} />
           <Route path="dashboard" element={<Dashboard />} />
         </Route>
+
         <Route path="*" element={<NotFound />} />
       </Routes>
 
@@ -70,9 +95,11 @@ function App() {
 
 function AppWrapper() {
   return (
-    <Router>
-      <App />
-    </Router>
+    <AuthProvider>
+      <Router>
+        <App />
+      </Router>
+    </AuthProvider>
   );
 }
 
