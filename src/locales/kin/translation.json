@@ -175,7 +175,8 @@
     "checkout": "Kugura",
     "back": "Garuka",
     "empty": "Igare ryawe ririmo ubusa",
-    "proceedingToCheckout": "Gukomeza kugura!"
+    "proceedingToCheckout": "Gukomeza kugura!",
+    "title":"igitebo"
   },
   "dashboard": {
     "search": "Shakisha...",

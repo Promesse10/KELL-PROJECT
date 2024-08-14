@@ -1,38 +1,75 @@
-import axios from '../../axiosConfig'; // Use the axios instance with headers
+import axios from 'axios';
+import Cookies from 'js-cookie';
 
-const API_URL = '/users';
+const API_URL = 'http://localhost:8009/api/v1/users';
+
+// Create axios instance with token interceptor
+const instance = axios.create({
+  baseURL: API_URL,
+  timeout: 1000,
+});
+
+instance.interceptors.request.use(
+  (config) => {
+    const token = Cookies.get('token');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
 
 const register = async (userData) => {
-  const response = await axios.post(`${API_URL}/register`, userData);
-  return response.data;
+  try {
+    const response = await instance.post('/register', userData);
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response?.data?.message || 'Registration failed');
+  }
 };
 
 const login = async (email, password) => {
-  const response = await axios.post(`${API_URL}/login`, { email, password });
-  return response.data;
+  try {
+    const response = await instance.post('/login', { email, password });
+    if (response.data.token) {
+      Cookies.set('token', response.data.token, { expires: 15 });
+    }
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response?.data?.message || 'Login failed');
+  }
+};
+
+const logout = () => {
+  Cookies.remove('token');
 };
 
 const getProfile = async () => {
-  const response = await axios.get(`${API_URL}/profile`);
-  return response.data;
+  try {
+    const response = await instance.get('/profile');
+    return response.data; 
+    
+    
+  } catch (error) {
+    throw new Error('Failed to fetch profile');
+  }
 };
 
-const updateProfile = async (profileData) => {
-  const response = await axios.put(`${API_URL}/profile`, profileData);
-  return response.data;
-};
-
+// Add resetPassword method
 const resetPassword = async (resetData) => {
-  const response = await axios.post(`${API_URL}/reset-password`, resetData);
-  return response.data;
+  try {
+    const response = await instance.post('/forget-password', resetData);
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response?.data?.message || 'Password reset failed');
+  }
 };
 
-const authService = {
+export default {
   register,
   login,
+  logout,
   getProfile,
-  updateProfile,
   resetPassword,
 };
-
-export default authService;
