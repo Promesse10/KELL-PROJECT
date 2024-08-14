@@ -4,8 +4,6 @@ import { useAuth } from '../context/authContext';
 
 const PrivateRoute = ({ isAdminRoute }) => {
   const { isLoggedIn, isAdmin } = useAuth();
-  console.log('isLoggedIn:', isLoggedIn);
-console.log('isAdmin:', isAdmin);
 
   if (!isLoggedIn) {
     return <Navigate to="/login-admin" />;
