@@ -19,10 +19,11 @@ const OrderForm = () => {
   };
 
   return (
-    <div className="bg-gray-200 min-h-screen flex items-center justify-center">
-      <div className="max-w-md mx-auto bg-gray-100 shadow-lg rounded-lg p-8 mt-32 mb-14">
-        <h2 className="text-2xl font-bold mb-6">Order Form</h2>
+    <div className="bg-gray-200 min-h-screen mt-24 flex items-center justify-center">
+      <div className="w-full max-w-lg lg:max-w-2xl mx-auto bg-gray-100 shadow-lg rounded-lg p-6 md:p-8 mt-16 mb-10">
+        <h2 className="text-2xl font-bold mb-6 text-center">Order Form</h2>
         <form onSubmit={handleSubmit}>
+          {/* Shipping Information */}
           <div className="mb-4">
             <h3 className="text-xl font-semibold mb-2">Shipping Information</h3>
             <input
@@ -39,6 +40,7 @@ const OrderForm = () => {
             />
           </div>
 
+          {/* Order Items */}
           <div className="mb-4">
             <h3 className="text-xl font-semibold mb-2">Order Items</h3>
             {items.map((item, index) => (
@@ -94,6 +96,7 @@ const OrderForm = () => {
             </button>
           </div>
 
+          {/* Payment Information */}
           <div className="mb-4">
             <h3 className="text-xl font-semibold mb-2">Payment Information</h3>
             <select
@@ -106,6 +109,7 @@ const OrderForm = () => {
             </select>
           </div>
 
+          {/* Price Details */}
           <div className="mb-6">
             <h3 className="text-xl font-semibold mb-2">Price Details</h3>
             <input
@@ -122,6 +126,7 @@ const OrderForm = () => {
             />
           </div>
 
+          {/* Submit Button */}
           <button
             type="submit"
             className="w-full px-4 py-2 bg-blue-900 text-white rounded-md hover:bg-blue-950"

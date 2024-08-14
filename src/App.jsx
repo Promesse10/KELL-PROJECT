@@ -31,26 +31,26 @@ import { AuthProvider } from './context/authContext';
 import LoginAdmin from './layout/Login';
 
 import MyOrders from './components/myorders';
-
+import OrderForm from './components/OrderForm'
 
 function App() {
   const location = useLocation();
   const isAdminRoute = location.pathname.startsWith('/admin');
+  const isLoginAdminPage = location.pathname === '/login-admin';
+  const isDashboardPage = location.pathname === '/admin/dashboard';
   const isNotFoundPage = location.pathname === '/404';
   const isLandingPage = location.pathname === '/';
 
+  const shouldShowNavbar = !isAdminRoute && !isLoginAdminPage && !isDashboardPage;
+
   return (
     <>
-
-      {!isAdminRoute && <Navbar isAdminRoute={isAdminRoute} />}
-
-      <Navbar isAdminRoute={isAdminRoute} />
-
-
+      {shouldShowNavbar && <Navbar />}
+      
       <Routes>
         <Route path="/" element={<Landingpage />} />
         <Route path="/login" element={<LoginSignup />} />
-        <Route path="/login-admin" element={<LoginAdmin/>} />
+        <Route path="/login-admin" element={<LoginAdmin />} />
         <Route path="/cart" element={<Cart />} />
         <Route path="/createAccount" element={<CreateAccount />} />
         <Route path="/hero" element={<Hero />} />
@@ -65,7 +65,9 @@ function App() {
         <Route path="/profile" element={<ProfileManager />} />
         <Route path="/ForgotPassword" element={<ForgotPasswordForm />} />
         <Route path="/payment" element={<Payment />} />
-
+        <Route path="/myorders" element={<MyOrders />} />
+        <Route path="OrderForm" element={<OrderForm />} />
+        <Route path="*" element={<NotFound />} />
 
         <Route element={<PrivateRoute isAdminRoute />}>
           <Route path="/admin" element={<AdminLayout />}>
@@ -76,15 +78,6 @@ function App() {
             <Route path="users" element={<UserList />} />
           </Route>
         </Route>
-
-
-        <Route path="/myorders" element={<MyOrders />} />
-        <Route path="/admin" element={<AdminLayout />}>
-          <Route path="product" element={<ProductsPage />} />
-          <Route path="dashboard" element={<Dashboard />} />
-        </Route>
-
-        <Route path="*" element={<NotFound />} />
       </Routes>
 
       {/* Render Footer only if not on the Landingpage, Admin route, or NotFound page */}

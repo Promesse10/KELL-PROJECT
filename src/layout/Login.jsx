@@ -21,7 +21,7 @@ const LoginAdmin = () => {
     e.preventDefault();
     try {
       await loginUser({ email: username, password });
-      navigate('/admin'); // Redirect to admin dashboard on successful login
+      navigate('/admin/dashboard'); // Redirect to admin dashboard on successful login
       toast.success('Login successful!');
     } catch (error) {
       toast.error(error.message || 'Login failed');
