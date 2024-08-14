@@ -1,7 +1,6 @@
-
-
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import emailjs from 'emailjs-com';
 import Email1 from '../assets/Email1.png';
 import location from '../assets/location.png';
 import Phone1 from '../assets/Phone1.png';
@@ -24,14 +23,8 @@ const Contactus = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch('http://localhost:3000/send', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
-      if (response.ok) {
+      const response = await emailjs.send('service_0urck8r', 'template_6y0ri79', formData, 'ASDmtO0PF7QIuUiwU');
+      if (response.status === 200) {
         setStatus(t('contactus.messageSent'));
         setFormData({
           fullName: '',

@@ -1,5 +1,5 @@
 import React from 'react';
-import { FlutterWaveButton, closePaymentModal } from 'flutterwave-react-v3';
+import { FlutterWaveButton } from 'flutterwave-react-v3';
 
 export const Payment = () => {
    const config = {
@@ -32,7 +32,6 @@ export const Payment = () => {
              // Handle unsuccessful payment here
              alert("Payment Failed");
          }
-         closePaymentModal(); // Close the payment modal programmatically
       },
       onClose: () => {
          // Handle the event when the payment modal is closed without completing payment
