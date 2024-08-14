@@ -1,6 +1,3 @@
-
-
-
 import React, { useState } from 'react';
 import { Link as RouterLink, useNavigate, useLocation } from 'react-router-dom';
 import { Link as ScrollLink } from 'react-scroll';
@@ -27,6 +24,8 @@ const Navbar = () => {
   const dispatch = useDispatch();
 
   const { user, isLoggedIn } = useSelector((state) => state.auth);
+  console.log('User object:', user); // Log user object
+  console.log('User name:', user?.name);
   const cartItems = useSelector((state) => state.cart.items) || [];
 
   const handleNav = () => {
@@ -40,6 +39,11 @@ const Navbar = () => {
   const handleAccountDropdown = (e) => {
     e.stopPropagation();
     setShowAccountDropdown(!showAccountDropdown);
+  };
+
+  const handleProfileClick = () => {
+    navigate('/profile');
+    setShowAccountDropdown(false);
   };
 
   const handleHomeClick = () => {
@@ -77,12 +81,12 @@ const Navbar = () => {
   };
 
   return (
-    <div className="fixed top-0 z-50 w-full flex justify-between items-center h-24 mx-auto px-4 bg-gray-100 shadow-md navbar-custom">
+    <div className="fixed top-0 z-50 w-full flex justify-between items-center h-24 max-w-[2794px] mx-auto px-4 bg-gray-100 shadow-md">
       <div className="flex items-center flex-shrink-0">
         <img className="w-28" src={Logo} alt="Logo" />
       </div>
 
-      <ul className={`hidden lg:flex lg:ml-14 lg:space-x-12 lg:text-blue-950 lg:cursor-pointer lg:font-semibold ${isLoginOrRegisterPage ? 'hidden' : ''}`}>
+      <ul className={`hidden md:flex md:ml-14 md:space-x-12 md:text-blue-950 md:cursor-pointer md:font-semibold ${isLoginOrRegisterPage ? 'hidden' : ''}`}>
         <li>
           <span onClick={handleHomeClick} className="hover:border-b-4 hover:border-blue-950 cursor-pointer">
             {t('navbar.home')}
@@ -131,7 +135,7 @@ const Navbar = () => {
         )}
       </ul>
 
-      <div className="hidden lg:flex lg:items-center lg:gap-5">
+      <div className="hidden md:flex md:items-center md:gap-5">
         <LanguageSwitcher />
         {isLoggedIn ? (
           <>
@@ -139,13 +143,19 @@ const Navbar = () => {
             {showAccountDropdown && (
               <ul className="absolute top-full right-0 mt-2 w-48 bg-white shadow-lg" onClick={(e) => e.stopPropagation()}>
                 <li className="px-4 py-2">
-                  <p className="font-semibold">{t('navbar.hi')}, {user.name ? user.name : 'Guest'}!</p>
+                <p className="font-semibold">
+              {t('navbar.hi')}, {user.name ? user.name : 'Guest'}!
+            </p>
+
                 </li>
                 <li>
                   <RouterLink to="/profile" className="block px-4 py-2 hover:bg-gray-200">{t('navbar.profile')}</RouterLink>
                 </li>
                 <li>
                   <RouterLink to="/myorders" className="block px-4 py-2 hover:bg-gray-200">{t('navbar.myOrders')}</RouterLink>
+
+                <RouterLink to="/myorders" className="block px-4 py-2 hover:bg-gray-200">My Orders</RouterLink>
+
                 </li>
                 <li>
                   <button className="block px-4 py-2 w-full text-left hover:bg-gray-200" onClick={handleLogoutClick}>{t('navbar.logout')}</button>
@@ -155,85 +165,124 @@ const Navbar = () => {
           </>
         ) : (
           <>
-            <RouterLink to="/login" className="lg:cursor-pointer">{t('navbar.login')}</RouterLink>|
-            <RouterLink to="/CreateAccount" className="lg:cursor-pointer">{t('navbar.register')}</RouterLink>
+            <RouterLink to="/login" className="md:cursor-pointer">{t('navbar.login')}</RouterLink>|
+            <RouterLink to="/CreateAccount" className="md:cursor-pointer">{t('navbar.register')}</RouterLink>
           </>
         )}
 
         <button onClick={toggleCartDisplay} className="border-blue-950 border-2 p-1 rounded-2xl flex flex-row">
           <img className="w-5 h-5" src={Cart1} alt="Cart" />
-          <span className="ml-1">{cartItems.length}</span>
+          <span className="ml-2">{t('navbar.cart')}</span>
         </button>
       </div>
 
-      <div onClick={handleNav} className="block lg:hidden">
+      <div onClick={handleNav} className="block md:hidden">
         {nav ? <AiOutlineClose size={30} /> : <AiOutlineMenu size={30} />}
       </div>
 
-      <div className={`fixed left-0 top-0 w-[60%] h-full bg-white z-40 ease-in-out duration-500 shadow-lg ${nav ? 'translate-x-0' : '-translate-x-full'}`}>
-        <ul className="pt-8 uppercase pl-4 text-blue-950">
-          <li onClick={handleHomeClick} className="p-4 border-b border-gray-200 cursor-pointer">
-            {t('navbar.home')}
+      <div className={`fixed left-0 top-0 w-[60%] h-full bg-blue-950 text-white transition-transform duration-300 ease-in-out ${nav ? 'translate-x-0' : '-translate-x-full'} z-50`} onClick={() => setNav(false)}>
+        <ul className="uppercase p-4" onClick={(e) => e.stopPropagation()}>
+          <li className="p-4 border-b border-gray-600" onClick={handleHomeClick}>{t('navbar.home')}</li>
+          {!isLoginOrRegisterPage && (
+            <>
+              <li className="p-4 border-b border-gray-600">
+                <ScrollLink to="services" smooth={true} duration={500} onClick={handleNav}>{t('navbar.services')}</ScrollLink>
+              </li>
+              <li className="p-4 border-b border-gray-600">
+                <ScrollLink to="aboutus" smooth={true} duration={500} onClick={handleNav}>{t('navbar.about')}</ScrollLink>
+              </li>
+              <li className="p-4 border-b border-gray-600">
+                <ScrollLink to="contactus" smooth={true} duration={500} onClick={handleNav}>{t('navbar.contact')}</ScrollLink>
+              </li>
+            </>
+          )}
+          {isLoggedIn ? (
+            <>
+              <li className="p-4 border-b border-gray-600">
+                <img className="w-5 h-5 cursor-pointer" src={Account1} alt="Account" onClick={handleAccountDropdown} />
+                {showAccountDropdown && (
+                  <ul className="absolute top-full right-0 mt-2 w-48 bg-white shadow-lg" onClick={(e) => e.stopPropagation()}>
+                    <li className="px-4 py-2">
+                      <p className="font-semibold">{t('navbar.hi')}, {user.name}!</p>
+                    </li>
+                    <li>
+                      <RouterLink to="/profile" className="block px-4 py-2 hover:bg-gray-200" onClick={handleNav}>{t('navbar.profile')}</RouterLink>
+                    </li>
+                    <li>
+                      <RouterLink to="/myorders" className="block px-4 py-2 hover:bg-gray-200" onClick={handleNav}>{t('navbar.myOrders')}</RouterLink>
+                    </li>
+                    <li>
+                      <button onClick={handleLogoutClick} className="block px-4 py-2 w-full text-left hover:bg-gray-200">{t('navbar.logout')}</button>
+                    </li>
+                  </ul>
+                )}
+              </li>
+            </>
+          ) : (
+            <>
+              <RouterLink to="/login" className="block p-4 border-b border-gray-600">{t('navbar.login')}</RouterLink>
+              <RouterLink to="/CreateAccount" className="block p-4 border-b border-gray-600">{t('navbar.register')}</RouterLink>
+            </>
+          )}
+          <li className="p-4 border-t border-gray-600">
+            <div className="bg-white text-blue-950 rounded-lg p-2">
+              <LanguageSwitcher />
+            </div>
           </li>
-          <li className="p-4 border-b border-gray-200">
-            <ScrollLink to="services" smooth={true} duration={500}>
-              {t('navbar.services')}
-            </ScrollLink>
-          </li>
-          <li className="p-4 border-b border-gray-200">
-            <ScrollLink to="aboutus" smooth={true} duration={500}>
-              {t('navbar.about')}
-            </ScrollLink>
-          </li>
-          <li className="p-4 border-b border-gray-200">
-            <ScrollLink to="contactus" smooth={true} duration={500}>
-              {t('navbar.contact')}
-            </ScrollLink>
-          </li>
-          <LanguageSwitcher />
         </ul>
       </div>
 
-      {showLogoutConfirm && (
-        <div className="fixed inset-0 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded-md shadow-lg">
-            <p>{t('navbar.confirmLogout')}</p>
-            <div className="flex justify-end mt-4">
-              <button onClick={handleCancelLogout} className="px-4 py-2 bg-gray-300 rounded mr-2">{t('navbar.cancel')}</button>
-              <button onClick={handleConfirmLogout} className="px-4 py-2 bg-red-600 text-white rounded">{t('navbar.logout')}</button>
-            </div>
+      {/* Cart popup */}
+      {showCart && (
+        <div className="fixed right-0 top-0 w-[35%] h-full bg-white text-black shadow-lg z-50">
+          <button onClick={() => setShowCart(false)} className="absolute top-4 right-4 text-2xl">×</button>
+          <h2 className="text-lg font-semibold p-4">{t('navbar.cart')}</h2>
+
+          {/* Scrollable container for cart items */}
+          <div className="overflow-y-auto h-[calc(100%-150px)] p-4">
+            <ul>
+              {cartItems.length === 0 ? (
+                <li>{t('navbar.cartEmpty')}</li>
+              ) : (
+                cartItems.map((item) => (
+                  <li key={item._id} className="flex items-center justify-between py-2 border-b border-gray-200">
+                    <img src={item.images[0].url} alt={item.name} className="w-12 h-12 object-cover" />
+                    <div className="flex-1 ml-2">
+                      <p>{item.name}</p>
+                      <p>${item.price}</p>
+                    </div>
+                    <div className="flex items-center">
+                      <button onClick={() => dispatch(decreaseQuantity(item._id))} className="px-2">−</button>
+                      <span className="px-2">{item.quantity}</span>
+                      <button onClick={() => dispatch(increaseQuantity(item._id))} className="px-2">+</button>
+                    </div>
+                    <div className="ml-4">${(item.price * item.quantity).toFixed(2)}</div>
+                    <button onClick={() => handleRemoveFromCart(item._id)} className="ml-4 text-red-500">Remove</button>
+                  </li>
+                ))
+              )}
+            </ul>
+          </div>
+
+          {/* Fixed "Checkout" button */}
+          <div className="absolute bottom-0 left-0 w-full p-4 border-t">
+            <span className="font-semibold">{t('navbar.total')}: ${calculateCartTotal()}</span>
+            <button onClick={handleCheckout} className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-lg w-full">
+              {t('navbar.checkout')}
+            </button>
           </div>
         </div>
       )}
 
-      {showCart && (
-        <div className="fixed inset-0 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded-md shadow-lg w-4/5 max-w-lg">
-            <h2 className="text-xl font-semibold mb-4">{t('navbar.yourCart')}</h2>
-            {cartItems.length > 0 ? (
-              <div>
-                <ul>
-                  {cartItems.map((item) => (
-                    <li key={item.id} className="flex justify-between items-center mb-4">
-                      <span>{item.name}</span>
-                      <span>{item.price} x {item.quantity}</span>
-                      <button onClick={() => handleRemoveFromCart(item.id)} className="bg-red-500 text-white px-2 py-1 rounded">
-                        {t('navbar.remove')}
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-                <div className="flex justify-between items-center">
-                  <span>{t('navbar.total')}: {calculateCartTotal()}</span>
-                  <button onClick={handleCheckout} className="bg-blue-500 text-white px-4 py-2 rounded">
-                    {t('navbar.checkout')}
-                  </button>
-                </div>
-              </div>
-            ) : (
-              <p>{t('navbar.emptyCart')}</p>
-            )}
-            <button onClick={toggleCartDisplay} className="mt-4 text-blue-500 underline">{t('navbar.close')}</button>
+      {/* Confirmation Popup */}
+      {showLogoutConfirm && (
+        <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg">
+            <h3 className="text-lg font-semibold mb-4">{t('Are you sure you want to Logout ?')}</h3>
+            <div className="flex justify-end gap-4">
+              <button onClick={handleCancelLogout} className="px-4 py-2 bg-gray-300 rounded-lg">{t('cancel')}</button>
+              <button onClick={handleConfirmLogout} className="px-4 py-2 bg-blue-950 text-white rounded-lg">{t('confirm')}</button>
+            </div>
           </div>
         </div>
       )}
