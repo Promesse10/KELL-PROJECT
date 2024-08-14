@@ -5,16 +5,18 @@ import {
   fetchTotalOrders,
   fetchTotalCustomers,
   fetchRecentOrders,
-  fetchPopularProducts 
-} from '../sevices/api';
+  fetchPopularProducts,
+} from '../sevices/api'; // Correct the path if necessary
 
+// Define the async thunks
 export const getOrders = createAsyncThunk('orders/getOrders', fetchOrders);
 export const getTotalSales = createAsyncThunk('orders/getTotalSales', fetchTotalSales);
 export const getTotalOrders = createAsyncThunk('orders/getTotalOrders', fetchTotalOrders);
 export const getTotalCustomers = createAsyncThunk('orders/getTotalCustomers', fetchTotalCustomers);
 export const getRecentOrders = createAsyncThunk('orders/getRecentOrders', fetchRecentOrders);
-export const getPopularProducts = createAsyncThunk('orders/getPopularProducts', fetchPopularProducts); // Add this line
+export const getPopularProducts = createAsyncThunk('orders/getPopularProducts', fetchPopularProducts);
 
+// Create the slice
 const orderSlice = createSlice({
   name: 'orders',
   initialState: {
@@ -22,7 +24,7 @@ const orderSlice = createSlice({
     totalSales: 0,
     totalOrders: 0,
     totalCustomers: 0,
-    recentOrders: [],
+    recentOrders: [], // Initialized as an empty array
     popularProducts: [],
     status: 'idle',
     error: null,
@@ -51,7 +53,12 @@ const orderSlice = createSlice({
         state.totalCustomers = action.payload;
       })
       .addCase(getRecentOrders.fulfilled, (state, action) => {
-        state.recentOrders = action.payload;
+        state.status = 'succeeded';
+        state.recentOrders = action.payload; // Assuming action.payload is the array
+      })
+      .addCase(getRecentOrders.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.error.message;
       })
       .addCase(getPopularProducts.fulfilled, (state, action) => {
         state.popularProducts = action.payload;
