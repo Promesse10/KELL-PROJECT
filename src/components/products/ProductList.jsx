@@ -55,51 +55,53 @@ const ProductList = () => {
   }
 
   return (
-    <div>
+    <div className="p-4">
       <h2 className="text-2xl font-bold mb-4">Products</h2>
-      <table className="min-w-full bg-white border border-gray-200">
-        <thead>
-          <tr className="w-full bg-gray-100 border-b">
-            <th className="py-2 px-4 text-left">Image</th>
-            <th className="py-2 px-4 text-left">Product Name</th>
-            <th className="py-2 px-4 text-left">Price</th>
-            <th className="py-2 px-4 text-left">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {products.map((product) => (
-            <tr key={product.id} className="border-b">
-              <td className="py-2 px-4">
-                <img
-                  src={product.images[0].url}
-                  alt={product.name}
-                  className="w-16 h-16 object-cover rounded"
-                />
-              </td>
-              <td className="py-2 px-4">{product.name}</td>
-              <td className="py-2 px-4">${product.price}</td>
-              <td className="py-2 px-4">
-                <button
-                  onClick={() => handleUpdateClick(product)}
-                  className="bg-blue-500 text-white py-1 px-3 rounded hover:bg-blue-600"
-                >
-                  Update
-                </button>
-                <button
-                  onClick={() => handleDelete(product.id)}
-                  className="bg-red-500 text-white py-1 px-3 rounded ml-2 hover:bg-red-600"
-                >
-                  Delete
-                </button>
-              </td>
+      <div className="overflow-x-auto">
+        <table className="min-w-full bg-white border border-gray-200">
+          <thead>
+            <tr className="w-full bg-gray-100 border-b">
+              <th className="py-2 px-4 text-left">Image</th>
+              <th className="py-2 px-4 text-left">Product Name</th>
+              <th className="py-2 px-4 text-left">Price</th>
+              <th className="py-2 px-4 text-left">Actions</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {products.map((product) => (
+              <tr key={product.id} className="border-b">
+                <td className="py-2 px-4">
+                  <img
+                    src={product.images[0].url}
+                    alt={product.name}
+                    className="w-16 h-16 object-cover rounded"
+                  />
+                </td>
+                <td className="py-2 px-4">{product.name}</td>
+                <td className="py-2 px-4">${product.price}</td>
+                <td className="py-2 px-4 flex space-x-2">
+                  <button
+                    onClick={() => handleUpdateClick(product)}
+                    className="bg-blue-500 text-white py-1 px-3 rounded hover:bg-blue-600"
+                  >
+                    Update
+                  </button>
+                  <button
+                    onClick={() => handleDelete(product.id)}
+                    className="bg-red-500 text-white py-1 px-3 rounded hover:bg-red-600"
+                  >
+                    Delete
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
 
       {isModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
-          <div className="bg-white p-4 rounded shadow-lg w-1/3">
+          <div className="bg-white p-4 rounded shadow-lg max-w-sm w-full">
             <h3 className="text-xl font-bold mb-4">Update Product</h3>
             <form onSubmit={handleFormSubmit}>
               <div className="mb-4">
@@ -141,7 +143,7 @@ const ProductList = () => {
                   className="w-full border border-gray-300 p-2 rounded"
                 />
               </div>
-              <div className="flex justify-end">
+              <div className="flex justify-end space-x-2">
                 <button
                   type="submit"
                   className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
@@ -151,7 +153,7 @@ const ProductList = () => {
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="bg-gray-500 text-white py-2 px-4 rounded ml-2 hover:bg-gray-600"
+                  className="bg-gray-500 text-white py-2 px-4 rounded hover:bg-gray-600"
                 >
                   Cancel
                 </button>

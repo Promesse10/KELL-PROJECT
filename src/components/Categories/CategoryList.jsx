@@ -11,19 +11,19 @@ const CategoryList = () => {
   }, [dispatch]);
 
   if (status === 'loading') {
-    return <div>Loading...</div>;
+    return <div className="text-center p-4">Loading...</div>;
   }
 
   if (status === 'failed') {
-    return <div>Error: {error}</div>;
+    return <div className="text-center p-4 text-red-500">Error: {error}</div>;
   }
 
   return (
-    <div>
+    <div className="p-4 lg:p-8">
       <h2 className="text-2xl font-bold mb-4">Categories</h2>
-      <ul>
+      <ul className="list-disc list-inside">
         {categories.map((category) => (
-          <li key={category.id} className="mb-2">
+          <li key={category.id} className="mb-2 text-lg">
             {category.name}
           </li>
         ))}
