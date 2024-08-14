@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { fetchProducts, createProduct, fetchAllProducts, deleteProduct, updateProduct } from '../sevices/api';
+import { fetchProducts, fetchAllProducts, createProduct, deleteProduct, updateProduct } from '../sevices/api';
 
 // Thunks for async actions
 export const getProducts = createAsyncThunk('products/getProducts', async (category) => {
@@ -34,16 +34,19 @@ const productSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(getAllProducts.pending, (state) => {
+      .addCase(getProducts.pending, (state) => {
         state.status = 'loading';
       })
-      .addCase(getAllProducts.fulfilled, (state, action) => {
+      .addCase(getProducts.fulfilled, (state, action) => {
         state.status = 'succeeded';
         state.products = action.payload;
       })
-      .addCase(getAllProducts.rejected, (state, action) => {
+      .addCase(getProducts.rejected, (state, action) => {
         state.status = 'failed';
         state.error = action.error.message;
+      })
+      .addCase(getAllProducts.fulfilled, (state, action) => {
+        state.products = action.payload;
       })
       .addCase(deleteProductById.fulfilled, (state, action) => {
         state.products = state.products.filter(product => product.id !== action.payload);
