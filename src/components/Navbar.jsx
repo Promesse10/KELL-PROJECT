@@ -234,7 +234,7 @@ const Navbar = () => {
 
       {/* Cart popup */}
       {showCart && (
-        <div className="fixed right-0 top-0 w-[30%] h-full bg-white text-black shadow-lg z-50">
+        <div className="fixed right-0 top-0 w-[35%] h-full bg-white text-black shadow-lg z-50">
           <button onClick={() => setShowCart(false)} className="absolute top-4 right-4 text-2xl">×</button>
           <h2 className="text-lg font-semibold p-4">{t('navbar.cart')}</h2>
 

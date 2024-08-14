@@ -176,7 +176,8 @@
     "checkout": "Checkout",
     "back": "Back",
     "empty": "Your cart is empty",
-    "proceedingToCheckout": "Proceeding to checkout!"
+    "proceedingToCheckout": "Proceeding to checkout!",
+    "title":"Cart"
   },
   "dashboard": {
     "search": "Search...",
