@@ -152,7 +152,7 @@ const Navbar = () => {
                   <RouterLink to="/profile" className="block px-4 py-2 hover:bg-gray-200">{t('navbar.profile')}</RouterLink>
                 </li>
                 <li>
-                  <RouterLink to="/myorders" className="block px-4 py-2 hover:bg-gray-200">{t('navbar.myOrders')}</RouterLink>
+                 
 
                 <RouterLink to="/myorders" className="block px-4 py-2 hover:bg-gray-200">My Orders</RouterLink>
 
