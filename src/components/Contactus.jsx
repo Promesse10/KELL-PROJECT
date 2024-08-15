@@ -8,6 +8,29 @@ import Phone1 from '../assets/Phone1.png';
 import Clock1 from '../assets/Clock1.png';
 
 const Contactus = () => {
+  const onSubmit = async (event) => {
+    event.preventDefault();
+    const formData = new FormData(event.target);
+
+    formData.append("access_key", "11e97227-47fa-4e4f-b50f-11634613fa13");
+
+    const object = Object.fromEntries(formData);
+    const json = JSON.stringify(object);
+
+    const res = await fetch("https://api.web3forms.com/submit", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json"
+      },
+      body: json
+    }).then((res) => res.json());
+
+    if (res.success) {
+     alert(res.message);
+    }
+  };
+
   const [formData, setFormData] = useState({
     fullName: '',
     email: '',
@@ -76,7 +99,7 @@ const Contactus = () => {
           </div>
           <div className="flex-1">
             <h1 className="text-center text-blue-950 font-extrabold pb-9">{t('contactus.leaveMessage')}</h1>
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <form onSubmit={onSubmit} className="space-y-6">
               <div className="flex flex-col">
                 <label htmlFor="full-name" className="text-blue-950 mb-2">{t('contactus.fullNames')}</label>
                 <input type="text" id="full-name" name="fullName" value={formData.fullName} onChange={handleChange} className="border-b-2 border-blue-950 bg-transparent px-2 py-1" />
