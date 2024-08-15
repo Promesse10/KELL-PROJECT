@@ -151,11 +151,12 @@ const Navbar = () => {
                 <li>
                   <RouterLink to="/profile" className="block px-4 py-2 hover:bg-gray-200">{t('navbar.profile')}</RouterLink>
                 </li>
-
                 <li>
-                <RouterLink to="/myorders" className="block px-4 py-2 hover:bg-gray-200">My Orders</RouterLink>
-                </li>
+                 
 
+                <RouterLink to="/myorders" className="block px-4 py-2 hover:bg-gray-200">My Orders</RouterLink>
+
+                </li>
                 <li>
                   <button className="block px-4 py-2 w-full text-left hover:bg-gray-200" onClick={handleLogoutClick}>{t('navbar.logout')}</button>
                 </li>
@@ -208,7 +209,7 @@ const Navbar = () => {
                       <RouterLink to="/profile" className="block px-4 py-2 hover:bg-gray-200" onClick={handleNav}>{t('navbar.profile')}</RouterLink>
                     </li>
                     <li>
-                     <RouterLink to="/myorders" className="block px-4 py-2 hover:bg-gray-200" onClick={handleNav}>{t('myOrders')}</RouterLink>
+                      <RouterLink to="/myorders" className="block px-4 py-2 hover:bg-gray-200" onClick={handleNav}>{t('navbar.myOrders')}</RouterLink>
                     </li>
                     <li>
                       <button onClick={handleLogoutClick} className="block px-4 py-2 w-full text-left hover:bg-gray-200">{t('navbar.logout')}</button>
