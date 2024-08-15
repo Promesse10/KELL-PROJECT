@@ -25,7 +25,7 @@ const ProductList = () => {
     setFormData({
       name: product.name,
       price: product.price,
-      imageUrl: product.imageUrl,
+      imageUrl: product.images[0]?.url || '',
     });
     setIsModalOpen(true);
   };
@@ -40,6 +40,10 @@ const ProductList = () => {
 
   const handleFormSubmit = (e) => {
     e.preventDefault();
+    if (!formData.name || !formData.price) {
+      alert('Name and price are required!');
+      return;
+    }
     if (selectedProduct) {
       dispatch(updateProductById({ id: selectedProduct.id, ...formData }));
       setIsModalOpen(false);
@@ -56,7 +60,7 @@ const ProductList = () => {
 
   return (
     <div className="p-4">
-      <h2 className="text-2xl font-bold mb-4">Products</h2>
+      <h2 className="text-2xl font-bold mb-4">Products List</h2>
       <div className="overflow-x-auto">
         <table className="min-w-full bg-white border border-gray-200">
           <thead>
@@ -72,7 +76,7 @@ const ProductList = () => {
               <tr key={product.id} className="border-b">
                 <td className="py-2 px-4">
                   <img
-                    src={product.images[0].url}
+                    src={product.images[0]?.url || ''}
                     alt={product.name}
                     className="w-16 h-16 object-cover rounded"
                   />
