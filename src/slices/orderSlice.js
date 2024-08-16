@@ -1,3 +1,5 @@
+// store/orderSlice.js
+
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import {
   fetchOrders,
@@ -6,6 +8,9 @@ import {
   fetchTotalCustomers,
   fetchRecentOrders,
   fetchPopularProducts,
+  processPayment,
+  fetchAllOrders,
+  changeOrderStatus,
 } from '../sevices/api'; // Correct the path if necessary
 
 // Define the async thunks
@@ -15,8 +20,12 @@ export const getTotalOrders = createAsyncThunk('orders/getTotalOrders', fetchTot
 export const getTotalCustomers = createAsyncThunk('orders/getTotalCustomers', fetchTotalCustomers);
 export const getRecentOrders = createAsyncThunk('orders/getRecentOrders', fetchRecentOrders);
 export const getPopularProducts = createAsyncThunk('orders/getPopularProducts', fetchPopularProducts);
+export const payForOrder = createAsyncThunk('orders/payForOrder', processPayment);
+export const getAllOrders = createAsyncThunk('orders/getAllOrders', fetchAllOrders);
+export const updateOrderStatus = createAsyncThunk('orders/updateOrderStatus', async ({ orderId, status }) => {
+  return await changeOrderStatus(orderId, status);
+});
 
-// Create the slice
 const orderSlice = createSlice({
   name: 'orders',
   initialState: {
@@ -24,8 +33,9 @@ const orderSlice = createSlice({
     totalSales: 0,
     totalOrders: 0,
     totalCustomers: 0,
-    recentOrders: [], // Initialized as an empty array
+    recentOrders: [],
     popularProducts: [],
+    paymentStatus: null,
     status: 'idle',
     error: null,
   },
@@ -54,7 +64,7 @@ const orderSlice = createSlice({
       })
       .addCase(getRecentOrders.fulfilled, (state, action) => {
         state.status = 'succeeded';
-        state.recentOrders = action.payload; // Assuming action.payload is the array
+        state.recentOrders = action.payload;
       })
       .addCase(getRecentOrders.rejected, (state, action) => {
         state.status = 'failed';
@@ -62,6 +72,22 @@ const orderSlice = createSlice({
       })
       .addCase(getPopularProducts.fulfilled, (state, action) => {
         state.popularProducts = action.payload;
+      })
+      .addCase(payForOrder.fulfilled, (state, action) => {
+        state.paymentStatus = action.payload;
+      })
+      .addCase(getAllOrders.fulfilled, (state, action) => {
+        state.orders = action.payload;
+      })
+      .addCase(updateOrderStatus.fulfilled, (state, action) => {
+        const { orderId, status } = action.meta.arg;
+        const order = state.orders.find(order => order.id === orderId);
+        if (order) {
+          order.status = status;
+        }
+      })
+      .addCase(updateOrderStatus.rejected, (state, action) => {
+        state.error = action.error.message;
       });
   },
 });

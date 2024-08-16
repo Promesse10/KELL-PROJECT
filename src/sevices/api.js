@@ -158,4 +158,36 @@ export const fetchRecentOrders = async () => {
   }
 };
 
+export const processPayment = async (paymentData) => {
+  try {
+    const response = await api.post('/orders/payments', paymentData);
+    return response.data;
+  } catch (error) {
+    console.error("Error processing payment:", error);
+    throw error;
+  }
+};
+
+// Fetch all orders for admin
+export const fetchAllOrders = async () => {
+  try {
+    const response = await api.get('/orders/admin/get-all-orders');
+    return response.data.orders;
+  } catch (error) {
+    console.error("Error fetching all orders:", error);
+    throw error;
+  }
+};
+
+// Change order status (admin)
+export const changeOrderStatus = async (orderId, status) => {
+  try {
+    const response = await api.put(`/orders/admin/order/${orderId}`, { status });
+    return response.data;
+  } catch (error) {
+    console.error("Error changing order status:", error);
+    throw error;
+  }
+};
+
 export default api;

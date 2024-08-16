@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { addProduct } from '../../slices/productSlice';
+import { fetchCategories } from '../../sevices/api'; 
 
 const CreateEditProduct = () => {
   const [name, setName] = useState('');
@@ -13,14 +14,16 @@ const CreateEditProduct = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    // Mock function to simulate fetching categories from an API
-    const fetchCategories = async () => {
-      const response = await fetch('/api/categories');
-      const data = await response.json();
-      setCategories(data);
+    const fetchCategoriesData = async () => {
+      try {
+        const data = await fetchCategories();
+        setCategories(data);
+      } catch (error) {
+        console.error("Failed to fetch categories:", error);
+      }
     };
 
-    fetchCategories();
+    fetchCategoriesData();
   }, []);
 
   const handleImageChange = (e) => {
@@ -101,7 +104,7 @@ const CreateEditProduct = () => {
             <option value="" disabled>Select category</option>
             {categories.map((cat) => (
               <option key={cat._id} value={cat._id}>
-                {cat.name}
+                {cat.category}
               </option>
             ))}
           </select>
