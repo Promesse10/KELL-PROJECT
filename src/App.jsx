@@ -41,7 +41,6 @@ function App() {
   const isNotFoundPage = location.pathname === '/404';
   const isLandingPage = location.pathname === '/';
   const isCheckoutPage = location.pathname === '/checkout';
-
   const shouldShowNavbar = !isAdminRoute && !isLoginAdminPage && !isDashboardPage && !isCheckoutPage;
   const shouldShowFooter = !isAdminRoute && !isNotFoundPage && !isLandingPage && !isCheckoutPage;
 
