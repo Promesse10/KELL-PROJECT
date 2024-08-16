@@ -25,7 +25,7 @@ import UserList from "./components/Users/UserList";
 import ForgotPasswordForm from "./components/ForgetPassword";
 import NotFound from './components/NotFound';
 import { Payment } from './payment/UserPayment';
-
+import Checkout from './pages/Checkout';
 import PrivateRoute from './components/PrivateRoute';
 import { AuthProvider } from './context/authContext';
 import LoginAdmin from './layout/Login';
@@ -40,8 +40,10 @@ function App() {
   const isDashboardPage = location.pathname === '/admin/dashboard';
   const isNotFoundPage = location.pathname === '/404';
   const isLandingPage = location.pathname === '/';
+  const isCheckoutPage = location.pathname === '/checkout';
 
-  const shouldShowNavbar = !isAdminRoute && !isLoginAdminPage && !isDashboardPage;
+  const shouldShowNavbar = !isAdminRoute && !isLoginAdminPage && !isDashboardPage && !isCheckoutPage;
+  const shouldShowFooter = !isAdminRoute && !isNotFoundPage && !isLandingPage && !isCheckoutPage;
 
   return (
     <>
@@ -66,9 +68,9 @@ function App() {
         <Route path="/ForgotPassword" element={<ForgotPasswordForm />} />
         <Route path="/payment" element={<Payment />} />
         <Route path="/myorders" element={<MyOrders />} />
-        <Route path="OrderForm" element={<OrderForm />} />
+        <Route path="/orderForm" element={<OrderForm />} />
+        <Route path="/checkout" element={<Checkout />} />
         <Route path="*" element={<NotFound />} />
-
         <Route element={<PrivateRoute isAdminRoute />}>
           <Route path="/admin" element={<AdminLayout />}>
             <Route path="product" element={<ProductsPage />} />
@@ -80,8 +82,7 @@ function App() {
         </Route>
       </Routes>
 
-      {/* Render Footer only if not on the Landingpage, Admin route, or NotFound page */}
-      {!isAdminRoute && !isNotFoundPage && !isLandingPage && <Footer />}
+      {shouldShowFooter && <Footer />}
     </>
   );
 }

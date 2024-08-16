@@ -1,19 +1,23 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getProducts } from '../slices/productSlice';
-import { addToCart } from '../slices/cartSlice';
+import { addToCart, decreaseQuantity, increaseQuantity, removeFromCart, selectCartItems } from '../slices/cartSlice';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import LoginPopup from './LoginPopup'; // Ensure this path is correct
+import LoginPopup from './LoginPopup';
 
 const Food = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const products = useSelector((state) => state.products.products);
-  const isLoggedIn = useSelector((state) => state.auth.isLoggedIn); // Check if user is logged in
-  const [showPopup, setShowPopup] = useState(false); // State to control popup visibility
-  const [productToAdd, setProductToAdd] = useState(null); // State to hold product to add to cart
+  const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
+  const cartItems = useSelector(selectCartItems);
+  const [showPopup, setShowPopup] = useState(false);
+  const [productToAdd, setProductToAdd] = useState(null);
+  const [showCart, setShowCart] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [animationState, setAnimationState] = useState('');
 
   useEffect(() => {
     dispatch(getProducts('foodservices'));
@@ -21,27 +25,59 @@ const Food = () => {
 
   useEffect(() => {
     if (isLoggedIn && productToAdd) {
-      // If user is authenticated and there is a product to add, dispatch the addToCart action
       dispatch(addToCart(productToAdd));
-      setProductToAdd(null); // Clear the product to add
-      // Optional: You might want to navigate to the cart page here if needed
-      // navigate('/cart'); 
+      setProductToAdd(null);
     }
   }, [isLoggedIn, dispatch, productToAdd]);
 
   const handleAddToCart = (product) => {
     if (!isLoggedIn) {
-      setProductToAdd(product); // Set the product to add
-      setShowPopup(true); // Show the login popup
+      setProductToAdd(product);
+      setShowPopup(true);
     } else {
-      dispatch(addToCart(product));
-      // Optional: Redirect to cart page after adding item to the cart if desired
-      // navigate('/cart');
+      const existingProduct = cartItems.find(item => item._id === product._id);
+      if (existingProduct) {
+        dispatch(increaseQuantity(product._id));
+      } else {
+        dispatch(addToCart(product));
+      }
+      setSelectedProduct(product);
+      setAnimationState('slide-in');
+      setShowCart(true);
+    }
+  };
+
+  const handleIncreaseQuantity = () => {
+    if (selectedProduct) {
+      dispatch(increaseQuantity(selectedProduct._id));
+    }
+  };
+
+  const handleDecreaseQuantity = () => {
+    if (selectedProduct) {
+      dispatch(decreaseQuantity(selectedProduct._id));
+    }
+  };
+
+  const handleRemoveProduct = () => {
+    if (selectedProduct) {
+      dispatch(removeFromCart(selectedProduct._id));
+      setShowCart(false);
+      setSelectedProduct(null);
     }
   };
 
   const handleClosePopup = () => {
-    setShowPopup(false); // Hide the popup
+    setShowPopup(false);
+  };
+
+  const handleCartPopupClose = () => {
+    setAnimationState('slide-out');
+    setTimeout(() => {
+      setShowCart(false);
+      setSelectedProduct(null);
+      setAnimationState('');
+    }, 300); // Duration of the animation
   };
 
   const normalizeProductName = (name) => {
@@ -53,12 +89,69 @@ const Food = () => {
     rows.push(products.slice(i, i + 3));
   }
 
+  const calculateCartTotal = () => {
+    return cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
+  };
+
+  const handleCheckout = () => {
+    // Implement checkout functionality
+  };
+
   return (
     <div className='bg-gray-100 mt-20 min-h-screen flex flex-col'>
-      {showPopup && <LoginPopup onClose={handleClosePopup} />} {/* Show login popup if needed */}
-      <div className="mb-12">
-        <img src={'/path/to/top-image.jpg'} alt={t('food.topImageAlt')} className="w-full h-auto" />
-      </div>
+      {showPopup && <LoginPopup onClose={handleClosePopup} />}
+
+      {showCart && (
+        <>
+          {/* Overlay */}
+          <div
+            className="fixed inset-0 bg-black opacity-50 z-40"
+            onClick={handleCartPopupClose}
+          ></div>
+
+          {/* Cart Popup */}
+          <div
+            className={`fixed right-0 top-0 w-[35%] h-full bg-white text-black shadow-lg z-50 transform transition-transform duration-300 ${
+              animationState === 'slide-in' ? 'translate-x-0' : 'translate-x-full'
+            }`}
+          >
+            <button onClick={handleCartPopupClose} className="absolute top-4 right-4 text-2xl">×</button>
+            <h2 className="text-lg font-semibold p-4">{t('navbar.cart')}</h2>
+
+            <div className="overflow-y-auto h-[calc(100%-150px)] p-4">
+              {selectedProduct ? (
+                <div className="flex items-center justify-between py-2 border-b border-gray-200">
+                  <img src={selectedProduct.images[0].url} alt={selectedProduct.name} className="w-12 h-12 object-cover" />
+                  <div className="flex-1 ml-2">
+                    <p>{selectedProduct.name}</p>
+                    <p>${selectedProduct.price}</p>
+                  </div>
+                  <div className="flex items-center">
+                    <button onClick={handleDecreaseQuantity} className="px-2">−</button>
+                    <span className="px-2">
+                      {cartItems.find(item => item._id === selectedProduct._id)?.quantity || 0}
+                    </span>
+                    <button onClick={handleIncreaseQuantity} className="px-2">+</button>
+                  </div>
+                  <div className="ml-4">
+                    ${(selectedProduct.price * (cartItems.find(item => item._id === selectedProduct._id)?.quantity || 0)).toFixed(2)}
+                  </div>
+                  <button onClick={handleRemoveProduct} className="ml-4 text-red-500">Remove</button>
+                </div>
+              ) : (
+                <p>{t('navbar.cartEmpty')}</p>
+              )}
+            </div>
+
+            <div className="absolute bottom-0 left-0 w-full p-4 border-t">
+              <span className="font-semibold">{t('navbar.total')}: ${calculateCartTotal()}</span>
+              <button onClick={handleCheckout} className="mt-4 px-4 py-2 bg-blue-950 text-white rounded-lg w-full">
+                {t('navbar.checkout')}
+              </button>
+            </div>
+          </div>
+        </>
+      )}
 
       <div className='flex my-5 justify-center items-center'>
         <p className='text-blue-950 font-bold text-3xl'>{t('food.services')}</p>
