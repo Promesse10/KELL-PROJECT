@@ -1,4 +1,5 @@
 import axios from 'axios';
+import Cookies from 'js-cookie';
 
 const API_BASE_URL = 'http://localhost:8009/api/v1';
 
@@ -6,74 +7,187 @@ const api = axios.create({
   baseURL: API_BASE_URL,
 });
 
+// Add a request interceptor to include the token in headers
+api.interceptors.request.use(
+  (config) => {
+    const token = Cookies.get('token');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
+
 export const fetchProducts = async (category) => {
-  const response = await api.get(`/products/get-all?category=${category}`);
-  return response.data.products;
+  try {
+    const response = await api.get(`/products/get-all?category=${category}`);
+    return response.data.products;
+  } catch (error) {
+    console.error("Error fetching products:", error);
+    throw error;
+  }
 };
 
 export const fetchAllProducts = async () => {
-  const response = await api.get(`/products/get-all`);
-  return response.data.products;
+  try {
+    const response = await api.get('/products/get-all');
+    return response.data.products;
+  } catch (error) {
+    console.error("Error fetching all products:", error);
+    throw error;
+  }
 };
 
 export const createProduct = async (product) => {
-  const response = await api.post('/products/create', product);
-  return response.data;
+  try {
+    const response = await api.post('/products/create', product);
+    return response.data;
+  } catch (error) {
+    console.error("Error creating product:", error);
+    throw error;
+  }
 };
 
 export const deleteProduct = async (id) => {
-  await api.delete(`/products/delete/${id}`);
+  try {
+    await api.delete(`/products/delete/${id}`);
+  } catch (error) {
+    console.error("Error deleting product:", error);
+    throw error;
+  }
 };
 
 export const updateProduct = async (product) => {
-  const response = await api.put(`/products/${product.id}`, product);
-  return response.data;
+  try {
+    const response = await api.put(`/products/${product.id}`, product);
+    return response.data;
+  } catch (error) {
+    console.error("Error updating product:", error);
+    throw error;
+  }
 };
 
-// Additional API methods
 export const fetchOrders = async () => {
-  const response = await api.get('/orders/my-orders');
-  return response.data.orders;
+  try {
+    const response = await api.get('/orders/my-orders');
+    return response.data.orders;
+  } catch (error) {
+    console.error("Error fetching orders:", error);
+    throw error;
+  }
 };
 
 export const fetchPopularProducts = async () => {
-  const response = await api.get('/products/top'); 
-  return response.data.products;
+  try {
+    const response = await api.get('/products/top');
+    return response.data.products;
+  } catch (error) {
+    console.error("Error fetching popular products:", error);
+    throw error;
+  }
 };
 
 export const fetchCategories = async () => {
-  const response = await api.get('/category/get-all');
-  return response.data.categories;
+  try {
+    const response = await api.get('/category/get-all');
+    return response.data.categories;
+  } catch (error) {
+    console.error("Error fetching categories:", error);
+    throw error;
+  }
 };
 
 export const createCategory = async (category) => {
-  const response = await api.post('/category/create', category);
-  return response.data;
+  try {
+    const response = await api.post('/category/create', category);
+    return response.data;
+  } catch (error) {
+    console.error("Error creating category:", error);
+    throw error;
+  }
 };
 
 export const fetchUsers = async () => {
-  const response = await api.get('/users/get-all');
-  return response.data.users;
+  try {
+    const response = await api.get('/users/get-all');
+    return response.data.users;
+  } catch (error) {
+    console.error("Error fetching users:", error);
+    throw error;
+  }
 };
 
 export const fetchTotalSales = async () => {
-  const response = await api.get('/orders/admin/total-sales');
-  return response.data;
+  try {
+    const response = await api.get('/orders/admin/total-sales');
+    return response.data.totalSales; // Ensure it returns the correct data
+  } catch (error) {
+    console.error("Error fetching total sales:", error);
+    throw error;
+  }
 };
 
 export const fetchTotalOrders = async () => {
-  const response = await api.get('/orders/admin/total-orders');
-  return response.data;
+  try {
+    const response = await api.get('/orders/admin/total-orders');
+    return response.data.totalOrders; // Ensure it returns the correct data
+  } catch (error) {
+    console.error("Error fetching total orders:", error);
+    throw error;
+  }
 };
 
 export const fetchTotalCustomers = async () => {
-  const response = await api.get('/orders/admin/total-customers');
-  return response.data;
+  try {
+    const response = await api.get('/orders/admin/total-customers');
+    return response.data.totalCustomers; // Ensure it returns the correct data
+  } catch (error) {
+    console.error("Error fetching total customers:", error);
+    throw error;
+  }
 };
 
 export const fetchRecentOrders = async () => {
-  const response = await api.get('/orders/admin/recent-orders');
-  return response.data;
+  try {
+    const response = await api.get('/orders/admin/recent-orders');
+    return response.data.recentOrders; // Ensure it returns the correct data
+  } catch (error) {
+    console.error("Error fetching recent orders:", error);
+    throw error;
+  }
+};
+
+export const processPayment = async (paymentData) => {
+  try {
+    const response = await api.post('/orders/payments', paymentData);
+    return response.data;
+  } catch (error) {
+    console.error("Error processing payment:", error);
+    throw error;
+  }
+};
+
+// Fetch all orders for admin
+export const fetchAllOrders = async () => {
+  try {
+    const response = await api.get('/orders/admin/get-all-orders');
+    return response.data.orders;
+  } catch (error) {
+    console.error("Error fetching all orders:", error);
+    throw error;
+  }
+};
+
+// Change order status (admin)
+export const changeOrderStatus = async (orderId, status) => {
+  try {
+    const response = await api.put(`/orders/admin/order/${orderId}`, { status });
+    return response.data;
+  } catch (error) {
+    console.error("Error changing order status:", error);
+    throw error;
+  }
 };
 
 export default api;

@@ -190,7 +190,7 @@ const Navbar = () => {
           <img className="w-5 h-5" src={Cart1} alt="Cart" />
           <span className="ml-2">{t('navbar.cart')}</span>
           {cartItems.length > 0 && (
-            <span className="absolute top-6 right-14 bg-red-500 text-white text-xs rounded-full px-2 py-1">
+            <span className="absolute top-5 right-14 bg-red-500 text-white text-xs rounded-full px-2 py-1">
               {cartItems.reduce((total, item) => total + item.quantity, 0)}
             </span>
           )}
@@ -247,7 +247,7 @@ const Navbar = () => {
               <img className="w-5 h-5 inline" src={Cart1} alt="Cart" />
               <span className="ml-2">{t('navbar.cart')}</span>
               {cartItems.length > 0 && (
-                <span className=" top-0 right-2 bg-red-500 text-white text-xs rounded-full px-8 py-1">
+                <span className="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full px-2 py-1">
                   {cartItems.reduce((total, item) => total + item.quantity, 0)}
                 </span>
               )}
