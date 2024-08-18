@@ -14,9 +14,10 @@ const ProductList = () => {
     dispatch(getAllProducts());
   }, [dispatch]);
 
-  const handleDelete = (id) => {
+  const handleDelete = async (_id) => {
     if (window.confirm('Are you sure you want to delete this product?')) {
-      dispatch(deleteProductById(id));
+      await dispatch(deleteProductById(_id));
+      dispatch(getAllProducts()); // Fetch the updated product list
     }
   };
 
@@ -38,14 +39,15 @@ const ProductList = () => {
     }));
   };
 
-  const handleFormSubmit = (e) => {
+  const handleFormSubmit = async (e) => {
     e.preventDefault();
     if (!formData.name || !formData.price) {
       alert('Name and price are required!');
       return;
     }
     if (selectedProduct) {
-      dispatch(updateProductById({ id: selectedProduct.id, ...formData }));
+      await dispatch(updateProductById({ id: selectedProduct._id, ...formData }));
+      dispatch(getAllProducts()); // Fetch the updated product list
       setIsModalOpen(false);
     }
   };
@@ -68,12 +70,15 @@ const ProductList = () => {
               <th className="py-2 px-4 text-left">Image</th>
               <th className="py-2 px-4 text-left">Product Name</th>
               <th className="py-2 px-4 text-left">Price</th>
+              <th className="py-2 px-4 text-left">Description</th>
+              <th className="py-2 px-4 text-left">Category</th>
+              <th className="py-2 px-4 text-left">Stock</th>
               <th className="py-2 px-4 text-left">Actions</th>
             </tr>
           </thead>
           <tbody>
             {products.map((product) => (
-              <tr key={product.id} className="border-b">
+              <tr key={product._id} className="border-b">
                 <td className="py-2 px-4">
                   <img
                     src={product.images[0]?.url || ''}
@@ -83,6 +88,9 @@ const ProductList = () => {
                 </td>
                 <td className="py-2 px-4">{product.name}</td>
                 <td className="py-2 px-4">${product.price}</td>
+                <td className="py-2 px-4">{product.description}</td>
+                <td className="py-2 px-4">{product.category?.category || 'N/A'}</td>
+                <td className="py-2 px-4">{product.stock}</td>
                 <td className="py-2 px-4 flex space-x-2">
                   <button
                     onClick={() => handleUpdateClick(product)}
@@ -91,7 +99,7 @@ const ProductList = () => {
                     Update
                   </button>
                   <button
-                    onClick={() => handleDelete(product.id)}
+                    onClick={() => handleDelete(product._id)}
                     className="bg-red-500 text-white py-1 px-3 rounded hover:bg-red-600"
                   >
                     Delete

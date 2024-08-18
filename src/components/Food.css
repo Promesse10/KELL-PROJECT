@@ -1,0 +1,11 @@
+/* Food.css */
+
+.description {
+    max-height: 4.5em; /* Adjust as needed */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 3; /* Adjust number of lines as needed */
+    -webkit-box-orient: vertical;
+  }
+  

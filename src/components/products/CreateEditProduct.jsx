@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { addProduct } from '../../slices/productSlice';
-import { fetchCategories } from '../../sevices/api'; 
+import { fetchCategories } from '../../sevices/api';
 
 const CreateEditProduct = () => {
   const [name, setName] = useState('');
@@ -10,7 +12,7 @@ const CreateEditProduct = () => {
   const [stock, setStock] = useState('');
   const [category, setCategory] = useState('');
   const [categories, setCategories] = useState([]);
-  const [images, setImages] = useState([]);
+  const [file, setFile] = useState(null); // Changed to a single file
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -27,31 +29,38 @@ const CreateEditProduct = () => {
   }, []);
 
   const handleImageChange = (e) => {
-    const files = Array.from(e.target.files);
-    const imagePromises = files.map(file => {
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = () => resolve({ public_id: file.name, url: reader.result });
-        reader.onerror = error => reject(error);
-        reader.readAsDataURL(file);
-      });
-    });
-
-    Promise.all(imagePromises)
-      .then(results => setImages(results))
-      .catch(error => console.error('Error uploading images:', error));
+    setFile(e.target.files[0]); // Store only the first file
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const product = { name, description, price, stock, category, images };
-    dispatch(addProduct(product));
-    setName('');
-    setDescription('');
-    setPrice('');
-    setStock('');
-    setCategory('');
-    setImages([]);
+
+    const formData = new FormData();
+    formData.append('name', name);
+    formData.append('description', description);
+    formData.append('price', price);
+    formData.append('stock', stock);
+    formData.append('category', category);
+
+    if (file) {
+      formData.append('file', file); // Use 'file' to match Multer configuration
+    }
+
+    try {
+      await dispatch(addProduct(formData)).unwrap(); // Use formData here
+      // Reset form on successful creation
+      setName('');
+      setDescription('');
+      setPrice('');
+      setStock('');
+      setCategory('');
+      setFile(null); // Clear the file input
+      // Show success message
+      toast.success("Product created successfully!");
+    } catch (error) {
+      console.error("Failed to create product:", error);
+      toast.error("Failed to create product.");
+    }
   };
 
   return (
@@ -110,26 +119,25 @@ const CreateEditProduct = () => {
           </select>
         </div>
         <div className="mb-4">
-          <label className="block mb-1 text-sm font-medium">Images</label>
+          <label className="block mb-1 text-sm font-medium">Image</label>
           <input
             type="file"
-            multiple
             onChange={handleImageChange}
             className="border p-2 w-full shadow-md rounded"
           />
         </div>
-        <div className="mb-4 flex flex-wrap gap-2">
-          {images.map((img, index) => (
+        {file && (
+          <div className="mb-4">
             <img
-              key={index}
-              src={img.url}
-              alt={img.public_id}
+              src={URL.createObjectURL(file)}
+              alt="preview"
               className="w-24 h-24 object-cover rounded"
             />
-          ))}
-        </div>
+          </div>
+        )}
         <button type="submit" className="bg-blue-500 text-white p-2 rounded hover:bg-blue-600">Create</button>
       </form>
+      <ToastContainer />
     </div>
   );
 };

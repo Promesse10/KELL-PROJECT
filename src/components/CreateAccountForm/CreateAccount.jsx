@@ -1,5 +1,3 @@
-
-
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
@@ -8,7 +6,6 @@ import { register } from '../../slices/authSlice';
 import image from '../images/image.jpg';
 import visible from '../images/visible.png';
 import unvisible from '../images/Unvisible.png';
-import './CreateAccount.css';
 
 function CreateAccount() {
   const [formData, setFormData] = useState({
@@ -18,6 +15,7 @@ function CreateAccount() {
     address: '',
     phone: '',
     agreeToTerms: false,
+    profilePic: null,
   });
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [notification, setNotification] = useState(null);
@@ -27,10 +25,10 @@ function CreateAccount() {
   const { t } = useTranslation();
 
   const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
+    const { name, value, type, checked, files } = e.target;
     setFormData({
       ...formData,
-      [name]: type === 'checkbox' ? checked : value,
+      [name]: type === 'checkbox' ? checked : type === 'file' ? files[0] : value,
     });
   };
 
@@ -40,8 +38,13 @@ function CreateAccount() {
       alert(t('createAccount.agreeToTermsAlert'));
       return;
     }
+    const data = new FormData();
+    for (const key in formData) {
+      data.append(key, formData[key]);
+    }
+
     try {
-      const resultAction = await dispatch(register(formData)).unwrap();
+      const resultAction = await dispatch(register(data)).unwrap();
       setNotification(resultAction.message);
       setTimeout(() => {
         navigate('/login');
@@ -131,6 +134,15 @@ function CreateAccount() {
                   className="w-full p-3 border border-gray-300 rounded-lg bg-gray-200 focus:outline-none focus:ring focus:ring-blue-200"
                 />
               </div>
+              <div className="relative">
+                <input
+                  type="file"
+                  name="profilePic"
+                  accept="image/*"
+                  onChange={handleChange}
+                  className="w-full p-3 border border-gray-300 rounded-lg bg-gray-200 focus:outline-none focus:ring focus:ring-blue-200"
+                />
+              </div>
               <div className="flex items-center space-x-2">
                 <input
                   type="checkbox"
@@ -149,14 +161,14 @@ function CreateAccount() {
               <div className="flex justify-center">
                 <button
                   type="submit"
-                  className="w-40 p-3 text-white bg-600 rounded-lg focus:outline-none focus:ring focus:ring-blue-200"
+                  className="w-40 p-3 text-white bg-blue-600 rounded-lg focus:outline-none focus:ring focus:ring-blue-200"
                 >
                   {t('createAccount.registerButton')}
                 </button>
               </div>
               <p className="text-center text-gray-400">
                 {t('createAccount.alreadyHaveAccount')}{' '}
-                <a href="/login" className="text-600 hover:underline">
+                <a href="/login" className="text-blue-600 hover:underline">
                   {t('createAccount.loginNow')}
                 </a>
               </p>

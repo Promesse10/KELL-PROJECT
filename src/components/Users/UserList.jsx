@@ -23,9 +23,16 @@ const UserList = () => {
       <h2 className="text-2xl font-bold mb-4">Users</h2>
       <ul className="space-y-2">
         {users.map((user) => (
-          <li key={user.id} className="bg-white p-4 border rounded-lg shadow-md">
-            <div className="text-lg font-semibold">{user.name}</div>
-            <div className="text-sm text-gray-600">{user.email}</div>
+          <li key={user._id} className="bg-white p-4 border rounded-lg shadow-md flex items-center space-x-4">
+            <img 
+              src={user.profilePic?.url} 
+              alt={user.name} 
+              className="w-12 h-12 rounded-full object-cover" 
+            />
+            <div>
+              <div className="text-lg font-semibold">{user.name}</div>
+              <div className="text-sm text-gray-600">{user.email}</div>
+            </div>
           </li>
         ))}
       </ul>

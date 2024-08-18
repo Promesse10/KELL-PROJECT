@@ -142,10 +142,10 @@ function Home() {
                 className="w-56 h-48 object-cover mr-4"
               /> 
 
-              <div className="flex flex-col">
+              <div className="flex flex-col items-center">
                 <p className="text-gray-600 text-sm">{selectedProduct.company}</p>
-                <p className="font-semibold text-lg mb-1 ml-6">{selectedProduct.name}</p>
-                <p className="text-2xl mb-4 ml-3">{selectedProduct.price} RWF</p>
+                <p className="font-semibold text-lg mb-1">{selectedProduct.name}</p>
+                <p className="text-2xl mb-4">{selectedProduct.price} RWF</p>
 
                 {/* Size Selector */}
                 <div className="mb-4">
@@ -225,6 +225,7 @@ function Home() {
                 <p className="mt-2 text-lg font-semibold">
                   {translateProductName(product)}
                 </p>
+                <p className="text-gray-600">{product.description}</p>
                 <p className="text-gray-600">{t('per_piece')} {product.price} {t('currency')}</p>
                 <button
                   className="absolute top-2 right-2 p-2 bg-blue-950 rounded-full"

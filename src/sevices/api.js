@@ -1,7 +1,7 @@
 import axios from 'axios';
 import Cookies from 'js-cookie';
 
-const API_BASE_URL = 'http://localhost:8002/api/v1';
+const API_BASE_URL = 'http://localhost:8009/api/v1';
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -110,7 +110,7 @@ export const createCategory = async (category) => {
 
 export const fetchUsers = async () => {
   try {
-    const response = await api.get('/users/get-all');
+    const response = await api.get('/users/all');
     return response.data.users;
   } catch (error) {
     console.error("Error fetching users:", error);
