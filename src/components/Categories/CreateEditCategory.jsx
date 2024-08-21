@@ -1,16 +1,21 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { addCategory } from '../../slices/categorySlice';
+import { toast } from 'react-toastify';
 
 const CreateEditCategory = () => {
   const [name, setName] = useState('');
   const dispatch = useDispatch();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const category = { name };
-    dispatch(addCategory(category));
-    setName('');
+    try {
+      await dispatch(addCategory({ category: name })).unwrap();
+      toast.success('Category created successfully');
+      setName('');
+    } catch (err) {
+      toast.error('Failed to create category');
+    }
   };
 
   return (

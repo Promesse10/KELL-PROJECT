@@ -7,7 +7,6 @@ const api = axios.create({
   baseURL: API_BASE_URL,
 });
 
-// Add a request interceptor to include the token in headers
 api.interceptors.request.use(
   (config) => {
     const token = Cookies.get('token');
@@ -168,7 +167,7 @@ export const processPayment = async (paymentData) => {
   }
 };
 
-// Fetch all orders for admin
+
 export const fetchAllOrders = async () => {
   try {
     const response = await api.get('/orders/admin/get-all-orders');
@@ -179,13 +178,32 @@ export const fetchAllOrders = async () => {
   }
 };
 
-// Change order status (admin)
+
 export const changeOrderStatus = async (orderId, status) => {
   try {
     const response = await api.put(`/orders/admin/order/${orderId}`, { status });
     return response.data;
   } catch (error) {
     console.error("Error changing order status:", error);
+    throw error;
+  }
+};
+
+export const deleteCategory = async (id) => {
+  try {
+    await api.delete(`/category/delete/${id}`);
+  } catch (error) {
+    console.error("Error deleting category:", error);
+    throw error;
+  }
+};
+
+export const updateCategory = async (id, updatedCategory) => {
+  try {
+    const response = await api.put(`/category/update/${id}`, { updatedCategory });
+    return response.data;
+  } catch (error) {
+    console.error("Error updating category:", error);
     throw error;
   }
 };

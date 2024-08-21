@@ -102,7 +102,7 @@ const Sidebar = () => {
                     : 'text-gray-300 hover:bg-gray-700 hover:text-white p-3 rounded block'
                 }
               >
-                Users
+                Custommers
               </NavLink>
             </li>
             <li className="mt-auto mb-4">
