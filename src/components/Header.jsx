@@ -1,23 +1,36 @@
 // components/Header.js
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import Logo from '../assets/Logo.png';
+import Cart1 from '../assets/Cart1.png';
 
-function Header() {
+const Header = () => {
+  const { t } = useTranslation();
+  const navigate = useNavigate(); // Add this to use navigate
+  const cartItems = []; // Placeholder for cartItems, replace with actual cart items logic
+
+  const handleCartClick = () => {
+    navigate('/cart');
+  };
+
   return (
     <header className="bg-white shadow-md py-4 px-6 flex justify-between items-center">
       <Link to="/">
-        <img src="/path/to/your/logo.png" alt="Logo" className="h-8" />
+        <img className="w-28" src={Logo} alt="Logo" />
       </Link>
-      <Link to="/cart">
-        <button className="bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center">
-          <span className="mr-2">Cart</span>
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 3h2l1 5h10l1-5h2M6 14a2 2 0 100 4 2 2 0 000-4zM18 14a2 2 0 100 4 2 2 0 000-4zM6 6l1 5h10l1-5H6zM4 6H2v14h14v-2H4V6z" />
-          </svg>
-        </button>
-      </Link>
+  
+      <button onClick={handleCartClick} className="relative border-blue-950 border-2 p-1 rounded-2xl flex flex-row items-center">
+        <img className="w-5 h-5" src={Cart1} alt="Cart" />
+        <span className="ml-2">{t('navbar.cart')}</span>
+        {cartItems.length > 0 && (
+          <span className="absolute top-5 right-14 bg-red-500 text-white text-xs rounded-full px-2 py-1">
+            {cartItems.reduce((total, item) => total + item.quantity, 0)}
+          </span>
+        )}
+      </button>
     </header>
   );
-}
+};
 
 export default Header;

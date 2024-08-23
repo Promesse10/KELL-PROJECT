@@ -9,7 +9,7 @@ function Checkout() {
   const [paymentMethod, setPaymentMethod] = useState('cod');
   const [billingAddressSame, setBillingAddressSame] = useState(true);
   const [saveInfo, setSaveInfo] = useState(false);
-
+  const [showPopup, setShowPopup] = useState(false); 
   // Shipping information state
   const [shippingInfo, setShippingInfo] = useState({
     country: 'Rwanda',
@@ -20,7 +20,12 @@ function Checkout() {
     city: '',
     phone: ''
   });
-
+  const handleOrderClick = () => {
+    setShowPopup(true);
+    setTimeout(() => {
+      setShowPopup(false);
+    }, 3000); // Popup will disappear after 3 seconds
+  };
   // Handle change in shipping information
   const handleShippingChange = (e) => {
     const { name, value } = e.target;
@@ -264,7 +269,7 @@ function Checkout() {
             <span className="ml-2">Billing address is the same as shipping address</span>
           </label>
         </div>
-
+  
         {/* Order Summary */}
         <div className="w-full md:w-1/3 px-4">
           <div className="bg-gray-50 p-6 rounded-lg shadow-lg">
@@ -300,7 +305,16 @@ function Checkout() {
                 {shippingCost === 'Free' ? totalPrice : totalPrice + (shippingCost || 0)}
               </span>
             </div>
+           
           </div>
+          <button
+  className="bg-blue-950 text-white p-3 mt-4 rounded-lg"
+  onClick={handleOrderClick}
+>
+  Make Order
+</button>
+
+
         </div>
       </main>
     </div>

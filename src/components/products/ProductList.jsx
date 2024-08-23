@@ -1,17 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getAllProducts, deleteProductById, updateProductById } from '../../slices/productSlice';
+import { getCategories } from '../../slices/categorySlice';
 
 const ProductList = () => {
   const dispatch = useDispatch();
   const { products, status, error } = useSelector((state) => state.products);
+  const { categories } = useSelector((state) => state.categories);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
-  const [formData, setFormData] = useState({ name: '', price: '', imageUrl: '' });
+  const [formData, setFormData] = useState({ name: '', price: '', imageUrl: '', description: '', stock: '' });
+  const [selectedCategory, setSelectedCategory] = useState('');
 
   useEffect(() => {
     dispatch(getAllProducts());
+    dispatch(getCategories());
   }, [dispatch]);
 
   const handleDelete = async (_id) => {
@@ -27,6 +31,8 @@ const ProductList = () => {
       name: product.name,
       price: product.price,
       imageUrl: product.images[0]?.url || '',
+      description: product.description,
+      stock: product.stock,
     });
     setIsModalOpen(true);
   };
@@ -41,8 +47,8 @@ const ProductList = () => {
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
-    if (!formData.name || !formData.price) {
-      alert('Name and price are required!');
+    if (!formData.name || !formData.price || !formData.description || !formData.stock) {
+      alert('All fields are required!');
       return;
     }
     if (selectedProduct) {
@@ -51,6 +57,14 @@ const ProductList = () => {
       setIsModalOpen(false);
     }
   };
+
+  const handleCategoryChange = (e) => {
+    setSelectedCategory(e.target.value);
+  };
+
+  const filteredProducts = selectedCategory
+    ? products.filter((product) => product.category?.category === selectedCategory)
+    : products;
 
   if (status === 'loading') {
     return <div>Loading...</div>;
@@ -61,10 +75,28 @@ const ProductList = () => {
   }
 
   return (
-    <div className="p-4">
-      <h2 className="text-2xl font-bold mb-4">Products List</h2>
+    <div className="p-4 font-sans text-gray-800">
+      <h2 className="text-2xl font-bold mb-4 text-center">Products List</h2>
+      <div className="flex justify-between items-center mb-4">
+        <label htmlFor="category" className="text-lg font-medium">
+          Filter by Category:
+        </label>
+        <select
+          id="category"
+          value={selectedCategory}
+          onChange={handleCategoryChange}
+          className="border border-gray-300 p-2 rounded w-full max-w-xs"
+        >
+          <option value="">All Categories</option>
+          {categories.map((category) => (
+            <option key={category._id} value={category.category}>
+              {category.category}
+            </option>
+          ))}
+        </select>
+      </div>
       <div className="overflow-x-auto">
-        <table className="min-w-full bg-white border border-gray-200">
+        <table className="min-w-full bg-white border border-gray-200 text-sm md:text-base">
           <thead>
             <tr className="w-full bg-gray-100 border-b">
               <th className="py-2 px-4 text-left">Image</th>
@@ -77,7 +109,7 @@ const ProductList = () => {
             </tr>
           </thead>
           <tbody>
-            {products.map((product) => (
+            {filteredProducts.map((product) => (
               <tr key={product._id} className="border-b">
                 <td className="py-2 px-4">
                   <img
@@ -138,6 +170,31 @@ const ProductList = () => {
                   id="price"
                   name="price"
                   value={formData.price}
+                  onChange={handleFormChange}
+                  className="w-full border border-gray-300 p-2 rounded"
+                />
+              </div>
+              <div className="mb-4">
+                <label className="block text-sm font-medium mb-1" htmlFor="description">
+                  Description
+                </label>
+                <textarea
+                  id="description"
+                  name="description"
+                  value={formData.description}
+                  onChange={handleFormChange}
+                  className="w-full border border-gray-300 p-2 rounded"
+                />
+              </div>
+              <div className="mb-4">
+                <label className="block text-sm font-medium mb-1" htmlFor="stock">
+                  Stock
+                </label>
+                <input
+                  type="number"
+                  id="stock"
+                  name="stock"
+                  value={formData.stock}
                   onChange={handleFormChange}
                   className="w-full border border-gray-300 p-2 rounded"
                 />
