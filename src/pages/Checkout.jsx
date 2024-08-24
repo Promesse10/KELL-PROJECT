@@ -177,6 +177,14 @@ function Checkout() {
                     disabled
                     className="p-3 border rounded-lg w-full bg-gray-100"
                   />
+                      <input
+                    type="text"
+                    name="fullname"
+                    placeholder="Fullname"
+                    value={shippingInfo.fullname}
+                    onChange={handleShippingChange}
+                    className="p-3 border rounded-lg w-full"
+                  />
                   <input
                     type="text"
                     name="address"
@@ -306,25 +314,9 @@ function Checkout() {
         {/* Order Summary */}
         <div className="w-full md:w-1/3">
           <div className="bg-white p-6 rounded-lg shadow-lg">
+            
             <h2 className="text-xl font-semibold mb-4">Order Summary</h2>
-            <div className="mb-4 space-y-2">
-              <div className="flex justify-between items-center">
-                <span>Subtotal</span>
-                <span>{subtotal.toLocaleString()} RWF</span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span>Shipping Cost</span>
-                <span>{shippingCost.toLocaleString()} RWF</span>
-              </div>
-              <div className="border-t pt-2 flex justify-between items-center">
-                <span className="font-semibold">Total</span>
-                <span className="font-semibold">
-                  {totalAmount.toLocaleString()} RWF
-                </span>
-              </div>
-            </div>
-            <div className="mb-4">
-              <h3 className="text-lg font-semibold mb-2">Order Details</h3>
+            < div className="mb-4">
               <ul className="space-y-4 max-h-64 overflow-y-auto pr-2">
                 {cart.map((item, index) => (
                   <li key={index} className="flex items-center">
@@ -347,11 +339,28 @@ function Checkout() {
                 ))}
               </ul>
             </div>
+            <div className="mb-4 space-y-2">
+              <div className="flex justify-between items-center">
+                <span>Subtotal</span>
+                <span>{subtotal.toLocaleString()} RWF</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span>Shipping Cost</span>
+                <span>{shippingCost.toLocaleString()} RWF</span>
+              </div>
+              <div className="border-t pt-2 flex justify-between items-center">
+                <span className="font-semibold">Total</span>
+                <span className="font-semibold">
+                  {totalAmount.toLocaleString()} RWF
+                </span>
+              </div>
+            </div>
+          
             <button
               onClick={handleOrderClick}
               disabled={loading}
               className={`w-full py-3 rounded-lg text-white ${
-                loading ? 'bg-blue-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'
+                loading ? 'bg-blue-400 cursor-not-allowed' : 'bg-blue-950 hover:bg-blue-900'
               }`}
             >
               {loading ? 'Processing...' : 'Place Order'}

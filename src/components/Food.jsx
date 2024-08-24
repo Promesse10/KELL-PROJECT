@@ -93,9 +93,10 @@ const Food = () => {
     return cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
   };
 
-  const handleCheckout = () => {
-    // Implement checkout functionality
+  const handleCheckout = (product) => {
+    navigate('/checkout', { state: { product } });
   };
+  
 
   return (
     <div className='bg-gray-100 mt-20 min-h-screen flex flex-col'>
@@ -173,10 +174,11 @@ const Food = () => {
                     {t('food.addToCart')}
                   </button>
                   <button
-                    className="text-blue-950 bg-white px-2 py-1 rounded-md mt-2 transition duration-300 transform hover:scale-110 hover:bg-blue-950 hover:text-white hover:shadow-lg hover:font-bold text-sm"
-                  >
-                    {t('food.buyNow')}
-                  </button>
+  onClick={() => handleCheckout(item)} // Updated to correctly reference the function
+  className="text-blue-950 bg-white px-2 py-1 rounded-md mt-2 transition duration-300 transform hover:scale-110 hover:bg-blue-950 hover:text-white hover:shadow-lg hover:font-bold text-sm"
+>
+  {t('food.buyNow')}
+</button>
                 </div>
               </div>
             ))}
