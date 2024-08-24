@@ -12,7 +12,7 @@ const CreateEditProduct = () => {
   const [stock, setStock] = useState('');
   const [category, setCategory] = useState('');
   const [categories, setCategories] = useState([]);
-  const [file, setFile] = useState(null); // Changed to a single file
+  const [file, setFile] = useState(null);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -29,11 +29,16 @@ const CreateEditProduct = () => {
   }, []);
 
   const handleImageChange = (e) => {
-    setFile(e.target.files[0]); // Store only the first file
+    setFile(e.target.files[0]);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!name || !description || !price || !stock || !category) {
+      toast.error("Please fill in all fields.");
+      return;
+    }
 
     const formData = new FormData();
     formData.append('name', name);
@@ -43,19 +48,27 @@ const CreateEditProduct = () => {
     formData.append('category', category);
 
     if (file) {
-      formData.append('file', file); // Use 'file' to match Multer configuration
+      formData.append('file', file);
     }
 
     try {
-      await dispatch(addProduct(formData)).unwrap(); // Use formData here
-      // Reset form on successful creation
+      const response = await dispatch(addProduct(formData)).unwrap();
+      const newProduct = response; // Assuming response contains the new product details
+
+      // Store product data in local storage
+      localStorage.setItem('newProduct', JSON.stringify(newProduct));
+
+      // Store notification in local storage
+      const now = new Date().toISOString();
+      localStorage.setItem('productNotification', JSON.stringify({ createdAt: now }));
+
       setName('');
       setDescription('');
       setPrice('');
       setStock('');
       setCategory('');
-      setFile(null); // Clear the file input
-      // Show success message
+      setFile(null);
+
       toast.success("Product created successfully!");
     } catch (error) {
       console.error("Failed to create product:", error);

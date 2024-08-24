@@ -30,22 +30,22 @@ const Cart = () => {
     navigate('/');
   };
 
-  const totalPrice = Array.isArray(cart) 
+  const totalPrice = Array.isArray(cart)
     ? cart.reduce((total, item) => total + (item.price || 0) * (item.quantity || 0), 0)
     : 0;
 
   return (
-    <div className='flex flex-col min-h-screen bg-gray-50 pt-16'>
-      <main className='flex-grow p-8'>
-        <h1 className='text-center text-3xl font-bold mb-8'>{t('cart.shoppingCart')}</h1>
+    <div className='flex flex-col min-h-screen bg-gray-50 pt-16 mt-5'>
+      <main className='flex-grow p-4 sm:p-8'>
+        <h1 className='text-center text-2xl sm:text-3xl font-bold mb-6 sm:mb-8'>{t('cart.shoppingCart')}</h1>
         {cart.length > 0 ? (
-          <div className='w-full max-w-4xl mx-auto bg-white p-8 rounded-lg shadow-md'>
+          <div className='w-full max-w-full sm:max-w-4xl mx-auto bg-white p-4 sm:p-8 rounded-lg shadow-md'>
             {cart.map((item) => (
-              <div key={item._id} className='flex justify-between items-center border-b pb-4 mb-4'>
-                <div className='flex items-center'>
-                  <img className='w-20 h-20 object-contain' src={item.images[0].url} alt={item.name} />
+              <div key={item._id} className='flex flex-col sm:flex-row justify-between items-center border-b pb-4 mb-4'>
+                <div className='flex items-center w-full sm:w-auto'>
+                  <img className='w-16 sm:w-20 h-16 sm:h-20 object-contain' src={item.images[0].url} alt={item.name} />
                   <div className='ml-4'>
-                    <p className='text-xl font-semibold'>{item.name}</p>
+                    <p className='text-lg sm:text-xl font-semibold'>{item.name}</p>
                     <p className='text-gray-600'>{t('cart.currency')} {item.price}</p>
                     <button 
                       className='text-blue-500 mt-2 underline'
@@ -55,7 +55,7 @@ const Cart = () => {
                     </button>
                   </div>
                 </div>
-                <div className='flex items-center'>
+                <div className='flex items-center mt-4 sm:mt-0 '>
                   <button 
                     className='px-2 text-gray-700' 
                     onClick={() => handleDecrease(item._id)}
@@ -70,23 +70,23 @@ const Cart = () => {
                     &#43;
                   </button>
                 </div>
-                <p className='text-lg font-semibold'>
+                <p className='text-lg font-semibold mt-4 sm:mt-0'>
                   {item.price * item.quantity} {t('cart.currency')}
                 </p>
               </div>
             ))}
-            <div className='mt-8'>
-              <h2 className='text-xl font-bold text-right'>
+            <div className='mt-6 sm:mt-8'>
+              <h2 className='text-lg sm:text-xl font-bold text-right'>
                 {t('cart.total')}: {totalPrice} {t('cart.currency')}
               </h2>
             </div>
-            <div className='flex justify-between mt-8'>
+            <div className='flex flex-col sm:flex-row justify-between mt-6 sm:mt-8'>
               <textarea 
                 placeholder={t('Special instructions for seller')}
-                className='w-full p-4 border border-gray-300 rounded-md focus:outline-none focus:border-blue-950 mb-4'
+                className='w-full sm:w-auto flex-grow p-2 sm:p-4 border border-gray-300 rounded-md focus:outline-none focus:border-blue-950 mb-4 sm:mb-0'
               />
               <button 
-                className='text-white bg-blue-950 px-5 py-2 rounded-md ml-4'
+                className='text-white bg-blue-950 px-4 py-2 sm:px-5 sm:py-2 rounded-md sm:ml-4'
                 onClick={handleCheckout}
               >
                 {t('cart.checkout')}
@@ -94,7 +94,7 @@ const Cart = () => {
             </div>
           </div>
         ) : (
-          <p className='text-center text-xl'>{t('cart.empty')}</p>
+          <p className='text-center text-lg sm:text-xl'>{t('cart.empty')}</p>
         )}
       </main>
     </div>

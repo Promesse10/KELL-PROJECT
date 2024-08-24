@@ -33,7 +33,7 @@ const Hero = () => {
         setIsAnimating(false);
       }, 1000); // Duration of the animation
 
-      return () => clearTimeout(timer);
+      return () => clearTimeout(timer);<a href=""></a>
     }
   }, [prevIndex]);
 

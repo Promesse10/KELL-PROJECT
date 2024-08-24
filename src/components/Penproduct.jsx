@@ -42,7 +42,9 @@ function Home() {
   const translateProductName = (product) => {
     return t(`product_names.${product._id}`, { defaultValue: product.name });
   };
-
+  const handleCartClick = () => {
+    navigate('/cart');
+  };
   const filteredProducts = products.filter(product =>
     translateProductName(product).toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -73,6 +75,8 @@ function Home() {
       setShowCart(true);
     }
   };
+
+  
 
   const handleIncreaseQuantity = () => {
     if (selectedProduct) {
@@ -146,7 +150,7 @@ function Home() {
                 <p className="text-gray-600 text-sm">{selectedProduct.company}</p>
                 <p className="font-semibold text-lg mb-1">{selectedProduct.name}</p>
                 <p className="text-2xl mb-4">{selectedProduct.price} RWF</p>
-
+  
                 {/* Size Selector */}
                 <div className="mb-4">
                   <label htmlFor="size-select" className="block text-sm font-medium text-gray-700">
@@ -159,7 +163,8 @@ function Home() {
                   >
                     <option value="A3">A3 SIZE</option>
                     <option value="A4">A4 SIZE</option>
-                    <option value="A5">A5 SIZE</option>
+                    <option value="A5">A5 SIZE</option>  
+                     
                   </select>
                 </div>
 
@@ -185,7 +190,7 @@ function Home() {
             {t('Add ToCart')}
           </button>
           <button
-            onClick={handleCheckout}
+           onClick={handleCartClick}
             className="mt-2 px-4 py-2 bg-blue-950 text-white rounded-lg w-full"
           >
             {t('BuyNow')}
@@ -238,6 +243,8 @@ function Home() {
                   />
                 </button>
               </div>
+              
+              
             ))}
           </div>
 
