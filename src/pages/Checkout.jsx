@@ -152,7 +152,7 @@ function Checkout() {
                   <input type="radio" name="paymentMethod" value="momo" checked={paymentMethod === 'momo'} onChange={() => setPaymentMethod('momo')} className="hidden" />
                   <div className="flex items-center">
                     <img src={momo} alt="MTN Mobile Money" className="h-6 mr-2" />
-                    <span>MTN Mobile Money</span>
+                    <span>MTN Mobile Money</span></div>
 
                     <div className="text-sm text-gray-600">
                       59 KN 59 Street, Kigali
@@ -166,7 +166,8 @@ function Checkout() {
                   Change my location
                 </a>
               </div>
-            )}
+            
+            
 
             {/* Shipping Information */}
             {deliveryMethod === 'ship' && (
@@ -278,12 +279,14 @@ function Checkout() {
                     <p>SWIFT/BIC: ABCDEF12</p>
 
                   </div>
+                )}
                 </label>
-              </div>
+              
 
               {/* Error Message */}
               {error && <p className="text-red-600">{error}</p>}
             </div>
+          </div>
           </div>
 
 
@@ -304,7 +307,7 @@ function Checkout() {
                 <span className="font-semibold">RWF {totalAmount.toLocaleString()}</span>
               </div>
             </div>
-            <button onClick={handleOrderClick} disabled={loading} className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700">
+            <button onClick={handleOrderClick} disabled={loading} className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700"></button>
 
         {/* Order Summary */}
         <div className="w-full md:w-1/3">
@@ -362,6 +365,7 @@ function Checkout() {
               {loading ? 'Processing...' : 'Place Order'}
             </button>
           </div>
+        </div>
         </div>
       </main>
     </div>
