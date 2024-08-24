@@ -1,71 +1,93 @@
 import React from 'react';
 import { useLocation } from 'react-router-dom';
 
-const Receipt = () => {
+function Receipt() {
   const location = useLocation();
-  const { orderDetails } = location.state || {};
+  const { shippingInfo = {}, cart = [], totalPrice = 0, deliveryMethod, shippingCost = 0, paymentMethod } = location.state || {};
+  const username = "User Name"; // Replace with actual username if available
 
   return (
-    <div className="flex mt-20 justify-center items-center min-h-screen bg-gray-100">
-      <div className="bg-white p-10 rounded-md shadow-md max-w-4xl w-full flex flex-row">
-        <div className="w-3/4 pr-8">
-          <h2 className="text-xl font-bold mb-2">Order #{orderDetails?.orderId}</h2>
-          <p>Thank you, {orderDetails?.shippingInfo.firstName}!</p>
-          <p>Your order is confirmed. You’ll receive an email when your order is ready.</p>
-          <div className="border-t mt-4 pt-4">
-            <h3 className="font-bold">Order details</h3>
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <p className="font-bold">Contact information:</p>
-                <h5>{orderDetails?.shippingInfo.email}</h5>
+    <div className="flex flex-col min-h-screen">
+      <header className="bg-blue-600 text-white p-4">
+        <h1 className="text-2xl font-semibold">Order Receipt</h1>
+      </header>
+      <main className="flex py-10 px-6">
+        <div className="flex w-full max-w-7xl mx-auto">
+          <div className="w-full">
+            <div className="bg-white p-6 rounded-lg shadow-lg">
+              {/* User Information */}
+              <div className="mb-4">
+                <h2 className="text-xl font-semibold">User Information</h2>
+                <p className="text-sm">Username: {username}</p>
               </div>
-              <div>
-                <p className="font-bold">Payment method:</p>
-                <p>{orderDetails?.paymentMethod} - {orderDetails?.totalPrice + (orderDetails?.shippingCost || 0)} Frw</p>
+
+              {/* Shipping Information */}
+              <div className="mb-4">
+                <h2 className="text-xl font-semibold">Shipping Information</h2>
+                <p>{shippingInfo.name || 'N/A'}</p>
+                <p>{shippingInfo.address || 'N/A'}, {shippingInfo.city || 'N/A'}</p>
+                <p>{shippingInfo.phone || 'N/A'}</p>
               </div>
-              <div>
-                <p className="font-bold">Shipping address:</p>
-                <p>{orderDetails?.shippingInfo.firstName} {orderDetails?.shippingInfo.lastName}</p>
-                <p>{orderDetails?.shippingInfo.address}</p>
-                <p>{orderDetails?.shippingInfo.city}</p>
-                <p>{orderDetails?.shippingInfo.country}</p>
-                <p>{orderDetails?.shippingInfo.phone}</p>
+
+              {/* Order Items */}
+              <div className="mb-4">
+                <h2 className="text-xl font-semibold">Order Items</h2>
+                <ul>
+                  {cart.length ? cart.map((item, index) => (
+                    <li key={index} className="mb-2">
+                      <div className="flex justify-between items-center">
+                        <img src={item.images[0]?.url} alt={item.name} className="h-16 w-16 object-cover rounded" />
+                        <div className="flex-1 ml-4">
+                          <div className="flex justify-between">
+                            <span>{item.name} (x{item.quantity})</span>
+                            <span>{(item.price || 0).toLocaleString()} RWF</span>
+                          </div>
+                        </div>
+                      </div>
+                    </li>
+                  )) : <p>No items in the cart</p>}
+                </ul>
               </div>
-              <div>
-                <p className="font-bold">Billing address:</p>
-                <p>{orderDetails?.shippingInfo.firstName} {orderDetails?.shippingInfo.lastName}</p>
-                <p>{orderDetails?.shippingInfo.address}</p>
-                <p>{orderDetails?.shippingInfo.city}</p>
-                <p>{orderDetails?.shippingInfo.country}</p>
-                <p>{orderDetails?.shippingInfo.phone}</p>
+
+              {/* Order Summary */}
+              <div className="mb-4">
+                <h2 className="text-xl font-semibold">Order Summary</h2>
+                <div className="flex justify-between mb-2">
+                  <span className="font-semibold">Subtotal</span>
+                  <span>{totalPrice.toLocaleString()} RWF</span>
+                </div>
+                <div className="flex justify-between mb-2">
+                  <span className="font-semibold">Shipping Cost</span>
+                  <span>{shippingCost.toLocaleString()} RWF</span>
+                </div>
+                <div className="flex justify-between font-semibold text-lg">
+                  <span>Total</span>
+                  <span>{(totalPrice + shippingCost).toLocaleString()} RWF</span>
+                </div>
               </div>
-              <div className="col-span-2">
-                <p className="font-bold">Shipping method:</p>
-                <p>{orderDetails?.deliveryMethod === 'pickup' ? 'Pickup in store' : 'Kigali City (shipping charge is paid before order delivered)'}</p>
+
+              {/* Payment Method */}
+              <div className="mb-4">
+                <h2 className="text-xl font-semibold">Payment Method</h2>
+                <p>{paymentMethod === 'bank' ? 'Bank Deposit' : paymentMethod === 'momo' ? 'MTN Mobile Money' : 'Cash on Delivery'}</p>
+                {paymentMethod === 'momo' && (
+                  <p>MTN Number: *182*8*1*1234567890#</p>
+                )}
               </div>
+
+              {/* Delivery Method */}
+              <div className="mb-4">
+                <h2 className="text-xl font-semibold">Delivery Method</h2>
+                <p>{deliveryMethod === 'pickup' ? 'Pickup in store' : 'Ship'}</p>
+              </div>
+
+              <button className="bg-blue-600 text-white px-4 py-2 rounded-lg">Go to Homepage</button>
             </div>
           </div>
         </div>
-        <div className="w-1/4 bg-gray-50 p-6 rounded-md">
-          {orderDetails?.product.map((item, index) => (
-            <div key={index}>
-              <img src={item.imageUrl} alt={item.name} className="w-24 h-24 object-contain mb-4" />
-              <h4 className="font-bold">{item.name}</h4>
-              <p>{item.price} Frw</p>
-              <div className="flex justify-between mt-4">
-                <p>Subtotal</p>
-                <p>{item.price * item.quantity} Frw</p>
-              </div>
-            </div>
-          ))}
-          <div className="flex justify-between font-bold border-t pt-2 mt-2">
-            <p>Total</p>
-            <p>{orderDetails?.totalPrice + (orderDetails?.shippingCost || 0)} Frw</p>
-          </div>
-        </div>
-      </div>
+      </main>
     </div>
   );
-};
+}
 
 export default Receipt;

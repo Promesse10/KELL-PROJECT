@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { fetchProfile } from './authSlice'; // Make sure this path is correct
 
 // Helper functions to handle local storage
 const loadCartFromLocalStorage = () => {
@@ -25,6 +26,7 @@ const saveCartToLocalStorage = (cartItems) => {
 // Load initial state from local storage
 const initialState = {
   items: loadCartFromLocalStorage(),
+  token: localStorage.getItem('token') || null,  // Load token from local storage if it exists
 };
 
 const cartSlice = createSlice({
@@ -57,19 +59,37 @@ const cartSlice = createSlice({
       const item = state.items.find(i => i._id === action.payload);
       if (item && item.quantity > 1) {
         item.quantity -= 1;
-        saveCartToLocalStorage(state.items); // Save to local storage
       } else if (item) {
         state.items = state.items.filter(i => i._id !== action.payload);
-        saveCartToLocalStorage(state.items); // Save to local storage
       }
+      saveCartToLocalStorage(state.items); // Save to local storage
     },
+    setToken: (state, action) => {
+      state.token = action.payload;
+      localStorage.setItem('token', action.payload);  // Save token to local storage
+    },
+    clearToken: (state) => {
+      state.token = null;
+      localStorage.removeItem('token');  // Remove token from local storage
+    },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchProfile.fulfilled, (state, action) => {
+        state.token = action.payload.token; // Set the token from fetched profile
+        localStorage.setItem('token', action.payload.token); // Save to local storage
+      })
+      .addCase(fetchProfile.rejected, (state, action) => {
+        console.error('Failed to fetch profile:', action.payload);
+      });
   },
 });
 
 // Export actions
-export const { addToCart, removeFromCart, increaseQuantity, decreaseQuantity } = cartSlice.actions;
+export const { addToCart, removeFromCart, increaseQuantity, decreaseQuantity, setToken, clearToken } = cartSlice.actions;
 
-// Define and export selector
+// Define and export selectors
 export const selectCartItems = (state) => state.cart.items;
+export const selectToken = (state) => state.cart.token;
 
 export default cartSlice.reducer;

@@ -1,5 +1,3 @@
-// store/orderSlice.js
-
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import {
   fetchOrders,
@@ -11,7 +9,8 @@ import {
   processPayment,
   fetchAllOrders,
   changeOrderStatus,
-} from '../sevices/api'; // Correct the path if necessary
+  createOrder as apiCreateOrder, // Renamed here
+} from '../sevices/api'; // Adjust the path if necessary
 
 // Define the async thunks
 export const getOrders = createAsyncThunk('orders/getOrders', fetchOrders);
@@ -21,6 +20,7 @@ export const getTotalCustomers = createAsyncThunk('orders/getTotalCustomers', fe
 export const getRecentOrders = createAsyncThunk('orders/getRecentOrders', fetchRecentOrders);
 export const getPopularProducts = createAsyncThunk('orders/getPopularProducts', fetchPopularProducts);
 export const payForOrder = createAsyncThunk('orders/payForOrder', processPayment);
+export const createOrder = createAsyncThunk('orders/createOrder', apiCreateOrder); // Using the renamed function
 export const getAllOrders = createAsyncThunk('orders/getAllOrders', fetchAllOrders);
 export const updateOrderStatus = createAsyncThunk('orders/updateOrderStatus', async ({ orderId, status }) => {
   return await changeOrderStatus(orderId, status);
@@ -75,6 +75,9 @@ const orderSlice = createSlice({
       })
       .addCase(payForOrder.fulfilled, (state, action) => {
         state.paymentStatus = action.payload;
+      })
+      .addCase(createOrder.fulfilled, (state, action) => {
+        state.orders.push(action.payload);
       })
       .addCase(getAllOrders.fulfilled, (state, action) => {
         state.orders = action.payload;

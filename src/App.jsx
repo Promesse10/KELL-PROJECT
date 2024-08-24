@@ -33,6 +33,7 @@ import LoginAdmin from './layout/Login';
 
 import MyOrders from './components/myorders';
 import OrderForm from './components/OrderForm'
+import Receipt from './components/ Receipt';
 
 function App() {
   const location = useLocation();
@@ -70,6 +71,7 @@ function App() {
         <Route path="/myorders" element={<MyOrders />} />
         <Route path="/orderForm" element={<OrderForm />} />
         <Route path="/checkout" element={<Checkout />} />
+        <Route path="/receipt" element={<Receipt />} />
         <Route path="*" element={<NotFound />} />
         <Route element={<PrivateRoute isAdminRoute />}>
           <Route path="/admin" element={<AdminLayout />}>

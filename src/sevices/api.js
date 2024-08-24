@@ -77,6 +77,16 @@ export const fetchOrders = async () => {
   }
 };
 
+export const createOrder = async (orderData) => {
+  try {
+    const response = await api.post('/orders/create', orderData);
+    return response.data;
+  } catch (error) {
+    console.error("Error creating order:", error);
+    throw error;
+  }
+};
+
 export const fetchPopularProducts = async () => {
   try {
     const response = await api.get('/products/top');
@@ -120,7 +130,7 @@ export const fetchUsers = async () => {
 export const fetchTotalSales = async () => {
   try {
     const response = await api.get('/orders/admin/total-sales');
-    return response.data.totalSales; // Ensure it returns the correct data
+    return response.data.totalSales;
   } catch (error) {
     console.error("Error fetching total sales:", error);
     throw error;
@@ -130,7 +140,7 @@ export const fetchTotalSales = async () => {
 export const fetchTotalOrders = async () => {
   try {
     const response = await api.get('/orders/admin/total-orders');
-    return response.data.totalOrders; // Ensure it returns the correct data
+    return response.data.totalOrders;
   } catch (error) {
     console.error("Error fetching total orders:", error);
     throw error;
@@ -140,7 +150,7 @@ export const fetchTotalOrders = async () => {
 export const fetchTotalCustomers = async () => {
   try {
     const response = await api.get('/orders/admin/total-customers');
-    return response.data.totalCustomers; // Ensure it returns the correct data
+    return response.data.totalCustomers;
   } catch (error) {
     console.error("Error fetching total customers:", error);
     throw error;
@@ -150,7 +160,7 @@ export const fetchTotalCustomers = async () => {
 export const fetchRecentOrders = async () => {
   try {
     const response = await api.get('/orders/admin/recent-orders');
-    return response.data.recentOrders; // Ensure it returns the correct data
+    return response.data.recentOrders;
   } catch (error) {
     console.error("Error fetching recent orders:", error);
     throw error;
@@ -167,7 +177,6 @@ export const processPayment = async (paymentData) => {
   }
 };
 
-
 export const fetchAllOrders = async () => {
   try {
     const response = await api.get('/orders/admin/get-all-orders');
@@ -177,7 +186,6 @@ export const fetchAllOrders = async () => {
     throw error;
   }
 };
-
 
 export const changeOrderStatus = async (orderId, status) => {
   try {
