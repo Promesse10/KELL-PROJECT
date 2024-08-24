@@ -129,7 +129,7 @@ function Home() {
       
       {/* Cart Popup */}
       <div
-        className={`fixed right-0 top-0 w-full md:w-[35%] h-full bg-white text-black shadow-lg z-50 transform transition-transform duration-300 ${
+        className={`fixed right-0 top-0 w-full md:w-[35%] h-full bg-gray-50 text-black shadow-lg z-50 transform transition-transform duration-300 ${
           animationState === 'slide-in' ? 'translate-x-0' : 'translate-x-full'
         }`}
       >

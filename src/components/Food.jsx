@@ -97,6 +97,8 @@ const Food = () => {
     // Implement checkout functionality
   };
 
+
+  
   return (
     <div className='bg-gray-100 mt-20 min-h-screen flex flex-col'>
       {showPopup && <LoginPopup onClose={handleClosePopup} />}
@@ -111,44 +113,41 @@ const Food = () => {
 
           {/* Cart Popup */}
           <div
-            className={`fixed right-0 top-0 w-[35%] h-full bg-white text-black shadow-lg z-50 transform transition-transform duration-300 ${
+            className={`fixed right-0 top-0 w-[35%] h-full bg-gray-50 text-black shadow-lg z-50 transform transition-transform duration-300 ${
               animationState === 'slide-in' ? 'translate-x-0' : 'translate-x-full'
             }`}
           >
             <button onClick={handleCartPopupClose} className="absolute top-4 right-4 text-2xl">×</button>
-            <h2 className="text-lg font-semibold p-4">{t('navbar.cart')}</h2>
+            {selectedProduct && (
+              <div className="p-6 flex flex-col items-center">
+                <img src={selectedProduct.images[0].url} alt={selectedProduct.name} className="w-40 h-40 object-cover" />
+                <p className="text-xl font-semibold mt-4">{selectedProduct.name}</p>
+                <p className="text-lg text-gray-500 mt-2">{selectedProduct.price} RWF</p>
 
-            <div className="overflow-y-auto h-[calc(100%-150px)] p-4">
-              {selectedProduct ? (
-                <div className="flex items-center justify-between py-2 border-b border-gray-200">
-                  <img src={selectedProduct.images[0].url} alt={selectedProduct.name} className="w-12 h-12 object-cover" />
-                  <div className="flex-1 ml-2">
-                    <p>{selectedProduct.name}</p>
-                    <p>${selectedProduct.price}</p>
-                  </div>
-                  <div className="flex items-center">
-                    <button onClick={handleDecreaseQuantity} className="px-2">−</button>
-                    <span className="px-2">
-                      {cartItems.find(item => item._id === selectedProduct._id)?.quantity || 0}
-                    </span>
-                    <button onClick={handleIncreaseQuantity} className="px-2">+</button>
-                  </div>
-                  <div className="ml-4">
-                    ${(selectedProduct.price * (cartItems.find(item => item._id === selectedProduct._id)?.quantity || 0)).toFixed(2)}
-                  </div>
-                  <button onClick={handleRemoveProduct} className="ml-4 text-red-500">Remove</button>
+                <div className="flex items-center mt-4">
+                  <button onClick={handleDecreaseQuantity} className="text-lg px-4 py-2 bg-gray-200 rounded-l-lg">-</button>
+                  <span className="text-lg px-6 py-2 border-t border-b border-gray-200">
+                    {cartItems.find(item => item._id === selectedProduct._id)?.quantity || 1}
+                  </span>
+                  <button onClick={handleIncreaseQuantity} className="text-lg px-4 py-2 bg-gray-200 rounded-r-lg">+</button>
                 </div>
-              ) : (
-                <p>{t('navbar.cartEmpty')}</p>
-              )}
-            </div>
 
-            <div className="absolute bottom-0 left-0 w-full p-4 border-t">
-              <span className="font-semibold">{t('navbar.total')}: ${calculateCartTotal()}</span>
-              <button onClick={handleCheckout} className="mt-4 px-4 py-2 bg-blue-950 text-white rounded-lg w-full">
-                {t('navbar.checkout')}
-              </button>
-            </div>
+                <div className="flex w-full mt-8">
+                  <button
+                    onClick={() => handleAddToCart(selectedProduct)}
+                    className="flex-grow text-white bg-blue-950 px-4 py-2 rounded-lg mr-2"
+                  >
+                    {t('food.addToCart')}
+                  </button>
+                  <button
+                    onClick={handleCheckout}
+                    className="flex-grow text-white bg-blue-950 px-4 py-2 rounded-lg"
+                  >
+                    {t('food.buyNow')}
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         </>
       )}
@@ -164,7 +163,7 @@ const Food = () => {
               <div key={item._id} className='bg-gray-300 pb-8 flex flex-col justify-center items-center w-full sm:w-72 transform transition-transform duration-500 hover:scale-105'>
                 <img className='w-full h-56 object-cover' src={item.images[0].url} alt={t(`food.products.${normalizeProductName(item.name)}`)} />
                 <p className='mt-5 text-center font-bold'>{t(`food.products.${normalizeProductName(item.name)}`)}</p>
-                <p className='mt-2 text-center text-gray-600'>{item.description}</p> {/* Added and styled product description */}
+                <p className='mt-2 text-center text-gray-600'>{item.description}</p>
                 <div className='flex justify-between items-center gap-5 mx-8'>
                   <button
                     className="text-white bg-blue-950 px-2 py-1 rounded-md mt-2 transition duration-300 transform hover:scale-110 hover:bg-white hover:text-blue-950 hover:shadow-lg hover:font-bold text-sm"
