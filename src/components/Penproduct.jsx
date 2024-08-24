@@ -6,6 +6,7 @@ import search from "../assets/Search.png";
 import { useTranslation } from 'react-i18next';
 import LoginPopup from './LoginPopup'; // Ensure this path is correct
 import cart from "../assets/add-to-cart.png";
+import { useNavigate } from 'react-router-dom';
 
 const productsPerPage = 5;
 
@@ -119,10 +120,13 @@ function Home() {
     return cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
   };
 
-  const handleCheckout = () => {
-    // Implement checkout functionality
-  };
 
+    const navigate = useNavigate();
+  
+    const handleCheckout = () => {
+      navigate('/checkout'); // navigate to checkout page
+    };
+    
   return (
     <section className="min-h-screen flex flex-col bg-gray-200">
       {showPopup && <LoginPopup onClose={handleClosePopup} />} {/* Show login popup if needed */}
@@ -190,11 +194,12 @@ function Home() {
             {t('Add ToCart')}
           </button>
           <button
-           onClick={handleCartClick}
-            className="mt-2 px-4 py-2 bg-blue-950 text-white rounded-lg w-full"
-          >
-            {t('BuyNow')}
-          </button>
+onClick={handleCheckout}
+  className="mt-2 px-4 py-2 bg-blue-950 text-white rounded-lg w-full"
+>
+  {t('BuyNow')}
+</button>
+
         </div>
       </div>
 

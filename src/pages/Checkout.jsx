@@ -145,6 +145,7 @@ function Checkout() {
                       <p>Account Name: Your Name</p>
                       <p>SWIFT/BIC: ABCDEF12</p>
                     </div>
+
                   )}
                 </label>
                 <label className={`block border-2 p-3 mt-4 rounded-lg ${paymentMethod === 'momo' ? 'border-blue-600' : 'border-gray-300'} hover:border-blue-600 cursor-pointer`}>
@@ -152,6 +153,130 @@ function Checkout() {
                   <div className="flex items-center">
                     <img src={momo} alt="MTN Mobile Money" className="h-6 mr-2" />
                     <span>MTN Mobile Money</span>
+
+                    <div className="text-sm text-gray-600">
+                      59 KN 59 Street, Kigali
+                    </div>
+                    <div className="text-sm text-gray-500">
+                      Usually ready in 24 hours
+                    </div>
+                  </label>
+                </div>
+                <a href="#" className="text-blue-600 text-sm">
+                  Change my location
+                </a>
+              </div>
+            )}
+
+            {/* Shipping Information */}
+            {deliveryMethod === 'ship' && (
+              <div className="mt-6">
+                <h3 className="text-lg font-semibold mb-4">
+                  Shipping Information
+                </h3>
+                <div className="flex flex-col space-y-4">
+                  <input
+                    type="text"
+                    name="country"
+                    value={shippingInfo.country}
+                    onChange={handleShippingChange}
+                    disabled
+                    className="p-3 border rounded-lg w-full bg-gray-100"
+                  />
+                      <input
+                    type="text"
+                    name="fullname"
+                    placeholder="Fullname"
+                    value={shippingInfo.fullname}
+                    onChange={handleShippingChange}
+                    className="p-3 border rounded-lg w-full"
+                  />
+                  <input
+                    type="text"
+                    name="address"
+                    placeholder="Your address. e.g KN 59 st & (house number or Building name)"
+                    value={shippingInfo.address}
+                    onChange={handleShippingChange}
+                    className="p-3 border rounded-lg w-full"
+                  />
+                  <input
+                    type="text"
+                    name="city"
+                    placeholder="City"
+                    value={shippingInfo.city}
+                    onChange={handleShippingChange}
+                    className="p-3 border rounded-lg w-full"
+                  />
+                  <input
+                    type="text"
+                    name="phone"
+                    placeholder="Phone"
+                    value={shippingInfo.phone}
+                    onChange={handleShippingChange}
+                    className="p-3 border rounded-lg w-full"
+                  />
+                  <label className="inline-flex items-center mt-2">
+                    <input
+                      type="checkbox"
+                      checked={saveInfo}
+                      onChange={() => setSaveInfo(!saveInfo)}
+                      className="form-checkbox h-4 w-4 text-blue-600"
+                    />
+                    <span className="ml-2">
+                      Save this information for next time
+                    </span>
+                  </label>
+                </div>
+              </div>
+            )}
+
+            {/* Payment Section */}
+            <h2 className="text-xl font-semibold mb-4 mt-6">Payment</h2>
+            <p className="text-sm text-gray-600 mb-4">
+              All transactions are secure and encrypted.
+            </p>
+            <div className="mb-6">
+              <label
+                className={`block border-2 p-3 rounded-lg ${
+                  paymentMethod === 'cod'
+                    ? 'border-blue-600'
+                    : 'border-gray-300'
+                } hover:border-blue-600 cursor-pointer`}
+              >
+                <input
+                  type="radio"
+                  name="paymentMethod"
+                  value="cod"
+                  checked={paymentMethod === 'cod'}
+                  onChange={() => setPaymentMethod('cod')}
+                  className="hidden"
+                />
+                <span className="ml-2">Cash on Delivery (COD)</span>
+              </label>
+              <label
+                className={`block border-2 p-3 mt-4 rounded-lg ${
+                  paymentMethod === 'bank'
+                    ? 'border-blue-600'
+                    : 'border-gray-300'
+                } hover:border-blue-600 cursor-pointer`}
+              >
+                <input
+                  type="radio"
+                  name="paymentMethod"
+                  value="bank"
+                  checked={paymentMethod === 'bank'}
+                  onChange={() => setPaymentMethod('bank')}
+                  className="hidden"
+                />
+                <span className="ml-2">Bank Deposit</span>
+                {paymentMethod === 'bank' && (
+                  <div className="bg-gray-100 p-4 mt-4 border border-gray-200 rounded">
+                    <h4 className="font-semibold">Bank Details</h4>
+                    <p>Bank Name: Your Bank</p>
+                    <p>Account Number: 1234567890</p>
+                    <p>Account Name: Your Name</p>
+                    <p>SWIFT/BIC: ABCDEF12</p>
+
                   </div>
                 </label>
               </div>
@@ -160,6 +285,7 @@ function Checkout() {
               {error && <p className="text-red-600">{error}</p>}
             </div>
           </div>
+
 
           {/* Order Summary */}
           <div className="w-full md:w-1/4 mt-8 md:mt-0 bg-white p-6 rounded-lg shadow-lg">
@@ -179,6 +305,60 @@ function Checkout() {
               </div>
             </div>
             <button onClick={handleOrderClick} disabled={loading} className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700">
+
+        {/* Order Summary */}
+        <div className="w-full md:w-1/3">
+          <div className="bg-white p-6 rounded-lg shadow-lg">
+            
+            <h2 className="text-xl font-semibold mb-4">Order Summary</h2>
+            < div className="mb-4">
+              <ul className="space-y-4 max-h-64 overflow-y-auto pr-2">
+                {cart.map((item, index) => (
+                  <li key={index} className="flex items-center">
+                    <img
+                      src={item.images[0]?.url}
+                      alt={item.name}
+                      className="h-16 w-16 object-cover rounded mr-4 flex-shrink-0"
+                    />
+                    <div className="flex-1">
+                      <div className="flex justify-between">
+                        <span>
+                          {item.name} (x{item.quantity})
+                        </span>
+                        <span>
+                          {(item.price * item.quantity).toLocaleString()} RWF
+                        </span>
+                      </div>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div className="mb-4 space-y-2">
+              <div className="flex justify-between items-center">
+                <span>Subtotal</span>
+                <span>{subtotal.toLocaleString()} RWF</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span>Shipping Cost</span>
+                <span>{shippingCost.toLocaleString()} RWF</span>
+              </div>
+              <div className="border-t pt-2 flex justify-between items-center">
+                <span className="font-semibold">Total</span>
+                <span className="font-semibold">
+                  {totalAmount.toLocaleString()} RWF
+                </span>
+              </div>
+            </div>
+          
+            <button
+              onClick={handleOrderClick}
+              disabled={loading}
+              className={`w-full py-3 rounded-lg text-white ${
+                loading ? 'bg-blue-400 cursor-not-allowed' : 'bg-blue-950 hover:bg-blue-900'
+              }`}
+            >
+
               {loading ? 'Processing...' : 'Place Order'}
             </button>
           </div>

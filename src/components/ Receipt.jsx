@@ -1,91 +1,144 @@
-import React from 'react';
+import React, { useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
+import Logo from '../assets/Logo.png';
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 
 function Receipt() {
   const location = useLocation();
-  const { shippingInfo = {}, cart = [], totalPrice = 0, deliveryMethod, shippingCost = 0, paymentMethod } = location.state || {};
-  const username = "User Name"; // Replace with actual username if available
+  const receiptRef = useRef();
+  const [isImageLoaded, setIsImageLoaded] = useState(false);
+
+  const {
+    shippingInfo = {},
+    cart = [],
+    totalPrice = 0,
+    deliveryMethod,
+    shippingCost = 0,
+    paymentMethod,
+  } = location.state || {};
+
+  // Handle image loading
+  const handleImageLoad = () => {
+    setIsImageLoaded(true);
+  };
+
+  const handleDownloadPdf = () => {
+    const receiptElement = receiptRef.current;
+
+    // Only generate the PDF if all images are loaded
+    if (isImageLoaded) {
+      html2canvas(receiptElement, { useCORS: true, scale: 2 }).then((canvas) => {
+        const imgData = canvas.toDataURL('image/png');
+        const pdf = new jsPDF('p', 'mm', 'a4');
+        const pdfWidth = pdf.internal.pageSize.getWidth();
+        const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+
+        pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+        pdf.save('receipt.pdf');
+      });
+    } else {
+      alert('Please wait for images to load before downloading the PDF.');
+    }
+  };
 
   return (
-    <div className="flex flex-col min-h-screen mt-5">
-      <header className="bg-blue-600 text-white p-4">
-        <h1 className="text-2xl font-semibold">Order Receipt</h1>
-      </header>
-      <main className="flex py-10 px-6">
-        <div className="flex w-full max-w-7xl mx-auto">
-          <div className="w-full">
-            <div className="bg-white p-6 rounded-lg shadow-lg">
-              {/* User Information */}
-              <div className="mb-4">
-                <h2 className="text-xl font-semibold">User Information</h2>
-                <p className="text-sm">Username: {username}</p>
-              </div>
-
-              {/* Shipping Information */}
-              <div className="mb-4">
-                <h2 className="text-xl font-semibold">Shipping Information</h2>
-                <p>{shippingInfo.name || 'N/A'}</p>
-                <p>{shippingInfo.address || 'N/A'}, {shippingInfo.city || 'N/A'}</p>
-                <p>{shippingInfo.phone || 'N/A'}</p>
-              </div>
-
-              {/* Order Items */}
-              <div className="mb-4">
-                <h2 className="text-xl font-semibold">Order Items</h2>
-                <ul>
-                  {cart.length ? cart.map((item, index) => (
-                    <li key={index} className="mb-2">
-                      <div className="flex justify-between items-center">
-                        <img src={item.images[0]?.url} alt={item.name} className="h-16 w-16 object-cover rounded" />
-                        <div className="flex-1 ml-4">
-                          <div className="flex justify-between">
-                            <span>{item.name} (x{item.quantity})</span>
-                            <span>{(item.price || 0).toLocaleString()} RWF</span>
-                          </div>
-                        </div>
-                      </div>
-                    </li>
-                  )) : <p>No items in the cart</p>}
-                </ul>
-              </div>
-
-              {/* Order Summary */}
-              <div className="mb-4">
-                <h2 className="text-xl font-semibold">Order Summary</h2>
-                <div className="flex justify-between mb-2">
-                  <span className="font-semibold">Subtotal</span>
-                  <span>{totalPrice.toLocaleString()} RWF</span>
-                </div>
-                <div className="flex justify-between mb-2">
-                  <span className="font-semibold">Shipping Cost</span>
-                  <span>{shippingCost.toLocaleString()} RWF</span>
-                </div>
-                <div className="flex justify-between font-semibold text-lg">
-                  <span>Total</span>
-                  <span>{(totalPrice + shippingCost).toLocaleString()} RWF</span>
-                </div>
-              </div>
-
-              {/* Payment Method */}
-              <div className="mb-4">
-                <h2 className="text-xl font-semibold">Payment Method</h2>
-                <p>{paymentMethod === 'bank' ? 'Bank Deposit' : paymentMethod === 'momo' ? 'MTN Mobile Money' : 'Cash on Delivery'}</p>
-                {paymentMethod === 'momo' && (
-                  <p>MTN Number: *182*8*1*1234567890#</p>
-                )}
-              </div>
-
-              {/* Delivery Method */}
-              <div className="mb-4">
-                <h2 className="text-xl font-semibold">Delivery Method</h2>
-                <p>{deliveryMethod === 'pickup' ? 'Pickup in store' : 'Ship'}</p>
-              </div>
-
-              <button className="bg-blue-600 text-white px-4 py-2 rounded-lg">Go to Homepage</button>
+    <div>
+      <div ref={receiptRef} className="max-w-2xl mx-auto border border-gray-300 shadow-lg p-4 mt-32 mb-5">
+        {/* Receipt Header */}
+        <div className="flex justify-between items-center">
+          <div>
+            <h2 className="text-xl font-bold">RECEIPT</h2>
+            <p className="text-sm">
+              <span className="block"><strong>Karykelly Ltd</strong></span>
+              <span className="block">Gako, Masaka</span>
+              <span className="block">Kicukiro, Kigali</span>
+              <span className="block">Rwanda</span>
+              <span className="block">+250 788 788 605</span>
+              <span className="block text-cyan-500">karykellycompany@gmail.com</span>
+            </p>
+          </div>
+          <div>
+            <div className="w-24 h-16 bg-white rounded-full flex items-center justify-center">
+              <img className="w-28" src={Logo} alt="Logo" />
             </div>
           </div>
         </div>
-      </main>
+
+        {/* Shipping Information */}
+        <div className="mt-4 flex justify-between">
+          <div>
+            <h3 className="font-bold">Shipping information:</h3>
+            <p><strong>Fullname:</strong> {shippingInfo.fullname || 'N/A'}</p>
+            <p><strong>Address:</strong> {shippingInfo.address || 'N/A'}, {shippingInfo.city || 'N/A'}</p>
+            <p><strong>Tel:</strong> {shippingInfo.phone || 'N/A'}</p>
+          </div>
+          <div>
+            <p><strong>Payment Method:</strong> {paymentMethod === 'bank' ? 'Bank Deposit' : paymentMethod === 'momo' ? 'MTN Mobile Money' : 'Cash on Delivery'}</p>
+            <p><strong>Delivery Method:</strong> {deliveryMethod === 'pickup' ? 'Pickup in store' : 'Ship'}</p>
+          </div>
+        </div>
+
+        {/* Order Items Table */}
+        <div className="mt-4">
+          <table className="min-w-full bg-white">
+            <thead>
+              <tr>
+                <th className="py-2 bg-blue-950 text-white">Product</th>
+                <th className="py-2 bg-blue-950 text-white">QTY</th>
+                <th className="py-2 bg-blue-950 text-white">UNIT PRICE</th>
+                <th className="py-2 bg-blue-950 text-white">TOTAL</th>
+              </tr>
+            </thead>
+            <tbody>
+              {cart.length ? cart.map((item, index) => (
+                <tr key={index}>
+                  <td className="py-2 flex items-center">
+                    <img 
+                      src={item.images[0]?.url} 
+                      alt={item.name} 
+                      className="w-12 h-12 mr-2"
+                      crossOrigin="anonymous"
+                      onLoad={handleImageLoad}
+                    />
+                    <span>{item.name}</span>
+                  </td>
+                  <td className="py-2 text-center">{item.quantity}</td>
+                  <td className="py-2 text-center">{(item.price || 0).toLocaleString()} RWF</td>
+                  <td className="py-2 text-center">{(item.price * item.quantity || 0).toLocaleString()} RWF</td>
+                </tr>
+              )) : (
+                <tr>
+                  <td colSpan="4" className="py-2 text-center">No items in the cart</td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+
+        {/* Order Summary */}
+        <div className="mt-4 flex justify-between items-center">
+          <div>
+            <p><strong>Remarks, notes...</strong></p>
+          </div>
+          <div className="text-right">
+            <p><strong>SUBTOTAL:</strong> {totalPrice.toLocaleString()} RWF</p>
+            <p><strong>SHIPPING COST:</strong> {shippingCost.toLocaleString()} RWF</p>
+            <p className="text-lg font-bold"><strong>PAID: </strong> {(totalPrice + shippingCost).toLocaleString()} RWF</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Download PDF Button */}
+      <div className="text-center mt-4">
+        <button
+          onClick={handleDownloadPdf}
+          className="bg-blue-950 text-white px-4 py-2 rounded"
+          disabled={!isImageLoaded} // Disable button until images are loaded
+        >
+          Download PDF
+        </button>
+      </div>
     </div>
   );
 }
