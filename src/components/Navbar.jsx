@@ -6,7 +6,7 @@ import Logo from '../assets/Logo.png';
 import Account1 from '../assets/Account1.png';
 import Cart1 from '../assets/Cart1.png';
 import { useSelector, useDispatch } from 'react-redux';
-import { logout } from '../slices/authSlice';
+import { logout, fetchProfile } from '../slices/authSlice';
 import { increaseQuantity, decreaseQuantity, removeFromCart } from '../slices/cartSlice';
 import { useTranslation } from 'react-i18next';
 import LanguageSwitcher from './LanguageSwitcher';
@@ -27,6 +27,12 @@ const Navbar = () => {
 
   const { user, isLoggedIn } = useSelector((state) => state.auth);
   const cartItems = useSelector((state) => state.cart.items) || [];
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      dispatch(fetchProfile());
+    }
+  }, [dispatch, isLoggedIn]);
 
   const handleNav = () => {
     setNav(!nav);
@@ -152,7 +158,7 @@ const Navbar = () => {
         <LanguageSwitcher />
         {isLoggedIn ? (
           <>
-            <img className="w-5 h-5 cursor-pointer" src={Account1} alt="Account" onClick={handleAccountDropdown} />
+            <img className="w-10 h-10 cursor-pointer rounded-full" src={user.profilePic?.[0]?.url || Account1} alt="Account" onClick={handleAccountDropdown} />
             {showAccountDropdown && (
               <ul ref={accountDropdownRef} className="absolute top-full right-0 mt-2 w-48 bg-white shadow-lg" onClick={(e) => e.stopPropagation()}>
                 <li className="px-4 py-2">
@@ -190,101 +196,76 @@ const Navbar = () => {
         ) : (
           <>
             <RouterLink to="/login" className="md:cursor-pointer">{t('navbar.login')}</RouterLink>|
-            <RouterLink to="/CreateAccount" className="md:cursor-pointer">{t('navbar.register')}</RouterLink>
+            <RouterLink to="/CreateAccount" className="md:cursor-pointer">{t('navbar.signup')}</RouterLink>
           </>
         )}
       </div>
 
-      <div onClick={handleNav} className="block md:hidden">
-        {nav ? <AiOutlineClose size={30} /> : <AiOutlineMenu size={30} />}
+      <div onClick={handleNav} className="md:hidden">
+        {!nav ? <AiOutlineMenu size={20} /> : <AiOutlineClose size={20} />}
       </div>
 
-      <div className={`fixed left-0 top-0 w-[60%] h-full bg-blue-950 text-white transition-transform duration-300 ease-in-out ${nav ? 'translate-x-0' : '-translate-x-full'} z-50`} onClick={() => setNav(false)}>
-        <ul className="pt-24">
-          <li className="text-2xl py-4 px-4 border-b border-white cursor-pointer hover:bg-blue-800" onClick={handleHomeClick}>
-            {t('navbar.home')}
-          </li>
-          <li className="text-2xl py-4 px-4 border-b border-white cursor-pointer hover:bg-blue-800">
-            <ScrollLink to="services" smooth={true} duration={500} onClick={() => setNav(false)}>
-              {t('navbar.services')}
-            </ScrollLink>
-          </li>
-          <li className="text-2xl py-4 px-4 border-b border-white cursor-pointer hover:bg-blue-800" onMouseEnter={() => setDropdown(true)} onMouseLeave={() => setDropdown(false)}>
-            <span>{t('navbar.products')}</span>
-            {dropdown && (
-              <ul className="absolute top-full left-0 w-52 bg-blue-950 text-white shadow-lg">
-                <li>
-                  <RouterLink to="/infopage" className="block px-4 py-2 hover:bg-blue-900">
-                    {t('navbar.it')}
-                  </RouterLink>
-                </li>
-                <li>
-                  <RouterLink to="/Construction" className="block px-4 py-2 hover:bg-blue-900">
-                    {t('navbar.civil')}
-                  </RouterLink>
-                </li>
-                <li>
-                  <RouterLink to="/Food" className="block px-4 py-2 hover:bg-blue-900">
-                    {t('navbar.food')}
-                  </RouterLink>
-                </li>
-              </ul>
+      <div className={`md:hidden ${nav ? 'fixed' : 'hidden'} top-0 left-0 w-[60%] h-full border-r border-r-gray-900 bg-blue-950 text-white transition-transform transform duration-300`}>
+        <div className="flex flex-col justify-between p-4 h-full">
+          <div>
+            <img className="w-40 mx-auto mb-10" src={Logo} alt="Logo" />
+            <ul className="text-lg">
+              <li className="p-4 border-b border-gray-300 cursor-pointer" onClick={handleHomeClick}>{t('navbar.home')}</li>
+              {!isLoginOrRegisterPage && (
+                <>
+                  <li className="p-4 border-b border-gray-300 cursor-pointer">
+                    <ScrollLink to="services" smooth={true} duration={500}>{t('navbar.services')}</ScrollLink>
+                  </li>
+                  <li className="p-4 border-b border-gray-300 cursor-pointer">
+                    <RouterLink to="/infopage">{t('navbar.products')}</RouterLink>
+                  </li>
+                  <li className="p-4 border-b border-gray-300 cursor-pointer">
+                    <ScrollLink to="aboutus" smooth={true} duration={500}>{t('navbar.about')}</ScrollLink>
+                  </li>
+                  <li className="p-4 border-b border-gray-300 cursor-pointer">
+                    <ScrollLink to="contactus" smooth={true} duration={500}>{t('navbar.contact')}</ScrollLink>
+                  </li>
+                </>
+              )}
+            </ul>
+          </div>
+          <div>
+            <LanguageSwitcher />
+            {isLoggedIn ? (
+              <>
+                <ul className="text-lg mt-4">
+                  <li className="p-4 border-b border-gray-300 cursor-pointer" onClick={handleProfileClick}>
+                    {t('navbar.profile')}
+                  </li>
+                  <li className="p-4 border-b border-gray-300 cursor-pointer" onClick={handleLogoutClick}>
+                    {t('navbar.logout')}
+                  </li>
+                </ul>
+                {showLogoutConfirm && (
+                  <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
+                    <div className="bg-white p-4 rounded-md">
+                      <p>{t('navbar.confirmLogout')}</p>
+                      <div className="mt-4 flex justify-end">
+                        <button className="bg-red-500 text-white px-4 py-2 rounded-md" onClick={handleConfirmLogout}>
+                          {t('navbar.confirm')}
+                        </button>
+                        <button className="bg-gray-200 text-gray-800 px-4 py-2 rounded-md ml-2" onClick={handleCancelLogout}>
+                          {t('navbar.cancel')}
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </>
+            ) : (
+              <>
+                <RouterLink to="/login" className="text-lg">{t('navbar.login')}</RouterLink>|
+                <RouterLink to="/CreateAccount" className="text-lg">{t('navbar.signup')}</RouterLink>
+              </>
             )}
-          </li>
-          <li className="text-2xl py-4 px-4 border-b border-white cursor-pointer hover:bg-blue-800">
-            <ScrollLink to="aboutus" smooth={true} duration={500} onClick={() => setNav(false)}>
-              {t('navbar.about')}
-            </ScrollLink>
-          </li>
-          <li className="text-2xl py-4 px-4 border-b border-white cursor-pointer hover:bg-blue-800">
-            <ScrollLink to="contactus" smooth={true} duration={500} onClick={() => setNav(false)}>
-              {t('navbar.contact')}
-            </ScrollLink>
-          </li>
-          {isLoggedIn ? (
-            <>
-              <li className="text-2xl py-4 px-4 border-b border-white cursor-pointer hover:bg-blue-800">
-                <RouterLink to="/profile" onClick={() => setNav(false)}>
-                  {t('navbar.profile')}
-                </RouterLink>
-              </li>
-              <li className="text-2xl py-4 px-4 border-b border-white cursor-pointer hover:bg-blue-800">
-                <RouterLink to="/myorders" onClick={() => setNav(false)}>
-                  My Orders
-                </RouterLink>
-              </li>
-              <li className="text-2xl py-4 px-4 border-b border-white cursor-pointer hover:bg-blue-800" onClick={handleLogoutClick}>
-                {t('navbar.logout')}
-              </li>
-            </>
-          ) : (
-            <>
-              <li className="text-2xl py-4 px-4 border-b border-white cursor-pointer hover:bg-blue-800">
-                <RouterLink to="/login" onClick={() => setNav(false)}>{t('navbar.login')}</RouterLink>
-              </li>
-              <li className="text-2xl py-4 px-4 border-b border-white cursor-pointer hover:bg-blue-800">
-                <RouterLink to="/CreateAccount" onClick={() => setNav(false)}>{t('navbar.register')}</RouterLink>
-              </li>
-            </>
-          )}
-        </ul>
-      </div>
-
-      {showLogoutConfirm && (
-        <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-75">
-          <div className="bg-white p-6 rounded-lg shadow-lg">
-            <p className="mb-4">Are you sure you want to log out?</p>
-            <div className="flex justify-end gap-4">
-              <button onClick={handleConfirmLogout} className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-700">
-                Confirm
-              </button>
-              <button onClick={handleCancelLogout} className="px-4 py-2 bg-gray-300 text-black rounded hover:bg-gray-400">
-                Cancel
-              </button>
-            </div>
           </div>
         </div>
-      )}
+      </div>
     </div>
   );
 };

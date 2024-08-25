@@ -19,6 +19,7 @@ function CreateAccount() {
   });
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [notification, setNotification] = useState(null);
+  const [formErrors, setFormErrors] = useState({});
   const dispatch = useDispatch();
   const { error } = useSelector((state) => state.auth);
   const navigate = useNavigate();
@@ -34,23 +35,39 @@ function CreateAccount() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setFormErrors({}); // Clear previous errors
+
     if (!formData.agreeToTerms) {
       alert(t('createAccount.agreeToTermsAlert'));
       return;
     }
+
     const data = new FormData();
-    for (const key in formData) {
-      data.append(key, formData[key]);
+    data.append('name', formData.name);
+    data.append('email', formData.email);
+    data.append('password', formData.password);
+    data.append('address', formData.address);
+    data.append('phone', formData.phone);
+
+    // Append the file with the correct field name expected by Multer
+    if (formData.profilePic) {
+      data.append('file', formData.profilePic); // Use 'file' as per Multer configuration
     }
 
     try {
       const resultAction = await dispatch(register(data)).unwrap();
+      console.log('Registration successful:', resultAction); // Log success
       setNotification(resultAction.message);
       setTimeout(() => {
-        navigate('/login');
+        navigate('/login'); // Redirect after 2 seconds
       }, 2000);
     } catch (err) {
-      setNotification(err.message);
+      console.error('Registration error:', err); // Log error for debugging
+      if (err.response && err.response.data) {
+        setFormErrors(err.response.data.errors || { general: 'registrationFailed' });
+      } else {
+        setFormErrors({ general: 'registrationFailed' });
+      }
     }
   };
 
@@ -71,6 +88,11 @@ function CreateAccount() {
                 {notification}
               </div>
             )}
+            {formErrors.general && (
+              <div className="p-4 mb-4 text-sm text-red-800 bg-red-100 rounded-lg" role="alert">
+                {formErrors.general}
+              </div>
+            )}
             <form onSubmit={handleSubmit} className="space-y-6">
               <h1 className="text-4xl font-semibold text-center text-custom-blue">{t('createAccount.title')}</h1>
               <div>
@@ -82,6 +104,7 @@ function CreateAccount() {
                   required
                   className="w-full p-3 border border-gray-300 rounded-lg bg-gray-200 focus:outline-none focus:ring focus:ring-blue-200"
                 />
+                {formErrors.name && <p className="text-red-500 text-sm">{formErrors.name}</p>}
               </div>
               <div>
                 <input
@@ -92,6 +115,7 @@ function CreateAccount() {
                   required
                   className="w-full p-3 border border-gray-300 rounded-lg bg-gray-200 focus:outline-none focus:ring focus:ring-blue-200"
                 />
+                {formErrors.email && <p className="text-red-500 text-sm">{formErrors.email}</p>}
               </div>
               <div className="relative">
                 <input
@@ -123,6 +147,7 @@ function CreateAccount() {
                   required
                   className="w-full p-3 border border-gray-300 rounded-lg bg-gray-200 focus:outline-none focus:ring focus:ring-blue-200"
                 />
+                {formErrors.address && <p className="text-red-500 text-sm">{formErrors.address}</p>}
               </div>
               <div>
                 <input
@@ -133,6 +158,7 @@ function CreateAccount() {
                   required
                   className="w-full p-3 border border-gray-300 rounded-lg bg-gray-200 focus:outline-none focus:ring focus:ring-blue-200"
                 />
+                {formErrors.phone && <p className="text-red-500 text-sm">{formErrors.phone}</p>}
               </div>
               <div className="relative">
                 <input
@@ -142,6 +168,7 @@ function CreateAccount() {
                   onChange={handleChange}
                   className="w-full p-3 border border-gray-300 rounded-lg bg-gray-200 focus:outline-none focus:ring focus:ring-blue-200"
                 />
+                {formErrors.profilePic && <p className="text-red-500 text-sm">{formErrors.profilePic}</p>}
               </div>
               <div className="flex items-center space-x-2">
                 <input
@@ -172,7 +199,6 @@ function CreateAccount() {
                   {t('createAccount.loginNow')}
                 </a>
               </p>
-              {error && <p className="text-red-500 text-center">{error.message}</p>}
             </form>
           </div>
         </div>

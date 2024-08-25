@@ -1,5 +1,3 @@
-
-
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
@@ -13,6 +11,7 @@ import './Loginform.css';
 function LoginForm() {
   const [formData, setFormData] = useState({ email: '', password: '' });
   const [passwordVisible, setPasswordVisible] = useState(false);
+  const [formErrors, setFormErrors] = useState({});
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { t } = useTranslation();
@@ -41,11 +40,16 @@ function LoginForm() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setFormErrors({}); // Clear previous errors
     try {
       await dispatch(login(formData)).unwrap();
       navigate('/'); // Redirect to home page after successful login
     } catch (err) {
-      // Handle any errors if needed
+      if (err.response && err.response.data) {
+        setFormErrors(err.response.data.errors || { general: t('login.failed') });
+      } else {
+        setFormErrors({ general: t('login.failed') });
+      }
     }
   };
 
@@ -57,6 +61,11 @@ function LoginForm() {
     <div className="flex flex-col justify-center items-center min-h-screen bg-gray-100">
       <div className="flex flex-col md:flex-row w-full h-full max-w-4xl p-10 bg-white rounded-lg shadow-md flex-grow mt-44 mb-44">
         <div className="w-full md:w-1/2 space-y-6 flex flex-col justify-center">
+          {formErrors.general && (
+            <div className="p-4 mb-4 text-sm text-red-800 bg-red-100 rounded-lg" role="alert">
+              {formErrors.general}
+            </div>
+          )}
           <form onSubmit={handleSubmit} className="space-y-6">
             <h1 className="text-4xl font-semibold text-center text-600">{t('login.title')}</h1>
             <div>
@@ -68,6 +77,7 @@ function LoginForm() {
                 required
                 className="w-full p-3 border border-gray-300 rounded-lg bg-gray-200 focus:outline-none focus:ring focus:ring-blue-200"
               />
+              {formErrors.email && <p className="text-red-500 text-sm">{formErrors.email}</p>}
             </div>
             <div className="relative">
               <input

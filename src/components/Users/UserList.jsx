@@ -25,7 +25,7 @@ const UserList = () => {
         {users.map((user) => (
           <li key={user._id} className="bg-white p-4 border rounded-lg shadow-md flex items-center space-x-4">
             <img 
-              src={user.profilePic?.url} 
+              src={user.profilePic[0].url} 
               alt={user.name} 
               className="w-12 h-12 rounded-full object-cover" 
             />

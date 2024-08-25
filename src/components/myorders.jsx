@@ -1,13 +1,18 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { getOrders } from '../slices/orderSlice'; 
 
 const MyOrder = () => {
+  const dispatch = useDispatch();
+  const orders = useSelector((state) => state.orders.orders); 
   const [activeTab, setActiveTab] = useState('processing');
   const [searchQuery, setSearchQuery] = useState('');
-  const [orders, setOrders] = useState([
-    { id: 1, name: 'Order 1', vin: 'VIN123', status: 'processing' },
-    { id: 2, name: 'Order 2', vin: 'VIN456', status: 'cancelled' },
-    { id: 3, name: 'Order 3', vin: 'VIN789', status: 'completed' },
-  ]);
+
+  useEffect(() => {
+    if (activeTab === 'completed') {
+      dispatch(getOrders()); 
+    }
+  }, [activeTab, dispatch]);
 
   const handleSearch = () => {
     const filteredOrders = orders.filter(order =>
@@ -28,7 +33,7 @@ const MyOrder = () => {
     return (
       <ul>
         {filteredOrders.map(order => (
-          <li key={order.id} className="text-gray-700 text-center mb-2">
+          <li key={order._id} className="text-gray-700 text-center mb-2">
             {order.name} - VIN: {order.vin}
           </li>
         ))}
@@ -60,7 +65,7 @@ const MyOrder = () => {
             onClick={() => setActiveTab('completed')}
             className={`pb-1 ${activeTab === 'completed' ? 'text-blue-800 border-b-4 border-blue-800' : 'text-gray-400'}`}
           >
-            Completed 0
+            My Orders
           </button>
         </div>
         <div className="flex flex-col sm:flex-row items-center mb-6 justify-end space-y-4 sm:space-y-0 sm:space-x-4">
