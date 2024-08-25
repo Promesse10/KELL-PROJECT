@@ -87,13 +87,13 @@ const OrderList = () => {
                         <tr key={item._id}>
                           <td className="py-1 px-2 border-b">{item.name}</td>
                           <td className="py-1 px-2 border-b">{item.quantity}</td>
-                          <td className="py-1 px-2 border-b">${item.price}</td>
+                          <td className="py-1 px-2 border-b">RF:{item.price}</td>
                         </tr>
                       ))}
                     </tbody>
                   </table>
                 </td>
-                <td className="py-2 px-4 border-b whitespace-nowrap">${order.itemPrice}</td>
+                <td className="py-2 px-4 border-b whitespace-nowrap">RF:{order.itemPrice}</td>
                 <td className="py-2 px-4 border-b">
                   {editingOrderId === order._id ? (
                     <button

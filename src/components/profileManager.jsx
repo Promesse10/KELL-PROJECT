@@ -15,11 +15,11 @@ const ProfileManager = () => {
   const [isEditingPassword, setIsEditingPassword] = useState(false);
   const fileInputRef = useRef(null);
   const dispatch = useDispatch();
-  const { user } = useSelector((state) => state.auth); // Adjust based on your state structure
+  const { user } = useSelector((state) => state.auth);
 
   useEffect(() => {
     if (typeof fetchProfile === 'function') {
-      dispatch(fetchProfile()); // Fetch profile data on component mount
+      dispatch(fetchProfile()); 
     } else {
       console.error('fetchProfile is not defined');
     }
