@@ -13,7 +13,8 @@ export const AuthProvider = ({ children }) => {
       dispatch(fetchProfile())
         .unwrap()
         .catch((error) => {
-          console.error('Failed to fetch profile:', error);
+          console.error('Failed to fetch profile:', error.message || error);
+          
         });
     }
   }, [isLoggedIn, dispatch]);

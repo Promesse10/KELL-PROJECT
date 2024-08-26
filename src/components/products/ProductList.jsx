@@ -119,7 +119,7 @@ const ProductList = () => {
                   />
                 </td>
                 <td className="py-2 px-4">{product.name}</td>
-                <td className="py-2 px-4">${product.price}</td>
+                <td className="py-2 px-4">RF-{product.price}</td>
                 <td className="py-2 px-4">{product.description}</td>
                 <td className="py-2 px-4">{product.category?.category || 'N/A'}</td>
                 <td className="py-2 px-4">{product.stock}</td>
