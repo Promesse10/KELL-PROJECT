@@ -7,13 +7,12 @@ import Account1 from '../assets/Account1.png';
 import Cart1 from '../assets/Cart1.png';
 import { useSelector, useDispatch } from 'react-redux';
 import { logout } from '../slices/authSlice';
-import { increaseQuantity, decreaseQuantity, removeFromCart } from '../slices/cartSlice';
+import { removeFromCart } from '../slices/cartSlice';
 import { useTranslation } from 'react-i18next';
 import LanguageSwitcher from './LanguageSwitcher';
 
 const Navbar = () => {
   const [nav, setNav] = useState(false);
-  const [showCart, setShowCart] = useState(false);
   const [showAccountDropdown, setShowAccountDropdown] = useState(false);
   const [dropdown, setDropdown] = useState(false);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
@@ -46,6 +45,26 @@ const Navbar = () => {
     setShowAccountDropdown(false);
   };
 
+  const handleOrdersClick = () => {
+    navigate('/myorders');
+    setShowAccountDropdown(false);
+  };
+
+  const handleLogoutClick = () => {
+    setShowLogoutConfirm(true);
+  };
+
+  const handleConfirmLogout = () => {
+    dispatch(logout());
+    setShowLogoutConfirm(false);
+    setShowAccountDropdown(false);
+    navigate('/');
+  };
+
+  const handleCancelLogout = () => {
+    setShowLogoutConfirm(false);
+  };
+
   const handleHomeClick = () => {
     navigate('/');
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -64,21 +83,6 @@ const Navbar = () => {
 
   const handleCheckout = () => {
     navigate('/checkout');
-    setShowCart(false);
-  };
-
-  const handleLogoutClick = () => {
-    setShowLogoutConfirm(true);
-  };
-
-  const handleConfirmLogout = () => {
-    dispatch(logout());
-    setShowLogoutConfirm(false);
-    navigate('/');
-  };
-
-  const handleCancelLogout = () => {
-    setShowLogoutConfirm(false);
   };
 
   useEffect(() => {
@@ -164,12 +168,12 @@ const Navbar = () => {
                   </p>
                 </li>
                 <li>
-                  <RouterLink to="/profile" className="block px-4 py-2 hover:bg-gray-200" onClick={() => setShowAccountDropdown(false)}>
+                  <RouterLink to="/profile" className="block px-4 py-2 hover:bg-gray-200" onClick={handleProfileClick}>
                     {t('navbar.profile')}
                   </RouterLink>
                 </li>
                 <li>
-                  <RouterLink to="/myorders" className="block px-4 py-2 hover:bg-gray-200" onClick={() => setShowAccountDropdown(false)}>
+                  <RouterLink to="/myorders" className="block px-4 py-2 hover:bg-gray-200" onClick={handleOrdersClick}>
                     My Orders
                   </RouterLink>
                 </li>
@@ -212,95 +216,52 @@ const Navbar = () => {
           </div>
           <ul className="mt-4">
             <li className="py-2">
-              <span onClick={handleHomeClick} className="hover:border-b-4 hover:border-white cursor-pointer block">
+              <span onClick={handleHomeClick} className="block hover:bg-blue-800 px-4 py-2 cursor-pointer">
                 {t('navbar.home')}
               </span>
             </li>
-            {!isLoginOrRegisterPage && !isCheckoutPage && (
+            {!isLoginOrRegisterPage && (
               <>
                 <li className="py-2">
-                  <ScrollLink to="services" smooth={true} duration={500} className="hover:border-b-4 hover:border-white block">
+                  <ScrollLink to="services" smooth={true} duration={500} className="block hover:bg-blue-800 px-4 py-2 cursor-pointer">
                     {t('navbar.services')}
                   </ScrollLink>
                 </li>
-                <li className="py-2" onMouseEnter={() => setDropdown(true)} onMouseLeave={() => setDropdown(false)} >
-                  <span className="hover:border-b-4 hover:border-white cursor-pointer block">{t('navbar.products')}</span>
-                  {dropdown && (
-                    <ul className="absolute top-full font-thin text-sm left-0 w-52 bg-blue-950 text-white shadow-lg">
-                      <li>
-                        <RouterLink to="/infopage" className="block px-4 py-2 hover:bg-blue-900">
-                          {t('navbar.it')}
-                        </RouterLink>
-                      </li>
-                      <li>
-                        <RouterLink to="/Construction" className="block px-4 py-2 hover:bg-blue-900">
-                          {t('navbar.civil')}
-                        </RouterLink>
-                      </li>
-                      <li>
-                        <RouterLink to="/Food" className="block px-4 py-2 hover:bg-blue-900">
-                          {t('navbar.food')}
-                        </RouterLink>
-                      </li>
-                    </ul>
-                  )}
-                </li>
                 <li className="py-2">
-                  <ScrollLink to="aboutus" smooth={true} duration={500} className="hover:border-b-4 hover:border-white block">
+                  <ScrollLink to="aboutus" smooth={true} duration={500} className="block hover:bg-blue-800 px-4 py-2 cursor-pointer">
                     {t('navbar.about')}
                   </ScrollLink>
                 </li>
                 <li className="py-2">
-                  <ScrollLink to="contactus" smooth={true} duration={500} className="hover:border-b-4 hover:border-white block">
+                  <ScrollLink to="contactus" smooth={true} duration={500} className="block hover:bg-blue-800 px-4 py-2 cursor-pointer">
                     {t('navbar.contact')}
                   </ScrollLink>
                 </li>
               </>
             )}
           </ul>
-          <div className="mt-6">
-            <LanguageSwitcher />
+          <div className="flex flex-col gap-4 px-4">
             {isLoggedIn ? (
               <>
-                <img className="w-5 h-5 cursor-pointer" src={Account1} alt="Account" onClick={handleAccountDropdown} />
-                {showAccountDropdown && (
-                  <ul ref={accountDropdownRef} className="absolute top-full right-0 mt-2 w-48 bg-white shadow-lg" onClick={(e) => e.stopPropagation()}>
-                    <li className="px-4 py-2">
-                      <p className="font-semibold">
-                        {t('navbar.hi')}, {user.name ? user.name : 'Guest'}!
-                      </p>
-                    </li>
-                    <li>
-                      <RouterLink to="/profile" className="block px-4 py-2 hover:bg-gray-200" onClick={() => setShowAccountDropdown(false)}>
-                        {t('navbar.profile')}
-                      </RouterLink>
-                    </li>
-                    <li>
-                      <RouterLink to="/myorders" className="block px-4 py-2 hover:bg-gray-200" onClick={() => setShowAccountDropdown(false)}>
-                        My Orders
-                      </RouterLink>
-                    </li>
-                    <li>
-                      <button className="block px-4 py-2 w-full text-left hover:bg-gray-200" onClick={handleLogoutClick}>
-                        {t('navbar.logout')}
-                      </button>
-                    </li>
-                  </ul>
-                )}
-                <button onClick={handleCartClick} className="relative border-white border-2 p-1 rounded-2xl flex flex-row items-center mt-4">
-                  <img className="w-5 h-5" src={Cart1} alt="Cart" />
-                  <span className="ml-2">{t('navbar.cart')}</span>
-                  {cartItems.length > 0 && (
-                    <span className="absolute top-5 right-14 bg-red-500 text-white text-xs rounded-full px-2 py-1">
-                      {cartItems.reduce((total, item) => total + item.quantity, 0)}
-                    </span>
-                  )}
+                <p>{t('navbar.hi')}, {user.name}!</p>
+                <RouterLink to="/profile" className="block hover:bg-blue-800 px-4 py-2" onClick={handleProfileClick}>
+                  {t('navbar.profile')}
+                </RouterLink>
+                <RouterLink to="/myorders" className="block hover:bg-blue-800 px-4 py-2" onClick={handleOrdersClick}>
+                  My Orders
+                </RouterLink>
+                <button className="block text-left w-full hover:bg-blue-800 px-4 py-2" onClick={handleLogoutClick}>
+                  {t('navbar.logout')}
                 </button>
               </>
             ) : (
               <>
-                <RouterLink to="/login" className="block text-center my-2">{t('navbar.login')}</RouterLink>
-                <RouterLink to="/CreateAccount" className="block text-center">{t('navbar.register')}</RouterLink>
+                <RouterLink to="/login" className="block hover:bg-blue-800 px-4 py-2">
+                  {t('navbar.login')}
+                </RouterLink>
+                <RouterLink to="/CreateAccount" className="block hover:bg-blue-800 px-4 py-2">
+                  {t('navbar.register')}
+                </RouterLink>
               </>
             )}
           </div>
@@ -308,12 +269,16 @@ const Navbar = () => {
       </div>
 
       {showLogoutConfirm && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-          <div className="bg-white p-4 rounded-md shadow-lg">
-            <p className="mb-4">Are you sure you want to log out?</p>
-            <div className="flex justify-end gap-4">
-              <button onClick={handleConfirmLogout} className="bg-red-500 text-white px-4 py-2 rounded">Yes</button>
-              <button onClick={handleCancelLogout} className="bg-gray-300 px-4 py-2 rounded">No</button>
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+          <div className="bg-white p-6 rounded-lg shadow-lg text-center">
+            <p className="mb-4">{t('Are you sure you want to logout?')}</p>
+            <div className="flex justify-center gap-4">
+              <button onClick={handleConfirmLogout} className="bg-blue-900 text-white px-4 py-2 rounded hover:bg-blue-950">
+                {t('Logout')}
+              </button>
+              <button onClick={handleCancelLogout} className="bg-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-400">
+                {t('Cancel')}
+              </button>
             </div>
           </div>
         </div>
