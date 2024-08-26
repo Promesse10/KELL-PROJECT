@@ -4,6 +4,7 @@ import Logo from '../assets/Logo.png';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 
+
 function Receipt() {
   const location = useLocation();
   const receiptRef = useRef();
