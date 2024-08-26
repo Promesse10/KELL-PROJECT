@@ -29,7 +29,8 @@ const ProfileManager = () => {
     if (user) {
       setName(user.name || '');
       setEmail(user.email || '');
-      setImage(user.profilePic[0].url || null); // Set the profile picture from the fetched user data
+      // Safe check for profile picture
+      setImage(user.profilePic && user.profilePic.length > 0 ? user.profilePic[0].url : null);
     }
   }, [user]);
 
