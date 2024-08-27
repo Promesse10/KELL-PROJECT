@@ -159,7 +159,13 @@ const Navbar = () => {
         <LanguageSwitcher />
         {isLoggedIn ? (
           <>
-            <img className="w-5 h-5 cursor-pointer" src={Account1} alt="Account" onClick={handleAccountDropdown} />
+<img
+  className="h-12 w-12 cursor-pointer rounded-full border border-gray-300"
+  src={user.profilePic[0].url}
+  alt="Account"
+  onClick={handleAccountDropdown}
+/>
+
             {showAccountDropdown && (
               <ul ref={accountDropdownRef} className="absolute top-full right-0 mt-2 w-48 bg-white shadow-lg" onClick={(e) => e.stopPropagation()}>
                 <li className="px-4 py-2">
@@ -197,7 +203,7 @@ const Navbar = () => {
         ) : (
           <>
             <RouterLink to="/login" className="md:cursor-pointer">{t('navbar.login')}</RouterLink>|
-            <RouterLink to="/CreateAccount" className="md:cursor-pointer">{t('navbar.register')}</RouterLink>
+            <RouterLink to="/CreateaAccount" className="md:cursor-pointer">{t('navbar.register')}</RouterLink>
           </>
         )}
       </div>

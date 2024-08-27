@@ -212,23 +212,7 @@ function Checkout() {
               All transactions are secure and encrypted.
             </p>
             <div className="mb-6">
-              <label
-                className={`block border-2 p-3 rounded-lg ${
-                  paymentMethod === 'cod'
-                    ? 'border-blue-600'
-                    : 'border-gray-300'
-                } hover:border-blue-600 cursor-pointer`}
-              >
-                <input
-                  type="radio"
-                  name="paymentMethod"
-                  value="cod"
-                  checked={paymentMethod === 'cod'}
-                  onChange={() => setPaymentMethod('cod')}
-                  className="hidden"
-                />
-                <span className="ml-2">Cash on Delivery (COD)</span>
-              </label>
+    
               <label
                 className={`block border-2 p-3 mt-4 rounded-lg ${
                   paymentMethod === 'bank'
