@@ -23,7 +23,6 @@ const Dashboard = () => {
     totalCustomers,
     recentOrders = [], // Default to empty array
     popularProducts = [], // Default to empty array
-    topProducts = [], // Default to empty array
     status,
     error,
   } = useSelector((state) => state.orders);
@@ -81,8 +80,8 @@ const Dashboard = () => {
         </div>
       </header>
 
-      <h1 className="text-2xl font-bold mb-4">Dashboard</h1>
-      <p className="mb-6">Welcome to the admin dashboard!</p>
+      <h1 className="text-2xl font-bold mb-4">{user.name}</h1>
+      <p className="mb-6"> Welcome to the admin dashboard!</p>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
         <div className="bg-white p-4 rounded shadow flex items-center justify-between">
@@ -137,31 +136,15 @@ const Dashboard = () => {
                     <td className="border px-2 py-1 text-sm sm:text-base">{order._id}</td>
                     <td className="border px-2 py-1 text-sm sm:text-base">
                       <div className="flex items-center space-x-2">
-                        {order.user.profilePic && order.user.profilePic.length > 0 ? (
-                          <img
-                            src={order.user.profilePic[0].url}
-                            alt="User"
-                            className="w-8 h-8 object-cover rounded-full"
-                          />
-                        ) : (
-                          <img
-                            src={userIcon}
-                            alt="Default User"
-                            className="w-8 h-8 object-cover rounded-full"
-                          />
-                        )}
+                       
                         <span>{order.user.name}</span>
                       </div>
-                      <div>{order.user.email}</div>
+                      
                     </td>
                     <td className="border px-2 py-1 text-sm sm:text-base">
                       {order.orderItems.map(item => (
                         <div key={item._id} className="flex items-center space-x-2">
-                          <img
-                            src={item.image}
-                            alt={item.name}
-                            className="w-8 h-8 object-cover rounded"
-                          />
+                          
                           <span>{item.name} x {item.quantity}</span>
                         </div>
                       ))}
@@ -180,30 +163,20 @@ const Dashboard = () => {
           <h2 className="text-xl mb-4 text-gray-600">Popular Products</h2>
           <ul className="space-y-2">
             {popularProducts.map((product) => (
-              <li key={product.id} className="flex justify-between">
-                <span>{product.name}</span>
-                <span>{product.orders} Orders</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-        
-        <div className="bg-white p-4 rounded shadow lg:col-span-2">
-          <h2 className="text-xl mb-4 text-gray-600">Top Products</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {topProducts.map((product) => (
-              <div key={product._id} className="bg-gray-50 p-4 rounded shadow">
+              <li key={product._id} className="bg-gray-50 p-4 rounded shadow">
                 <img
                   src={product.images[0]?.url || ''}
                   alt={product.name}
                   className="w-full h-32 object-cover rounded mb-4"
                 />
                 <h3 className="text-lg font-semibold mb-2">{product.name}</h3>
-                <p className="text-gray-600 text-sm mb-2">{product.description}</p>
-                <p className="text-blue-500 text-lg">RWF: {product.price}</p>
-              </div>
+                <p className="text-gray-600 text-sm mb-2">Price: RWF {product.price}</p>
+                <p className="text-gray-600 text-sm mb-2">Stock: {product.stock}</p>
+                <p className="text-gray-600 text-sm">Created: {new Date(product.createdAt).toLocaleDateString()}</p>
+                <p className="text-gray-600 text-sm">Updated: {new Date(product.updatedAt).toLocaleDateString()}</p>
+              </li>
             ))}
-          </div>
+          </ul>
         </div>
       </div>
     </div>

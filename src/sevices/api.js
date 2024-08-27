@@ -1,41 +1,4 @@
-import axios from 'axios';
-import Cookies from 'js-cookie';
-
-const API_BASE_URL = 'http://localhost:8009/api/v1';
-
-const api = axios.create({
-  baseURL: API_BASE_URL,
-});
-
-// Request interceptor to add the token to headers
-api.interceptors.request.use(
-  (config) => {
-    const token = Cookies.get('token');
-    console.log('Token:', token); // Debugging: log the token
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
-  },
-  (error) => Promise.reject(error)
-);
-
-// Response interceptor to handle 401 errors
-api.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    if (error.response && error.response.status === 401) {
-      console.log('Unauthorized! Redirecting to login...');
-      // Optionally, clear the token cookie
-      Cookies.remove('token');
-      // Redirect to login page
-      window.location.href = '/login';
-    }
-    return Promise.reject(error);
-  }
-);
-
-// API Functions
+import api from '../../axiosConfig';
 
 export const fetchProducts = async (category) => {
   try {
