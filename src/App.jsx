@@ -1,14 +1,19 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
-import 'react-toastify/dist/ReactToastify.css';
-import Navbar from './components/Navbar';
-import Footer from './components/Footer';
-import Landingpage from './pages/Landingpage';
-import LoginSignup from './pages/LoginSignup';
-import Cart from './pages/Cart';
-import CreateAccount from './components/CreateAccountForm/CreateAccount';
-import Service from './components/Service';
-import Infopage from './components/Infopage';
+import React from "react";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  useLocation,
+} from "react-router-dom";
+import "react-toastify/dist/ReactToastify.css";
+import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
+import Landingpage from "./pages/Landingpage";
+import LoginSignup from "./pages/LoginSignup";
+import Cart from "./pages/Cart";
+import CreateAccount from "./components/CreateAccountForm/CreateAccount";
+import Service from "./components/Service";
+import Infopage from "./components/Infopage";
 import Hero from "./components/Hero";
 import Aboutus from "./components/Aboutus";
 import Contactus from "./components/Contactus";
@@ -24,32 +29,34 @@ import OrderList from "./components/Orders/OrderList";
 import CategoriesPage from "./pages/CategoriesPage";
 import UserList from "./components/Users/UserList";
 import ForgotPasswordForm from "./components/ForgetPassword";
-import NotFound from './components/NotFound';
-import { Payment } from './payment/UserPayment';
-import Checkout from './pages/Checkout';
-import PrivateRoute from './components/PrivateRoute';
-import { AuthProvider } from './context/authContext';
-import LoginAdmin from './layout/Login';
+import NotFound from "./components/NotFound";
+import { Payment } from "./payment/UserPayment";
+import Checkout from "./pages/Checkout";
+import PrivateRoute from "./components/PrivateRoute";
+import { AuthProvider } from "./context/authContext";
+import LoginAdmin from "./layout/Login";
 
-import MyOrders from './components/myorders';
-import OrderForm from './components/OrderForm'
-import Receipt from './components/ Receipt';
+import MyOrders from "./components/myorders";
+import OrderForm from "./components/OrderForm";
+import Receipt from "./components/Receipt";
 
 function App() {
   const location = useLocation();
-  const isAdminRoute = location.pathname.startsWith('/admin');
-  const isLoginAdminPage = location.pathname === '/login-admin';
-  const isDashboardPage = location.pathname === '/admin/dashboard';
-  const isNotFoundPage = location.pathname === '/404';
-  const isLandingPage = location.pathname === '/';
-  const isCheckoutPage = location.pathname === '/checkout';
-  const shouldShowNavbar = !isAdminRoute && !isLoginAdminPage && !isDashboardPage && !isCheckoutPage;
-  const shouldShowFooter = !isAdminRoute && !isNotFoundPage && !isLandingPage && !isCheckoutPage;
+  const isAdminRoute = location.pathname.startsWith("/admin");
+  const isLoginAdminPage = location.pathname === "/login-admin";
+  const isDashboardPage = location.pathname === "/admin/dashboard";
+  const isNotFoundPage = location.pathname === "/404";
+  const isLandingPage = location.pathname === "/";
+  const isCheckoutPage = location.pathname === "/checkout";
+  const shouldShowNavbar =
+    !isAdminRoute && !isLoginAdminPage && !isDashboardPage && !isCheckoutPage;
+  const shouldShowFooter =
+    !isAdminRoute && !isNotFoundPage && !isLandingPage && !isCheckoutPage;
 
   return (
     <>
       {shouldShowNavbar && <Navbar />}
-      
+
       <Routes>
         <Route path="/" element={<Landingpage />} />
         <Route path="/login" element={<LoginSignup />} />

@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import Cookies from 'js-cookie';
-import authService from '../sevices/authService'; // Ensure correct path
+import authService from '../sevices/authService'; 
 
 const initialState = {
   user: JSON.parse(Cookies.get('user') || '{}'),
@@ -33,7 +33,6 @@ export const fetchProfile = createAsyncThunk('auth/fetchProfile', async (_, thun
   try {
     const data = await authService.getProfile();
     return data.user;
-    
   } catch (error) {
     return thunkAPI.rejectWithValue(error.message || 'Failed to fetch profile');
   }

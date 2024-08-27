@@ -14,7 +14,6 @@ export const AuthProvider = ({ children }) => {
         .unwrap()
         .catch((error) => {
           console.error('Failed to fetch profile:', error.message || error);
-          
         });
     }
   }, [isLoggedIn, dispatch]);
@@ -30,7 +29,7 @@ export const AuthProvider = ({ children }) => {
         isLoggedIn, 
         loading, 
         error, 
-        isAdmin: user ? user.isAdmin : false,  // Ensure user is not null
+        isAdmin: user ? user.isAdmin : false, // Ensure user is not null
         registerUser, 
         loginUser, 
         logoutUser 

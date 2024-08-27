@@ -68,7 +68,8 @@ const cartSlice = createSlice({
       }
     },
     increaseQuantity: (state, action) => {
-      const item = state.items.find(i => i._id === action.payload);
+      const itemId = action.payload;
+      const item = state.items.find(i => i._id === itemId);
       if (item) {
         item.quantity += 1;
         if (state.userId) {
@@ -77,52 +78,45 @@ const cartSlice = createSlice({
       }
     },
     decreaseQuantity: (state, action) => {
-      const item = state.items.find(i => i._id === action.payload);
-      if (item && item.quantity > 1) {
-        item.quantity -= 1;
-        if (state.userId) {
-          saveCartToCookie(state.userId, state.items);
+      const itemId = action.payload;
+      const item = state.items.find(i => i._id === itemId);
+      if (item) {
+        if (item.quantity > 1) {
+          item.quantity -= 1;
+        } else {
+          state.items = state.items.filter(i => i._id !== itemId);
         }
-      } else if (item) {
-        state.items = state.items.filter(i => i._id !== action.payload);
         if (state.userId) {
           saveCartToCookie(state.userId, state.items);
         }
       }
     },
-    setToken: (state, action) => {
-      state.token = action.payload;
-      Cookies.set('token', action.payload);  // Save token to cookies
-    },
-    clearToken: (state) => {
-      state.token = null;
-      Cookies.remove('token');  // Remove token from cookies
+    clearCart: (state) => {
+      state.items = [];
       if (state.userId) {
-        saveCartToCookie(state.userId, state.items);  // Save cart to cookie before logout
-        state.items = [];  // Clear cart items
-        state.userId = null;
+        clearCartCookie(state.userId);
       }
     },
   },
   extraReducers: (builder) => {
     builder
       .addCase(fetchProfile.fulfilled, (state, action) => {
-        state.token = action.payload.token;
-        state.userId = action.payload.userId;
-        Cookies.set('token', action.payload.token);
-        state.items = loadCartFromCookie(action.payload.userId);  // Load the user's cart from cookies
-      })
-      .addCase(fetchProfile.rejected, (state, action) => {
-        console.error('Failed to fetch profile:', action.payload);
+        state.userId = action.payload._id;
+        state.items = loadCartFromCookie(action.payload._id) || [];
       });
   },
 });
 
-// Export actions
-export const { setUser, addToCart, removeFromCart, increaseQuantity, decreaseQuantity, setToken, clearToken } = cartSlice.actions;
+export const {
+  addToCart,
+  removeFromCart,
+  increaseQuantity,
+  decreaseQuantity,
+  clearCart,
+  setUser,
+} = cartSlice.actions;
 
-// Export selectors
+// Add selector to access cart items
 export const selectCartItems = (state) => state.cart.items;
-export const selectToken = (state) => state.cart.token;
 
 export default cartSlice.reducer;

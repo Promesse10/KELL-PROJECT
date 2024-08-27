@@ -12,7 +12,6 @@ const instance = axios.create({
 instance.interceptors.request.use(
   (config) => {
     const token = Cookies.get('token');
-    console.log('Token:', token);
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -49,9 +48,7 @@ const logout = () => {
 const getProfile = async () => {
   try {
     const response = await instance.get('/profile');
-    return response.data; 
-    
-    
+    return response.data;
   } catch (error) {
     throw new Error('Failed to fetch profile');
   }
