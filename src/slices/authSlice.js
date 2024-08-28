@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import Cookies from 'js-cookie';
 import authService from '../sevices/authService';
+import Cookies from 'js-cookie';
 
 const initialState = {
   user: JSON.parse(Cookies.get('user') || '{}'),
@@ -12,6 +12,7 @@ const initialState = {
 export const register = createAsyncThunk('auth/register', async (userData, thunkAPI) => {
   try {
     const data = await authService.register(userData);
+    Cookies.set('user', JSON.stringify(data.user), { expires: 15 });
     return data.user;
   } catch (error) {
     return thunkAPI.rejectWithValue(error.message || 'Registration failed');
@@ -34,6 +35,33 @@ export const fetchProfile = createAsyncThunk('auth/fetchProfile', async (_, thun
     return data.user;
   } catch (error) {
     return thunkAPI.rejectWithValue(error.message || 'Failed to fetch profile');
+  }
+});
+
+export const updateProfile = createAsyncThunk('auth/updateProfile', async (userData, thunkAPI) => {
+  try {
+    const data = await authService.updateProfile(userData);
+    return data.user;
+  } catch (error) {
+    return thunkAPI.rejectWithValue(error.message || 'Failed to update profile');
+  }
+});
+
+export const updatePassword = createAsyncThunk('auth/updatePassword', async (passwordData, thunkAPI) => {
+  try {
+    const data = await authService.updatePassword(passwordData);
+    return data;
+  } catch (error) {
+    return thunkAPI.rejectWithValue(error.message || 'Failed to update password');
+  }
+});
+
+export const updateProfilePic = createAsyncThunk('auth/updateProfilePic', async (formData, thunkAPI) => {
+  try {
+    const data = await authService.updateProfilePic(formData);
+    return data.user;
+  } catch (error) {
+    return thunkAPI.rejectWithValue(error.message || 'Failed to update profile picture');
   }
 });
 
@@ -94,6 +122,41 @@ const authSlice = createSlice({
         state.user = action.payload;
       })
       .addCase(fetchProfile.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(updateProfile.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(updateProfile.fulfilled, (state, action) => {
+        state.loading = false;
+        state.user = action.payload;
+      })
+      .addCase(updateProfile.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(updatePassword.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(updatePassword.fulfilled, (state, action) => {
+        state.loading = false;
+      })
+      .addCase(updatePassword.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(updateProfilePic.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(updateProfilePic.fulfilled, (state, action) => {
+        state.loading = false;
+        state.user = action.payload;
+      })
+      .addCase(updateProfilePic.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })

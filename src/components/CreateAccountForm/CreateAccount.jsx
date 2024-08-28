@@ -35,7 +35,7 @@ function CreateAccount() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setFormErrors({}); // Clear previous errors
+    setFormErrors({});
 
     if (!formData.agreeToTerms) {
       alert(t('createAccount.agreeToTermsAlert'));
@@ -49,20 +49,15 @@ function CreateAccount() {
     data.append('address', formData.address);
     data.append('phone', formData.phone);
 
-    // Append the file with the correct field name expected by Multer
     if (formData.profilePic) {
-      data.append('file', formData.profilePic); // Use 'file' as per Multer configuration
+      data.append('file', formData.profilePic);
     }
 
     try {
       const resultAction = await dispatch(register(data)).unwrap();
-      console.log('Registration successful:', resultAction); // Log success
       setNotification(resultAction.message);
-      setTimeout(() => {
-        navigate('/login'); // Redirect after 2 seconds
-      }, 2000);
+      navigate('/login');
     } catch (err) {
-      console.error('Registration error:', err); // Log error for debugging
       if (err.response && err.response.data) {
         setFormErrors(err.response.data.errors || { general: 'registrationFailed' });
       } else {

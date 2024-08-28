@@ -1,6 +1,12 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { getTotalSales, getTotalOrders, getTotalCustomers, getRecentOrders, getPopularProducts } from '../slices/orderSlice';
+import {
+  getTotalSales,
+  getTotalOrders,
+  getTotalCustomers,
+  getRecentOrders,
+  getPopularProducts,
+} from '../slices/orderSlice';
 import Mkelia from '../assets/Mkelia.png';
 import shopping from '../assets/shopping.png';
 import basket from '../assets/basket.png';
@@ -15,18 +21,24 @@ const Dashboard = () => {
     totalSales,
     totalOrders,
     totalCustomers,
-    recentOrders,
-    popularProducts,
+    recentOrders = [], // Default to empty array
+    popularProducts = [], // Default to empty array
     status,
-    error
+    error,
   } = useSelector((state) => state.orders);
 
   useEffect(() => {
     if (typeof fetchProfile === 'function') {
-      dispatch(fetchProfile()); 
+      dispatch(fetchProfile());
     } else {
       console.error('fetchProfile is not defined');
     }
+
+    dispatch(getTotalSales());
+    dispatch(getTotalOrders());
+    dispatch(getTotalCustomers());
+    dispatch(getRecentOrders());
+    dispatch(getPopularProducts());
   }, [dispatch]);
 
   if (status === 'loading') {
@@ -68,20 +80,24 @@ const Dashboard = () => {
         </div>
       </header>
 
-      <h1 className="text-2xl font-bold mb-4">Dashboard</h1>
-      <p className="mb-6">Welcome to the admin dashboard!</p>
+      <h1 className="text-2xl font-bold mb-4">{user.name}</h1>
+      <p className="mb-6"> Welcome to the admin dashboard!</p>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
         <div className="bg-white p-4 rounded shadow flex items-center justify-between">
-          <div><img src={basket} alt="Total Sales" className="w-16 h-16" /></div>
+          <div>
+            <img src={basket} alt="Total Sales" className="w-16 h-16" />
+          </div>
           <div className="text-center">
             <h2 className="text-xl">Total Sales</h2>
-            <p className="text-2xl text-blue-500">RWF:{totalSales}</p>
+            <p className="text-2xl text-blue-500">RWF: {totalSales}</p>
           </div>
         </div>
 
         <div className="bg-white p-4 rounded shadow flex items-center justify-between">
-          <div><img src={userIcon} alt="Total Customers" className="w-16 h-16" /></div>
+          <div>
+            <img src={userIcon} alt="Total Customers" className="w-16 h-16" />
+          </div>
           <div className="text-center">
             <h2 className="text-xl">Total Customers</h2>
             <p className="text-2xl text-blue-500">{totalCustomers}</p>
@@ -89,7 +105,9 @@ const Dashboard = () => {
         </div>
 
         <div className="bg-white p-4 rounded shadow flex items-center justify-between">
-          <div><img src={shopping} alt="Total Orders" className="w-16 h-16" /></div>
+          <div>
+            <img src={shopping} alt="Total Orders" className="w-16 h-16" />
+          </div>
           <div className="text-center">
             <h2 className="text-xl">Total Orders</h2>
             <p className="text-2xl text-blue-500">{totalOrders}</p>
@@ -105,32 +123,37 @@ const Dashboard = () => {
               <thead className="bg-gray-200">
                 <tr>
                   <th className="border px-2 py-1 text-left text-sm sm:text-base">ID</th>
-                  <th className="border px-2 py-1 text-left text-sm sm:text-base">Product Name</th>
-                  <th className="border px-2 py-1 text-left text-sm sm:text-base">Customer Name</th>
-                  <th className="border px-2 py-1 text-left text-sm sm:text-base">Order Date</th>
-                  <th className="border px-2 py-1 text-left text-sm sm:text-base">Order Total</th>
-                  <th className="border px-2 py-1 text-left text-sm sm:text-base">Shipping Address</th>
-                  <th className="border px-2 py-1 text-left text-sm sm:text-base">Order Status</th>
+                  <th className="border px-2 py-1 text-left text-sm sm:text-base">User</th>
+                  <th className="border px-2 py-1 text-left text-sm sm:text-base">Items</th>
+                  <th className="border px-2 py-1 text-left text-sm sm:text-base">Total Amount</th>
+                  <th className="border px-2 py-1 text-left text-sm sm:text-base">Status</th>
+                  <th className="border px-2 py-1 text-left text-sm sm:text-base">Date</th>
                 </tr>
               </thead>
               <tbody>
-                {Array.isArray(recentOrders) && recentOrders.length > 0 ? (
-                  recentOrders.map((order) => (
-                    <tr key={order._id}>
-                      <td className="border px-2 py-1 text-sm sm:text-base">#{order._id}</td>
-                      <td className="border px-2 py-1 text-sm sm:text-base">{order.orderItems[0]?.name}</td>
-                      <td className="border px-2 py-1 text-sm sm:text-base">{order.user?.name}</td>
-                      <td className="border px-2 py-1 text-sm sm:text-base">{new Date(order.createdAt).toLocaleDateString()}</td>
-                      <td className="border px-2 py-1 text-sm sm:text-base">{order.itemPrice} rwf</td>
-                      <td className="border px-2 py-1 text-sm sm:text-base">{order.shippingInfo.address}, {order.shippingInfo.city}</td>
-                      <td className="border px-2 py-1 text-sm sm:text-base">{order.orderStatus}</td>
-                    </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td colSpan="7" className="border px-2 py-1 text-center">No recent orders</td>
+                {recentOrders.map((order) => (
+                  <tr key={order._id} className="hover:bg-gray-100">
+                    <td className="border px-2 py-1 text-sm sm:text-base">{order._id}</td>
+                    <td className="border px-2 py-1 text-sm sm:text-base">
+                      <div className="flex items-center space-x-2">
+                       
+                        <span>{order.user.name}</span>
+                      </div>
+                      
+                    </td>
+                    <td className="border px-2 py-1 text-sm sm:text-base">
+                      {order.orderItems.map(item => (
+                        <div key={item._id} className="flex items-center space-x-2">
+                          
+                          <span>{item.name} x {item.quantity}</span>
+                        </div>
+                      ))}
+                    </td>
+                    <td className="border px-2 py-1 text-sm sm:text-base">RWF: {order.totalAmount}</td>
+                    <td className="border px-2 py-1 text-sm sm:text-base">{order.orderStatus}</td>
+                    <td className="border px-2 py-1 text-sm sm:text-base">{new Date(order.createdAt).toLocaleDateString()}</td>
                   </tr>
-                )}
+                ))}
               </tbody>
             </table>
           </div>
@@ -138,25 +161,21 @@ const Dashboard = () => {
 
         <div className="bg-white p-4 rounded shadow">
           <h2 className="text-xl mb-4 text-gray-600">Popular Products</h2>
-          <ul>
-            {popularProducts.length > 0 ? (
-              popularProducts.map((product) => (
-                <li key={product._id} className="flex items-center justify-between mb-4">
-                  <div className="flex items-center">
-                    <img src={product.images[0].url} alt={product.name} className="w-12 h-12 object-cover rounded mr-3" />
-                    <span className="text-sm sm:text-base">{product.name}</span>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-sm sm:text-base">{product.price} rwf</p>
-                    <p className={`text-sm ${product.stock > 0 ? "text-green-500" : "text-red-500"}`}>
-                      {product.stock > 0 ? `${product.stock} in Stock` : "Out of Stock"}
-                    </p>
-                  </div>
-                </li>
-              ))
-            ) : (
-              <p className="text-center">No popular products available</p>
-            )}
+          <ul className="space-y-2">
+            {popularProducts.map((product) => (
+              <li key={product._id} className="bg-gray-50 p-4 rounded shadow">
+                <img
+                  src={product.images[0]?.url || ''}
+                  alt={product.name}
+                  className="w-full h-32 object-cover rounded mb-4"
+                />
+                <h3 className="text-lg font-semibold mb-2">{product.name}</h3>
+                <p className="text-gray-600 text-sm mb-2">Price: RWF {product.price}</p>
+                <p className="text-gray-600 text-sm mb-2">Stock: {product.stock}</p>
+                <p className="text-gray-600 text-sm">Created: {new Date(product.createdAt).toLocaleDateString()}</p>
+                <p className="text-gray-600 text-sm">Updated: {new Date(product.updatedAt).toLocaleDateString()}</p>
+              </li>
+            ))}
           </ul>
         </div>
       </div>

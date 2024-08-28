@@ -31,7 +31,7 @@ function Receipt() {
     if (isImageLoaded) {
       html2canvas(receiptElement, { useCORS: true, scale: 2 }).then((canvas) => {
         const imgData = canvas.toDataURL('image/png');
-        const pdf = new jsPDF('p', 'mm', 'a4');
+        const pdf = new jsPDF('p', 'mm', 'a5');
         const pdfWidth = pdf.internal.pageSize.getWidth();
         const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
 
@@ -116,6 +116,7 @@ function Receipt() {
             </tbody>
           </table>
         </div>
+        <hr class="border-t border-gray-300 my-4"/>
 
         {/* Order Summary */}
         <div className="mt-4 flex justify-between items-center">
@@ -131,13 +132,13 @@ function Receipt() {
       </div>
 
       {/* Download PDF Button */}
-      <div className="text-center mt-4">
+      <div className="text-center mt-4 mb-9">
         <button
           onClick={handleDownloadPdf}
           className="bg-blue-950 text-white px-4 py-2 rounded"
           disabled={!isImageLoaded} // Disable button until images are loaded
         >
-          Download PDF
+          Download Your Receipt
         </button>
       </div>
     </div>

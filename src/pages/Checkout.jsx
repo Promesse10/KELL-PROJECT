@@ -31,29 +31,20 @@ function Checkout() {
     }));
   };
 
-  const totalPrice = cart.reduce(
-    (total, item) => total + (item.price || 0) * (item.quantity || 0),
-    0
-  );
+  const totalPrice = cart.reduce((total, item) => total + (item.price || 0) * (item.quantity || 0), 0);
   const shippingCost = deliveryMethod === 'pickup' ? 0 : 2000;
   const subtotal = totalPrice;
   const totalAmount = subtotal + shippingCost;
 
-  const formattedPaymentMethod =
-    paymentMethod === 'bank'
-      ? 'CARD'
-      : paymentMethod === 'momo'
-      ? 'MTN'
-      : paymentMethod;
-
+  const formattedPaymentMethod = paymentMethod === 'bank' ? 'CARD' : paymentMethod === 'momo' ? 'MTN' : paymentMethod;
   const handleOrderClick = async () => {
     setLoading(true);
     setError(null);
-
+  
     try {
       const orderData = {
         shippingInfo,
-        orderItems: cart.map((item) => ({
+        orderItems: cart.map(item => ({
           name: item.name,
           price: item.price,
           quantity: item.quantity,
@@ -64,24 +55,21 @@ function Checkout() {
         itemPrice: totalPrice,
         user: userId,
         shippingCost: deliveryMethod === 'pickup' ? 0 : shippingCost,
-        totalAmount:
-          totalPrice + (deliveryMethod === 'pickup' ? 0 : shippingCost),
+        totalAmount: totalPrice + (deliveryMethod === 'pickup' ? 0 : shippingCost),
       };
-
+  
+      // Simulate a delay before sending the order
+      await new Promise(resolve => setTimeout(resolve, 1000)); // 2-second delay
+  
       const response = await dispatch(createOrder(orderData)).unwrap();
-      console.log('Order created:', response);
-      navigate('/receipt', {
-        state: {
-          shippingInfo,
-          cart,
-          totalPrice,
-          deliveryMethod,
-          shippingCost,
-          paymentMethod,
-        },
-      });
+      console.log("Order created:", response);
+      
+      // Simulate a delay after the order is processed
+      await new Promise(resolve => setTimeout(resolve, 3000)); // Another 2-second delay
+  
+      navigate('/receipt', { state: { shippingInfo, cart, totalPrice, deliveryMethod, shippingCost, paymentMethod } });
     } catch (error) {
-      console.error('Error during checkout:', error);
+      console.error("Error during checkout:", error);
       setError('Failed to create order. Please try again.');
     } finally {
       setLoading(false);
@@ -177,6 +165,8 @@ function Checkout() {
                     disabled
                     className="p-3 border rounded-lg w-full bg-gray-100"
                   />
+ <input type="text" name="fullname" placeholder="Enter Your Fullname" value={shippingInfo.fullname} onChange={handleShippingChange} className="p-3 border rounded-lg w-full" />
+
                   <input
                     type="text"
                     name="address"
@@ -222,23 +212,7 @@ function Checkout() {
               All transactions are secure and encrypted.
             </p>
             <div className="mb-6">
-              <label
-                className={`block border-2 p-3 rounded-lg ${
-                  paymentMethod === 'cod'
-                    ? 'border-blue-600'
-                    : 'border-gray-300'
-                } hover:border-blue-600 cursor-pointer`}
-              >
-                <input
-                  type="radio"
-                  name="paymentMethod"
-                  value="cod"
-                  checked={paymentMethod === 'cod'}
-                  onChange={() => setPaymentMethod('cod')}
-                  className="hidden"
-                />
-                <span className="ml-2">Cash on Delivery (COD)</span>
-              </label>
+    
               <label
                 className={`block border-2 p-3 mt-4 rounded-lg ${
                   paymentMethod === 'bank'
@@ -304,26 +278,11 @@ function Checkout() {
         </div>
 
         {/* Order Summary */}
+        
         <div className="w-full md:w-1/3">
+
           <div className="bg-white p-6 rounded-lg shadow-lg">
-            <h2 className="text-xl font-semibold mb-4">Order Summary</h2>
-            <div className="mb-4 space-y-2">
-              <div className="flex justify-between items-center">
-                <span>Subtotal</span>
-                <span>{subtotal.toLocaleString()} RWF</span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span>Shipping Cost</span>
-                <span>{shippingCost.toLocaleString()} RWF</span>
-              </div>
-              <div className="border-t pt-2 flex justify-between items-center">
-                <span className="font-semibold">Total</span>
-                <span className="font-semibold">
-                  {totalAmount.toLocaleString()} RWF
-                </span>
-              </div>
-            </div>
-            <div className="mb-4">
+          <div className="mb-4">
               <h3 className="text-lg font-semibold mb-2">Order Details</h3>
               <ul className="space-y-4 max-h-64 overflow-y-auto pr-2">
                 {cart.map((item, index) => (
@@ -347,18 +306,38 @@ function Checkout() {
                 ))}
               </ul>
             </div>
-            <button
-              onClick={handleOrderClick}
-              disabled={loading}
-              className={`w-full py-3 rounded-lg text-white ${
-                loading ? 'bg-blue-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'
-              }`}
-            >
-              {loading ? 'Processing...' : 'Place Order'}
-            </button>
+            <h2 className="text-xl font-semibold mb-4">Order Summary</h2>
+            <div className="mb-4 space-y-2">
+              <div className="flex justify-between items-center">
+                <span>Subtotal</span>
+                <span>{subtotal.toLocaleString()} RWF</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span>Shipping Cost</span>
+                <span>{shippingCost.toLocaleString()} RWF</span>
+              </div>
+              <div className="border-t pt-2 flex justify-between items-center">
+                <span className="font-semibold">Total</span>
+                <span className="font-semibold">
+                  {totalAmount.toLocaleString()} RWF
+                </span>
+              </div>
+            </div>
+           
+            <button onClick={handleOrderClick} disabled={loading} className="bg-blue-950 text-white px-4 py-2 rounded-lg w-full"> {loading ? 'Processing...' : 'Place Order'} </button>
           </div>
         </div>
       </main>
+      {loading && (
+        <div className="fixed inset-0 bg-white z-50 flex items-center justify-center">
+          <div className='flex flex-col'>
+             <iframe src="https://lottie.host/embed/c350b974-c557-4b08-988f-94ef261d7410/js1HNBuLRg.json"> </iframe> 
+             <h1> Your order already sent succefully </h1>
+          </div>
+        
+         
+        </div>
+      )}
     </div>
   );
 }

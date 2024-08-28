@@ -48,7 +48,7 @@ const Cart = () => {
                     <p className='text-lg sm:text-xl font-semibold'>{item.name}</p>
                     <p className='text-gray-600'>{t('cart.currency')} {item.price}</p>
                     <button 
-                      className='text-blue-500 mt-2 underline'
+                      className='text-blue-950 mt-2 underline'
                       onClick={() => handleDelete(item._id)}
                     >
                       {t('cart.delete')}
@@ -80,11 +80,8 @@ const Cart = () => {
                 {t('cart.total')}: {totalPrice} {t('cart.currency')}
               </h2>
             </div>
-            <div className='flex flex-col sm:flex-row justify-between mt-6 sm:mt-8'>
-              <textarea 
-                placeholder={t('Special instructions for seller')}
-                className='w-full sm:w-auto flex-grow p-2 sm:p-4 border border-gray-300 rounded-md focus:outline-none focus:border-blue-950 mb-4 sm:mb-0'
-              />
+            <div className='flex flex-row  sm:flex-row justify-between mt-6 sm:mt-8'>
+         
               <button 
                 className='text-white bg-blue-950 px-4 py-2 sm:px-5 sm:py-2 rounded-md sm:ml-4'
                 onClick={handleCheckout}
