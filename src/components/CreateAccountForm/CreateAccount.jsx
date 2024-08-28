@@ -155,10 +155,17 @@ function CreateAccount() {
                 />
                 {formErrors.phone && <p className="text-red-500 text-sm">{formErrors.phone}</p>}
               </div>
-              <div className="relative">
+              <div>
+                <label
+                  htmlFor="profilePic"
+                  className="block text-sm font-medium text-gray-700 mb-2"
+                >
+                  {t('createAccount.uploadProfilePicture')}
+                </label>
                 <input
                   type="file"
                   name="profilePic"
+                  id="profilePic"
                   accept="image/*"
                   onChange={handleChange}
                   className="w-full p-3 border border-gray-300 rounded-lg bg-gray-200 focus:outline-none focus:ring focus:ring-blue-200"

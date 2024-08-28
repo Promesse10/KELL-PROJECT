@@ -127,7 +127,8 @@
     "alreadyHaveAccount": "Already have an account?",
     "loginNow": "Login now",
     "visibleAlt": "Visible",
-    "unvisibleAlt": "Not Visible"
+    "unvisibleAlt": "Not Visible",
+    "uploadProfilePicture":"Upload profile picture"
   },
   "terms": {
     "title": "Terms of Service",

@@ -122,7 +122,6 @@ const Dashboard = () => {
             <table className="min-w-full table-auto">
               <thead className="bg-gray-200">
                 <tr>
-                  <th className="border px-2 py-1 text-left text-sm sm:text-base">ID</th>
                   <th className="border px-2 py-1 text-left text-sm sm:text-base">User</th>
                   <th className="border px-2 py-1 text-left text-sm sm:text-base">Items</th>
                   <th className="border px-2 py-1 text-left text-sm sm:text-base">Total Amount</th>
@@ -133,7 +132,7 @@ const Dashboard = () => {
               <tbody>
                 {recentOrders.map((order) => (
                   <tr key={order._id} className="hover:bg-gray-100">
-                    <td className="border px-2 py-1 text-sm sm:text-base">{order._id}</td>
+                    
                     <td className="border px-2 py-1 text-sm sm:text-base">
                       <div className="flex items-center space-x-2">
                        
