@@ -106,7 +106,7 @@ const Navbar = () => {
   return (
     <div className="fixed top-0 z-50 w-full flex justify-between items-center h-24 max-w-[2794px] mx-auto px-4 bg-gray-100 shadow-md">
       <div className="flex items-center flex-shrink-0">
-        <img className="w-28" src={Logo} alt="Logo" />
+        <img className="w-28" src={Logo} alt="Logo" onClick={handleHomeClick} />
       </div>
 
       {!isCheckoutPage && (
@@ -282,29 +282,14 @@ const Navbar = () => {
 
       <div
         className={`fixed left-0 top-0 w-[60%] h-full bg-blue-950 text-white transition-transform duration-300 ease-in-out md:hidden ${
-          nav ? "translate-x-0" : "-translate-x-full"
+          nav ? "transform translate-x-0" : "transform -translate-x-full"
         }`}
       >
-        <img
-          className="w-32 mt-5 ml-5 cursor-pointer"
-          src={Logo}
-          alt="Logo"
-          onClick={handleHomeClick}
-        />
-        <ul className="mt-10 ml-4 flex flex-col space-y-4">
+        <img className="w-28 mt-4 ml-4" src={Logo} alt="Logo" />
+        <ul className="uppercase p-4">
           <li>
             <RouterLink to="/" onClick={handleNav}>
               {t("navbar.home")}
-            </RouterLink>
-          </li>
-          <li>
-            <RouterLink to="/login" onClick={handleNav}>
-              {t("navbar.login")}
-            </RouterLink>
-          </li>
-          <li>
-            <RouterLink to="/createAccount" onClick={handleNav}>
-              {t("navbar.register")}
             </RouterLink>
           </li>
           <li>
@@ -317,6 +302,11 @@ const Navbar = () => {
             >
               {t("navbar.services")}
             </ScrollLink>
+          </li>
+          <li>
+            <RouterLink to="/infopage" onClick={handleNav}>
+              {t("navbar.products")}
+            </RouterLink>
           </li>
           <li>
             <ScrollLink
@@ -340,22 +330,76 @@ const Navbar = () => {
               {t("navbar.contact")}
             </ScrollLink>
           </li>
-          <li>
-            <button
-              onClick={handleCartClick}
-              className="relative border-white border-2 p-1 rounded-2xl flex flex-row items-center"
-            >
-              <img className="w-5 h-5" src={Cart1} alt="Cart" />
-              <span className="ml-2">{t("navbar.cart")}</span>
-              {cartItems.length > 0 && (
-                <span className="absolute top-5 right-14 bg-red-500 text-white text-xs rounded-full px-2 py-1">
-                  {cartItems.reduce((total, item) => total + item.quantity, 0)}
-                </span>
-              )}
-            </button>
+          <li className="mt-4">
+            <LanguageSwitcher />
           </li>
+          {isLoggedIn ? (
+            <>
+              <li className="mt-4">
+                <img
+                  className="h-12 w-12 cursor-pointer rounded-full border border-gray-300"
+                  src={user.profilePic[0].url}
+                  alt="Account"
+                  onClick={handleAccountDropdown}
+                />
+              </li>
+              <li>
+                <RouterLink to="/profile" onClick={handleProfileClick}>
+                  {t("navbar.profile")}
+                </RouterLink>
+              </li>
+              <li>
+                <RouterLink to="/myorders" onClick={handleOrdersClick}>
+                  My Orders
+                </RouterLink>
+              </li>
+              <li>
+                <button
+                  className="w-full text-left"
+                  onClick={handleLogoutClick}
+                >
+                  {t("navbar.logout")}
+                </button>
+              </li>
+            </>
+          ) : (
+            <>
+              <li>
+                <RouterLink to="/login" onClick={handleNav}>
+                  {t("navbar.login")}
+                </RouterLink>
+              </li>
+              <li>
+                <RouterLink to="/createAccount" onClick={handleNav}>
+                  {t("navbar.register")}
+                </RouterLink>
+              </li>
+            </>
+          )}
         </ul>
       </div>
+
+      {showLogoutConfirm && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+          <div className="bg-white p-4 rounded shadow-lg">
+            <p>{t("navbar.logoutConfirm")}</p>
+            <div className="flex justify-end space-x-4 mt-4">
+              <button
+                className="bg-gray-300 px-4 py-2 rounded"
+                onClick={handleCancelLogout}
+              >
+                {t("navbar.cancel")}
+              </button>
+              <button
+                className="bg-red-500 text-white px-4 py-2 rounded"
+                onClick={handleConfirmLogout}
+              >
+                {t("navbar.confirm")}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
