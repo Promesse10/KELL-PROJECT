@@ -82,7 +82,7 @@ const ProfileManager = () => {
   };
 
   return (
-    <div className="flex items-center justify-center mt-11 min-h-screen bg-gray-100">
+    <div className="flex items-center justify-center mt-24 min-h-screen bg-gray-100 ">
       <main className="w-full max-w-3xl p-6">
         <div className="bg-white shadow-md p-8 rounded-lg border border-gray-300 mx-auto">
           <ToastContainer />

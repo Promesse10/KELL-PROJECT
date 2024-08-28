@@ -31,40 +31,42 @@ const MyOrder = () => {
     }
 
     return (
-      <table className="min-w-full divide-y divide-gray-200">
-        <thead className="bg-gray-100">
-          <tr>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Order ID</th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Payment Method</th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total Amount</th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Shipping Address</th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Items</th>
-          </tr>
-        </thead>
-        <tbody className="bg-white divide-y divide-gray-200">
-          {filteredOrders.map(order => (
-            <tr key={order._id}>
-              <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{order._id}</td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{order.orderStatus}</td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{order.paymentMethod}</td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${order.totalAmount}</td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                {order.shippingInfo.address}, {order.shippingInfo.city}, {order.shippingInfo.country}
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                <ul className="list-disc pl-4">
-                  {order.orderItems.map(item => (
-                    <li key={item._id}>
-                      {item.name} - Quantity: {item.quantity} - Price: ${item.price}
-                    </li>
-                  ))}
-                </ul>
-              </td>
+      <div className="overflow-x-auto">
+        <table className="min-w-full table-auto divide-y divide-gray-200">
+          <thead className="bg-gray-100">
+            <tr>
+              <th className="px-6 py-3 text-left text-xs sm:text-sm font-medium text-gray-500 uppercase tracking-wider">Name</th>
+              <th className="px-6 py-3 text-left text-xs sm:text-sm font-medium text-gray-500 uppercase tracking-wider">Status</th>
+              <th className="px-6 py-3 text-left text-xs sm:text-sm font-medium text-gray-500 uppercase tracking-wider">Payment Method</th>
+              <th className="px-6 py-3 text-left text-xs sm:text-sm font-medium text-gray-500 uppercase tracking-wider">Total Amount</th>
+              <th className="px-6 py-3 text-left text-xs sm:text-sm font-medium text-gray-500 uppercase tracking-wider">Shipping Address</th>
+              <th className="px-6 py-3 text-left text-xs sm:text-sm font-medium text-gray-500 uppercase tracking-wider">Items</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody className="bg-white divide-y divide-gray-200">
+            {filteredOrders.map(order => (
+              <tr key={order._id}>
+                <td className="px-6 py-4 whitespace-nowrap text-xs sm:text-sm font-medium text-gray-900">{order.user.name}</td>
+                <td className="px-6 py-4 whitespace-nowrap text-xs sm:text-sm text-gray-500">{order.orderStatus}</td>
+                <td className="px-6 py-4 whitespace-nowrap text-xs sm:text-sm text-gray-500">{order.paymentMethod}</td>
+                <td className="px-6 py-4 whitespace-nowrap text-xs sm:text-sm text-gray-500">RF {order.totalAmount}</td>
+                <td className="px-6 py-4 whitespace-nowrap text-xs sm:text-sm text-gray-500">
+                  {order.shippingInfo.address}, {order.shippingInfo.city}, {order.shippingInfo.country}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-xs sm:text-sm text-gray-500">
+                  <ul className="list-disc pl-4">
+                    {order.orderItems.map(item => (
+                      <li key={item._id}>
+                        {item.name} - Quantity: {item.quantity} - Price: ${item.price}
+                      </li>
+                    ))}
+                  </ul>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     );
   };
 

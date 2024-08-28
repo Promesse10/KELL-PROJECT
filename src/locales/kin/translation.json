@@ -18,7 +18,10 @@
     "cart": "Igitebo",
     "cartEmpty": "Igitebo cyawe kirimo ubusa",
     "total": "Igiteranyo",
-    "checkout":"kwishyura"
+    "checkout":"kwishyura",
+    "confirm" : "kwemeza",
+    "cancel" :"guhagarika",
+    "logoutConfirm":"uzi neza ko ushaka gusohoka"
   },
   "hero": {
     "welcome": "Murakaza neza muri KarKelly ltd",

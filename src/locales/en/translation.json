@@ -18,7 +18,10 @@
     "cart": "Cart",
     "cartEmpty": "Your cart is empty",
     "total": "Total",
-    "checkout":"Checkout"
+    "checkout":"Checkout",
+    "confirm" : "confirm",
+    "cancel" :"cancel",
+    "logoutConfirm":"are you sure want to  logout"
   },
   "hero": {
     "welcome": "Welcome to KarKelly ltd",
