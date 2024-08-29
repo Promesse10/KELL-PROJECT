@@ -147,7 +147,7 @@ function Home() {
               <img
                 src={selectedProduct.images[0].url}
                 alt={selectedProduct.name}
-                className="w-56 h-48 object-cover mr-4"
+                className="w-64 h-96 object-cover mr-4"
               /> 
 
               <div className="flex flex-col items-center">
@@ -155,22 +155,7 @@ function Home() {
                 <p className="font-semibold text-lg mb-1">{selectedProduct.name}</p>
                 <p className="text-2xl mb-4">{selectedProduct.price} RWF</p>
   
-                {/* Size Selector */}
-                <div className="mb-4">
-                  <label htmlFor="size-select" className="block text-sm font-medium text-gray-700">
-                    {t('Type')}
-                  </label>
-                  <select
-                    id="size-select"
-                    name="size-select"
-                    className="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                  >
-                    <option value="A3">A3 SIZE</option>
-                    <option value="A4">A4 SIZE</option>
-                    <option value="A5">A5 SIZE</option>  
-                     
-                  </select>
-                </div>
+               
 
                 {/* Quantity Adjustment */}
                 <div className="flex items-center mb-4">

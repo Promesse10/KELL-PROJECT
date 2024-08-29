@@ -49,7 +49,7 @@ const MyOrder = () => {
                 <td className="px-6 py-4 whitespace-nowrap text-xs sm:text-sm font-medium text-gray-900">{order.user.name}</td>
                 <td className="px-6 py-4 whitespace-nowrap text-xs sm:text-sm text-gray-500">{order.orderStatus}</td>
                 <td className="px-6 py-4 whitespace-nowrap text-xs sm:text-sm text-gray-500">{order.paymentMethod}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-xs sm:text-sm text-gray-500">RF {order.totalAmount}</td>
+                <td className="px-6 py-4 whitespace-nowrap text-xs sm:text-sm text-gray-500">{order.totalAmount} FRW </td>
                 <td className="px-6 py-4 whitespace-nowrap text-xs sm:text-sm text-gray-500">
                   {order.shippingInfo.address}, {order.shippingInfo.city}, {order.shippingInfo.country}
                 </td>
@@ -57,7 +57,8 @@ const MyOrder = () => {
                   <ul className="list-disc pl-4">
                     {order.orderItems.map(item => (
                       <li key={item._id}>
-                        {item.name} - Quantity: {item.quantity} - Price: ${item.price}
+                        {item.name} 
+                        - Quantity: {item.quantity} - Price:{item.price} FRW
                       </li>
                     ))}
                   </ul>

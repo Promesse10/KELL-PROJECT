@@ -299,8 +299,8 @@ function Checkout() {
                 {paymentMethod === "momo" && (
                   <div className="bg-gray-100 p-4 mt-4 border border-gray-200 rounded">
                     <h4 className="font-semibold">Mobile Money Details</h4>
-                    <p>MTN Number: *182*8*1*1234567890#</p>
-                    <p>Account Name: Your Name</p>
+                    <p>MTN Number: *182*8*1*146577#</p>
+                    <p>Momo Name: Jason </p>
                   </div>
                 )}
               </label>

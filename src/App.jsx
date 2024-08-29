@@ -37,7 +37,7 @@ import { AuthProvider } from "./context/authContext";
 import LoginAdmin from "./layout/Login";
 
 import MyOrders from "./components/myorders";
-import OrderForm from "./components/OrderForm";
+
 import Receipt from "./components/Receipt";
 
 function App() {
@@ -76,7 +76,7 @@ function App() {
         <Route path="/ForgotPassword" element={<ForgotPasswordForm />} />
         <Route path="/payment" element={<Payment />} />
         <Route path="/myorders" element={<MyOrders />} />
-        <Route path="/orderForm" element={<OrderForm />} />
+        
         <Route path="/checkout" element={<Checkout />} />
         <Route path="/receipt" element={<Receipt />} />
         <Route path="*" element={<NotFound />} />
