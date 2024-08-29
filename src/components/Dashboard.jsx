@@ -50,7 +50,7 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="p-4 bg-slate-100">
+    <div className="p-4 bg-gray-100">
       <header className="flex flex-col md:flex-row justify-between items-center p-4 bg-white shadow mb-4">
         <div className="flex items-center space-x-4 mb-4 md:mb-0">
           <input

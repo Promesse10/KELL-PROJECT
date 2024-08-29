@@ -36,34 +36,40 @@ const OrderList = () => {
   }
 
   return (
-    <div className="p-4 max-w-screen-lg mx-auto">
-      <h2 className="text-2xl font-bold mb-4 text-blue-950">Orders</h2>
-      <div className="overflow-x-auto">
-        <table className="min-w-full bg-white border border-gray-200 shadow-md">
-          <thead>
+    <div className="p-0 max-w-screen-2xl mx-auto ">
+      <h2 className="text-2xl font-bold mb-6 text-blue-950 text-center">Orders</h2>
+      <div className="overflow-x-auto shadow-lg rounded-lg border border-gray-200">
+        <table className="min-w-full bg-white">
+          <thead className="bg-blue-950 text-white">
             <tr>
-              <th className="py-2 px-4 border-b">Order ID</th>
-              <th className="py-2 px-4 border-b">User</th>
-              <th className="py-2 px-4 border-b">Shipping Info</th>
-              <th className="py-2 px-4 border-b">Payment Method</th>
-              <th className="py-2 px-4 border-b">Order Status</th>
-              <th className="py-2 px-4 border-b">Items</th>
-              <th className="py-2 px-4 border-b">Total</th>
-              <th className="py-2 px-4 border-b">Actions</th>
+              <th className="py-3 px-4 border-b">Order ID</th>
+              <th className="py-3 px-4 border-b">User</th>
+              <th className="py-3 px-4 border-b">Shipping Info</th>
+              <th className="py-3 px-4 border-b">Payment Method</th>
+              <th className="py-3 px-4 border-b">Order Status</th>
+              <th className="py-3 px-4 border-b">Items</th>
+              <th className="py-3 px-4 border-b">Total</th>
+              <th className="py-3 px-4 border-b">Actions</th>
             </tr>
           </thead>
           <tbody>
             {orders.map((order) => (
               <tr key={order._id} className="hover:bg-gray-100 transition-colors">
-                <td className="py-2 px-4 border-b whitespace-nowrap">{order._id}</td>
-                <td className="py-2 px-4 border-b">{order.user ? order.user.name : 'Unknown User'}</td>
-                <td className="py-2 px-4 border-b whitespace-nowrap">
+                <td className="py-4 px-4 border-b whitespace-nowrap text-center">{order._id}</td>
+                <td className="py-4 px-4 border-b text-center">
+                  {order.user ? order.user.name : 'Unknown User'}
+                </td>
+                <td className="py-4 px-4 border-b text-center whitespace-nowrap">
                   {order.shippingInfo.address}, {order.shippingInfo.city}
                 </td>
-                <td className="py-2 px-4 border-b">{order.paymentMethod}</td>
-                <td className="py-2 px-4 border-b">
+                <td className="py-4 px-4 border-b text-center">{order.paymentMethod}</td>
+                <td className="py-4 px-4 border-b text-center">
                   {editingOrderId === order._id ? (
-                    <select value={newStatus} onChange={handleStatusChange}>
+                    <select
+                      value={newStatus}
+                      onChange={handleStatusChange}
+                      className="border rounded p-2"
+                    >
                       <option value="processing">Processing</option>
                       <option value="shipped">Shipped</option>
                       <option value="delivered">Delivered</option>
@@ -73,41 +79,41 @@ const OrderList = () => {
                     order.orderStatus
                   )}
                 </td>
-                <td className="py-2 px-4 border-b">
-                  <table className="w-full">
+                <td className="py-4 px-4 border-b text-center">
+                  <table className="w-full bg-gray-50 rounded">
                     <thead>
-                      <tr>
-                        <th className="py-1 px-2 border-b">Name</th>
-                        <th className="py-1 px-2 border-b">Quantity</th>
-                        <th className="py-1 px-2 border-b">Price</th>
+                      <tr className="bg-gray-100">
+                        <th className="py-1 px-2 border-b text-sm">Name</th>
+                        <th className="py-1 px-2 border-b text-sm">Quantity</th>
+                        <th className="py-1 px-2 border-b text-sm">Price</th>
                       </tr>
                     </thead>
                     <tbody>
                       {order.orderItems.map((item) => (
                         <tr key={item._id}>
-                          <td className="py-1 px-2 border-b">{item.name}</td>
-                          <td className="py-1 px-2 border-b">{item.quantity}</td>
-                          <td className="py-1 px-2 border-b">RF:{item.price}</td>
+                          <td className="py-1 px-2 border-b text-sm">{item.name}</td>
+                          <td className="py-1 px-2 border-b text-sm text-center">{item.quantity}</td>
+                          <td className="py-1 px-2 border-b text-sm text-center">RF:{item.price}</td>
                         </tr>
                       ))}
                     </tbody>
                   </table>
                 </td>
-                <td className="py-2 px-4 border-b whitespace-nowrap">RF:{order.itemPrice}</td>
-                <td className="py-2 px-4 border-b">
+                <td className="py-4 px-4 border-b whitespace-nowrap text-center">RF:{order.itemPrice}</td>
+                <td className="py-4 px-4 border-b text-center">
                   {editingOrderId === order._id ? (
                     <button
                       onClick={() => handleSaveStatus(order._id)}
-                      className="bg-green-500 text-white px-2 py-1 rounded"
+                      className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
                     >
                       Save
                     </button>
                   ) : (
                     <button
                       onClick={() => handleEditClick(order._id, order.orderStatus)}
-                      className="bg-green-500 text-white px-2 py-1 rounded"
+                      className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
                     >
-                      Edit status
+                      Edit Status
                     </button>
                   )}
                 </td>
