@@ -6,8 +6,8 @@ import { useTranslation } from 'react-i18next';
 import Modal from '../components/moadl'; // Ensure the path is correct
 import moreinfo from '../assets/moreinfo.png';
 import School from '../assets/School.png';
-import food from '../assets/food.png';
-import realestate from '../assets/realestate.png';
+import food from '../assets/food.jpeg';
+import realestate from '../assets/realestate.jpeg';
 import Mkelia from '../assets/Mkelia.png';
 import Pkelia from '../assets/Pkelia.png';
 
@@ -44,17 +44,17 @@ const Aboutus = () => {
             </div>
             <div className="border-2 border-blue-950 w-48 my-8 px-4 py-4 rounded-r-full drop-shadow-2xl">
               <h2 className="flex items-center">
-                {t('aboutus.meetOurTeam')} <img className="w-6 h-5 ml-2" src={moreinfo} alt={t('aboutus.moreInfoAlt')} />
+                {t('aboutus.meetOurTeam')} <img className="w-6 h-5 ml-2 " src={moreinfo} alt={t('aboutus.moreInfoAlt')} />
               </h2>
               <hr className="border-2 border-blue-950 w-11 mt-1" />
             </div>
           </div>
 
           <div className="right flex-1 relative mt-9 lg:ml-24 z-10">
-            <div className="flex flex-wrap justify-center m-0 lg:justify-start">
-              <img className="w-64 h-40 mb-4 lg:mb-0 lg:ml-12 lg:absolute lg:top-20" src={School} alt={t('aboutus.schoolAlt')} />
-              <img className="w-64 h-46 mb-4 lg:mb-0 lg:ml-12" src={food} alt={t('aboutus.foodAlt')} />
-              <img className="w-64 h-40 lg:ml-12 lg:absolute lg:top-48" src={realestate} alt={t('aboutus.realEstateAlt')} />
+            <div className="flex flex-wrap justify-center m-0 lg:justify-start ">
+              <img className="w-64 h-40 mb-4 lg:mb-0 lg:ml-12 lg:absolute lg:top-20 rounded-xl" src={School} alt={t('aboutus.schoolAlt')} />
+              <img className="w-64 h-46 mb-4 lg:mb-0 lg:ml-12 rounded-xl" src={food} alt={t('aboutus.foodAlt')} />
+              <img className="w-64 h-40 lg:ml-12 lg:absolute lg:top-48 rounded-xl" src={realestate} alt={t('aboutus.realEstateAlt')} />
             </div>
           </div>
         </div>

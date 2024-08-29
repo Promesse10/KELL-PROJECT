@@ -3,10 +3,10 @@
 import React, { useState } from "react";
 import { useTranslation } from 'react-i18next';
 import './Infopage.css';
-import computer from "../components/images/computer.png";
+import computer from "../components/images/computer.jpeg";
 import irembo from "../components/images/irembo.png";
 import printer from "../components/images/printer.png";
-import table from "../components/images/table.png";
+import table from "../components/images/table.jpeg";
 
 const Popup = ({ title, content, onClose }) => (
   <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">

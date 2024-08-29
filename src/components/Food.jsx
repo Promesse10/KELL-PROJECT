@@ -162,8 +162,8 @@ const Food = () => {
           <div key={index} className="flex flex-wrap justify-center gap-10 mb-12 px-4 md:px-0">
             {row.map((item) => (
               <div key={item._id} className='bg-gray-300 pb-8 flex flex-col justify-center items-center w-full sm:w-72 transform transition-transform duration-500 hover:scale-105'>
-                <img className='w-full h-56 object-cover' src={item.images[0].url} alt={t(`food.products.${normalizeProductName(item.name)}`)} />
-                <p className='mt-5 text-center font-bold'>{t(`food.products.${normalizeProductName(item.name)}`)}</p>
+                <img className='w-full h-56 object-cover' src={item.images[0].url} alt={t(`${normalizeProductName(item.name)}`)} />
+                <p className='mt-5 text-center font-bold'>{t(`${normalizeProductName(item.name)}`)}</p>
                 <p className='mt-2 text-center text-gray-600'>{item.description}</p>
                 <div className='flex justify-between items-center gap-5 mx-8'>
                   <button
