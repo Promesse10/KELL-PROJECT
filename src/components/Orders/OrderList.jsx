@@ -42,21 +42,21 @@ const OrderList = () => {
         <table className="min-w-full bg-white">
           <thead className="bg-blue-950 text-white">
             <tr>
-              <th className="py-2 px-2 sm:px-4 border-b">Order ID</th>
-              <th className="py-2 px-2 sm:px-4 border-b">User</th>
-              <th className="py-2 px-2 sm:px-4 border-b">Shipping Info</th>
-              <th className="py-2 px-2 sm:px-4 border-b">Payment Method</th>
-              <th className="py-2 px-2 sm:px-4 border-b">Order Status</th>
-              <th className="py-2 px-2 sm:px-4 border-b">Items</th>
-              <th className="py-2 px-2 sm:px-4 border-b">Total</th>
-              <th className="py-2 px-2 sm:px-4 border-b">Actions</th>
+              <th className="py-3 px-4 border-b">Order DATE</th>
+              <th className="py-3 px-4 border-b">User</th>
+              <th className="py-3 px-4 border-b">Shipping Info</th>
+              <th className="py-3 px-4 border-b">Payment Method</th>
+              <th className="py-3 px-4 border-b">Order Status</th>
+              <th className="py-3 px-4 border-b">Items</th>
+              <th className="py-3 px-4 border-b">Total</th>
+              <th className="py-3 px-4 border-b">Actions</th>
             </tr>
           </thead>
           <tbody>
             {orders.map((order) => (
               <tr key={order._id} className="hover:bg-gray-100 transition-colors">
-                <td className="py-3 px-2 sm:px-4 border-b whitespace-nowrap text-center">{order._id}</td>
-                <td className="py-3 px-2 sm:px-4 border-b text-center">
+                <td className="py-4 px-4 border-b whitespace-nowrap text-center">{new Date(order.createdAt).toLocaleDateString()}</td>
+                <td className="py-4 px-4 border-b text-center">
                   {order.user ? order.user.name : 'Unknown User'}
                 </td>
                 <td className="py-3 px-2 sm:px-4 border-b text-center whitespace-nowrap">
