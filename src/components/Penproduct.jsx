@@ -8,7 +8,7 @@ import LoginPopup from './LoginPopup'; // Ensure this path is correct
 import cart from "../assets/add-to-cart.png";
 import { useNavigate } from 'react-router-dom';
 
-const productsPerPage = 5;
+const productsPerPage = 9; // 3 items per row, 3 rows
 
 function Home() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -43,9 +43,11 @@ function Home() {
   const translateProductName = (product) => {
     return t(`product_names.${product._id}`, { defaultValue: product.name });
   };
+
   const handleCartClick = () => {
     navigate('/cart');
   };
+
   const filteredProducts = products.filter(product =>
     translateProductName(product).toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -76,8 +78,6 @@ function Home() {
       setShowCart(true);
     }
   };
-
-  
 
   const handleIncreaseQuantity = () => {
     if (selectedProduct) {
@@ -120,17 +120,16 @@ function Home() {
     return cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
   };
 
+  const navigate = useNavigate();
 
-    const navigate = useNavigate();
-  
-    const handleCheckout = () => {
-      navigate('/checkout'); // navigate to checkout page
-    };
-    
+  const handleCheckout = () => {
+    navigate('/checkout'); // navigate to checkout page
+  };
+
   return (
     <section className="min-h-screen flex flex-col bg-gray-200">
       {showPopup && <LoginPopup onClose={handleClosePopup} />} {/* Show login popup if needed */}
-      
+
       {/* Cart Popup */}
       <div
         className={`fixed right-0 top-0 w-full md:w-[35%] h-full bg-gray-50 text-black shadow-lg z-50 transform transition-transform duration-300 ${
@@ -148,14 +147,12 @@ function Home() {
                 src={selectedProduct.images[0].url}
                 alt={selectedProduct.name}
                 className="w-64 h-96 object-cover mr-4"
-              /> 
+              />
 
               <div className="flex flex-col items-center">
                 <p className="text-gray-600 text-sm">{selectedProduct.company}</p>
                 <p className="font-semibold text-lg mb-1">{selectedProduct.name}</p>
                 <p className="text-2xl mb-4">{selectedProduct.price} RWF</p>
-  
-               
 
                 {/* Quantity Adjustment */}
                 <div className="flex items-center mb-4">
@@ -179,12 +176,11 @@ function Home() {
             {t('Add ToCart')}
           </button>
           <button
-onClick={handleCheckout}
-  className="mt-2 px-4 py-2 bg-blue-950 text-white rounded-lg w-full"
->
-  {t('BuyNow')}
-</button>
-
+            onClick={handleCheckout}
+            className="mt-2 px-4 py-2 bg-blue-950 text-white rounded-lg w-full"
+          >
+            {t('BuyNow')}
+          </button>
         </div>
       </div>
 
@@ -206,11 +202,11 @@ onClick={handleCheckout}
             <img src={search} className="absolute right-2 top-1/2 transform -translate-y-1/2 p-2 bg-blue-950 rounded-full w-8 md:w-10" alt={t('search_icon_alt')} />
           </form>
 
-          <div className="flex flex-wrap justify-center gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {displayedProducts.map(product => (
               <div
                 key={product._id}
-                className="bg-white p-4 flex flex-col items-center w-40 h-60 md:w-52 md:h-72 relative"
+                className="bg-white p-4 flex flex-col items-center relative"
               >
                 <img
                   src={product.images[0].url}
@@ -226,34 +222,23 @@ onClick={handleCheckout}
                   className="absolute top-2 right-2 p-2 bg-blue-950 rounded-full"
                   onClick={() => handleAddToCart(product)}
                 >
-                  <img
-                    src={cart} // Replace with the actual path to your cart icon image
-                    alt="Add to cart"
-                    className="w-6 h-6" // Adjust size as needed
-                  />
+                  <img src={cart} className="w-6 h-6" alt={t('cart_icon_alt')} />
                 </button>
               </div>
-              
-              
             ))}
           </div>
 
-          <div className="flex justify-center mt-4 space-x-2">
-            {[...Array(totalPages).keys()].map(page => (
-              <div
-                key={page}
-                className={`w-8 h-8 flex items-center justify-center rounded-full cursor-pointer ${currentPage === page + 1 ? 'bg-gray-100' : 'bg-blue-950'}`}
-                onClick={() => handlePageChange(page + 1)}
+          {/* Pagination */}
+          <div className="flex justify-center mt-6">
+            {Array.from({ length: totalPages }).map((_, index) => (
+              <button
+                key={index}
+                className={`px-4 py-2 mx-1 rounded-full ${currentPage === index + 1 ? 'bg-blue-950 text-white' : 'bg-gray-300'}`}
+                onClick={() => handlePageChange(index + 1)}
               >
-                <span className="text-black">{page + 1}</span>
-              </div>
+                {index + 1}
+              </button>
             ))}
-            <div
-              className={`w-8 h-8 flex items-center justify-center rounded-full cursor-pointer text-white ${currentPage === totalPages ? 'bg-gray-100' : 'bg-blue-950'}`}
-              onClick={() => handlePageChange(totalPages)}
-            >
-              <span className="text-white">{t('all')}</span>
-            </div>
           </div>
         </div>
       </div>
