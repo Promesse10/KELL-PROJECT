@@ -157,50 +157,11 @@ function Checkout() {
                 />
                 <span className="ml-2">Ship</span>
               </label>
-              <label
-                className={`block border-2 p-3 mt-4 rounded-lg ${
-                  deliveryMethod === "pickup"
-                    ? "border-blue-600"
-                    : "border-gray-300"
-                } hover:border-blue-600 cursor-pointer`}
-              >
-                <input
-                  type="radio"
-                  name="deliveryMethod"
-                  value="pickup"
-                  checked={deliveryMethod === "pickup"}
-                  onChange={() => setDeliveryMethod("pickup")}
-                  className="hidden"
-                />
-                <span className="ml-2">Pickup in store</span>
-              </label>
+           
             </div>
 
             {/* Store Locations */}
-            {deliveryMethod === "pickup" && (
-              <div className="mb-6">
-                <h3 className="text-lg font-semibold">Store locations</h3>
-                <p className="text-sm text-gray-600 mb-4">
-                  There is 1 store stock in Kabuga area
-                </p>
-                <div className="mb-2">
-                  <label className="block bg-blue-50 p-4 rounded border border-blue-200">
-                    <div className="flex justify-between items-center">
-                      <span>Online Stationery Supplies</span>
-                      <span className="text-sm text-blue-600 font-semibold">
-                        Free
-                      </span>
-                    </div>
-                    <div className="text-sm text-gray-600">
-                      Kabuga, Gasabo, Kigali
-                    </div>
-                    <div className="text-sm text-gray-500">
-                      Usually ready in 24 hours
-                    </div>
-                  </label>
-                </div>
-              </div>
-            )}
+            
 
             {/* Shipping Information */}
             {deliveryMethod === "ship" && (
