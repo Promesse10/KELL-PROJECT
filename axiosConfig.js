@@ -2,8 +2,8 @@ import axios from "axios";
 import Cookies from "js-cookie";
 
 const api = axios.create({
-  baseURL: "http://localhost:8010/api/v1",
-  timeout: 5000,
+  baseURL: import.meta.env.VITE_API_URL,
+  timeout: 30000,
 });
 
 api.interceptors.request.use(
