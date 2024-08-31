@@ -1,102 +1,49 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from 'react-redux';
 import { getProducts } from '../slices/productSlice';
-import { addToCart, decreaseQuantity, increaseQuantity, removeFromCart, selectCartItems } from '../slices/cartSlice';
 import search from "../assets/Search.png";
 import { useTranslation } from 'react-i18next';
-import LoginPopup from './LoginPopup'; // Ensure this path is correct
-import cart from "../assets/add-to-cart.png";
+import LoginPopup from './LoginPopup';
 import { useNavigate } from 'react-router-dom';
+import { addToCart } from '../slices/cartSlice';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
-const productsPerPage = 9; // 3 items per row, 3 rows
+const productsPerPage = 9;
 
 function Home() {
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const [showPopup, setShowPopup] = useState(false); // State to control popup visibility
-  const [productToAdd, setProductToAdd] = useState(null); // State to hold product to add to cart
+  const [showPopup, setShowPopup] = useState(false);
   const [showCart, setShowCart] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
-  const [animationState, setAnimationState] = useState(''); // Animation state
+  const [animationState, setAnimationState] = useState('');
+  const [selectedQuantity, setSelectedQuantity] = useState(1);
 
   const dispatch = useDispatch();
   const products = useSelector((state) => state.products.products || []);
-  const isLoggedIn = useSelector((state) => state.auth.isLoggedIn); // Check if user is logged in
+  const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
   const { t } = useTranslation();
-  const cartItems = useSelector(selectCartItems);
+  const cartItems = useSelector((state) => state.cart.items);
 
   useEffect(() => {
-    dispatch(getProducts('schoolmatetial')); // Correct spelling
+    dispatch(getProducts('schoolmatetial'));
   }, [dispatch]);
-
-  useEffect(() => {
-    if (isLoggedIn && productToAdd) {
-      dispatch(addToCart(productToAdd));
-      setProductToAdd(null); // Clear the product to add
-      setShowPopup(false); // Hide the popup
-      setSelectedProduct(productToAdd); // Set the selected product for the cart popup
-      setAnimationState('slide-in');
-      setShowCart(true);
-    }
-  }, [isLoggedIn, dispatch, productToAdd]);
 
   const translateProductName = (product) => {
     return t(`product_names.${product._id}`, { defaultValue: product.name });
   };
 
-  const handleCartClick = () => {
-    navigate('/cart');
+  const handleViewProduct = (product) => {
+    setSelectedProduct(product);
+    const existingCartItem = cartItems.find(item => item._id === product._id);
+    setSelectedQuantity(existingCartItem ? existingCartItem.quantity : 1);
+    setAnimationState('slide-in');
+    setShowCart(true);
   };
-
-  const filteredProducts = products.filter(product =>
-    translateProductName(product).toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
-  const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
-  const displayedProducts = filteredProducts.slice(
-    (currentPage - 1) * productsPerPage,
-    currentPage * productsPerPage
-  );
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
-  };
-
-  const handleAddToCart = (product) => {
-    if (!isLoggedIn) {
-      setProductToAdd(product);
-      setShowPopup(true);
-    } else {
-      const existingProduct = cartItems.find(item => item._id === product._id);
-      if (existingProduct) {
-        dispatch(increaseQuantity(product._id));
-      } else {
-        dispatch(addToCart(product));
-      }
-      setSelectedProduct(product);
-      setAnimationState('slide-in');
-      setShowCart(true);
-    }
-  };
-
-  const handleIncreaseQuantity = () => {
-    if (selectedProduct) {
-      dispatch(increaseQuantity(selectedProduct._id));
-    }
-  };
-
-  const handleDecreaseQuantity = () => {
-    if (selectedProduct) {
-      dispatch(decreaseQuantity(selectedProduct._id));
-    }
-  };
-
-  const handleRemoveProduct = () => {
-    if (selectedProduct) {
-      dispatch(removeFromCart(selectedProduct._id));
-      setShowCart(false);
-      setSelectedProduct(null);
-    }
   };
 
   const handleClosePopup = () => {
@@ -109,28 +56,57 @@ function Home() {
       setShowCart(false);
       setSelectedProduct(null);
       setAnimationState('');
-    }, 300); // Duration of the animation
+    }, 300);
   };
 
-  const normalizeProductName = (name) => {
-    return name.toLowerCase().replace(/\s+/g, '_');
-  };
+  const filteredProducts = products.filter(product =>
+    translateProductName(product).toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
-  const calculateCartTotal = () => {
-    return cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
-  };
+  const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
+  const displayedProducts = filteredProducts.slice(
+    (currentPage - 1) * productsPerPage,
+    currentPage * productsPerPage
+  );
 
   const navigate = useNavigate();
 
+  const handleAddToCart = () => {
+    if (!isLoggedIn) {
+      setShowPopup(true); // Show login popup
+      return; // Prevent adding to cart
+    }
+
+    if (selectedProduct) {
+      const existingCartItem = cartItems.find(item => item._id === selectedProduct._id);
+
+      if (existingCartItem) {
+        const updatedProduct = {
+          ...selectedProduct,
+          quantity: existingCartItem.quantity + selectedQuantity
+        };
+        dispatch(addToCart(updatedProduct));
+      } else {
+        dispatch(addToCart({ ...selectedProduct, quantity: selectedQuantity }));
+      }
+
+      toast.success('Your product was added to the cart successfully');
+      handleCartPopupClose();
+    }
+  };
+
   const handleCheckout = () => {
-    navigate('/checkout'); // navigate to checkout page
+    if (selectedProduct) {
+      navigate('/checkout', { state: { product: selectedProduct, quantity: selectedQuantity } });
+      handleCartPopupClose();
+    }
   };
 
   return (
     <section className="min-h-screen flex flex-col bg-gray-200">
-      {showPopup && <LoginPopup onClose={handleClosePopup} />} {/* Show login popup if needed */}
+      <ToastContainer />
+      {showPopup && <LoginPopup onClose={handleClosePopup} />}
 
-      {/* Cart Popup */}
       <div
         className={`fixed right-0 top-0 w-full md:w-[35%] h-full bg-gray-50 text-black shadow-lg z-50 transform transition-transform duration-300 ${
           animationState === 'slide-in' ? 'translate-x-0' : 'translate-x-full'
@@ -138,11 +114,9 @@ function Home() {
       >
         <button onClick={handleCartPopupClose} className="absolute top-4 right-4 text-2xl">×</button>
 
-        {/* Product Section */}
         <div className="p-4 border-b">
           {selectedProduct ? (
             <div className="flex items-center flex-col">
-              {/* Product Image */}
               <img
                 src={selectedProduct.images[0].url}
                 alt={selectedProduct.name}
@@ -153,13 +127,6 @@ function Home() {
                 <p className="text-gray-600 text-sm">{selectedProduct.company}</p>
                 <p className="font-semibold text-lg mb-1">{selectedProduct.name}</p>
                 <p className="text-2xl mb-4">{selectedProduct.price} RWF</p>
-
-                {/* Quantity Adjustment */}
-                <div className="flex items-center mb-4">
-                  <button onClick={handleDecreaseQuantity} className="px-4 py-2 bg-gray-200 text-lg">−</button>
-                  <span className="px-4 py-2">{cartItems.find(item => item._id === selectedProduct._id)?.quantity || 0}</span>
-                  <button onClick={handleIncreaseQuantity} className="px-4 py-2 bg-gray-200 text-lg">+</button>
-                </div>
               </div>
             </div>
           ) : (
@@ -167,20 +134,14 @@ function Home() {
           )}
         </div>
 
-        {/* Add to Cart and Buy Now Buttons */}
         <div className="p-4">
           <button
-            onClick={() => { /* Implement add to cart functionality */ }}
+            onClick={handleAddToCart}
             className="mt-4 px-4 py-2 bg-blue-950 text-white rounded-lg w-full"
           >
-            {t('Add ToCart')}
+            {t('Add ToCart & Buy Now')}
           </button>
-          <button
-            onClick={handleCheckout}
-            className="mt-2 px-4 py-2 bg-blue-950 text-white rounded-lg w-full"
-          >
-            {t('BuyNow')}
-          </button>
+        
         </div>
       </div>
 
@@ -206,7 +167,7 @@ function Home() {
             {displayedProducts.map(product => (
               <div
                 key={product._id}
-                className="bg-white p-4 flex flex-col items-center relative"
+                className="bg-white p-4 flex flex-col items-center relative group"
               >
                 <img
                   src={product.images[0].url}
@@ -218,28 +179,30 @@ function Home() {
                 </p>
                 <p className="text-gray-600">{product.description}</p>
                 <p className="text-gray-600">{t('per_piece')} {product.price} {t('currency')}</p>
-                <button
-                  className="absolute top-2 right-2 p-2 bg-blue-950 rounded-full"
-                  onClick={() => handleAddToCart(product)}
-                >
-                  <img src={cart} className="w-6 h-6" alt={t('cart_icon_alt')} />
-                </button>
+
+                <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <button
+                    onClick={() => handleViewProduct(product)}
+                    className="text-white bg-blue-950 px-4 py-2 rounded-full"
+                  >
+                    {t('Click to View')}
+                  </button>
+                </div>
               </div>
             ))}
           </div>
+        </div>
 
-          {/* Pagination */}
-          <div className="flex justify-center mt-6">
-            {Array.from({ length: totalPages }).map((_, index) => (
-              <button
-                key={index}
-                className={`px-4 py-2 mx-1 rounded-full ${currentPage === index + 1 ? 'bg-blue-950 text-white' : 'bg-gray-300'}`}
-                onClick={() => handlePageChange(index + 1)}
-              >
-                {index + 1}
-              </button>
-            ))}
-          </div>
+        <div className="flex justify-center mt-4">
+          {Array.from({ length: totalPages }, (_, index) => (
+            <button
+              key={index}
+              className={`mx-1 px-3 py-1 rounded ${currentPage === index + 1 ? 'bg-blue-950 text-white' : 'bg-gray-300 text-black'}`}
+              onClick={() => handlePageChange(index + 1)}
+            >
+              {index + 1}
+            </button>
+          ))}
         </div>
       </div>
     </section>

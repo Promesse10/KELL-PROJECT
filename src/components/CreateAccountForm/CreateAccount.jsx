@@ -178,11 +178,11 @@ function CreateAccount() {
                   name="agreeToTerms"
                   checked={formData.agreeToTerms}
                   onChange={handleChange}
-                  className="form-checkbox h-4 w-4 text-blue-600"
+                  className="form-checkbox h-4 w-4 text-blue-950"
                 />
                 <label htmlFor="agreeToTerms" className="text-gray-500 text-sm">
                   {t('createAccount.agreeToTermsLabel')}{' '}
-                  <a href="/terms" className="text-blue-600 hover:underline">
+                  <a href="/terms" className="text-blue-950 hover:underline">
                     {t('createAccount.termsOfService')}
                   </a>.
                 </label>
@@ -190,14 +190,14 @@ function CreateAccount() {
               <div className="flex justify-center">
                 <button
                   type="submit"
-                  className="w-40 p-3 text-white bg-blue-600 rounded-lg focus:outline-none focus:ring focus:ring-blue-200"
+                  className="w-40 p-3 text-white bg-blue-950 rounded-lg focus:outline-none focus:ring focus:ring-blue-200"
                 >
                   {t('createAccount.registerButton')}
                 </button>
               </div>
               <p className="text-center text-gray-400">
                 {t('createAccount.alreadyHaveAccount')}{' '}
-                <a href="/login" className="text-blue-600 hover:underline">
+                <a href="/login" className="text-blue-950 hover:underline">
                   {t('createAccount.loginNow')}
                 </a>
               </p>

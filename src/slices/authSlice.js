@@ -3,7 +3,15 @@ import authService from '../sevices/authService';
 import Cookies from 'js-cookie';
 
 const initialState = {
-  user: JSON.parse(Cookies.get('user') || '{}'),
+  user: (() => {
+    const userCookie = Cookies.get('user');
+    try {
+      return userCookie ? JSON.parse(userCookie) : null;
+    } catch (error) {
+      console.error('Failed to parse user cookie:', error);
+      return null;
+    }
+  })(),
   isLoggedIn: !!Cookies.get('token'),
   loading: false,
   error: null,
@@ -141,7 +149,7 @@ const authSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
-      .addCase(updatePassword.fulfilled, (state, action) => {
+      .addCase(updatePassword.fulfilled, (state) => {
         state.loading = false;
       })
       .addCase(updatePassword.rejected, (state, action) => {
