@@ -38,33 +38,37 @@ const Cart = () => {
     <div className='flex flex-col min-h-screen bg-gray-50 pt-16 mt-5'>
       <main className='flex-grow p-4 sm:p-8'>
         <h1 className='text-center text-2xl sm:text-3xl font-bold mb-6 sm:mb-8'>{t('cart.shoppingCart')}</h1>
+        
         {cart.length > 0 ? (
           <div className='w-full max-w-full sm:max-w-4xl mx-auto bg-white p-4 sm:p-8 rounded-lg shadow-md'>
             {cart.map((item) => (
               <div key={item._id} className='flex flex-col sm:flex-row justify-between items-center border-b pb-4 mb-4'>
+                
                 <div className='flex items-center w-full sm:w-auto'>
                   <img className='w-16 sm:w-20 h-16 sm:h-20 object-contain' src={item.images[0].url} alt={item.name} />
                   <div className='ml-4'>
                     <p className='text-lg sm:text-xl font-semibold'>{item.name}</p>
                     <p className='text-gray-600'>{t('cart.currency')} {item.price}</p>
                     <button 
-                      className='text-blue-950 mt-2 underline'
+                      className='text-blue-950 mt-2 underline '
                       onClick={() => handleDelete(item._id)}
                     >
-                      {t('cart.delete')}
+                      {t('Remove product')}
                     </button>
                   </div>
                 </div>
+               
                 <div className='flex items-center mt-4 sm:mt-0 '>
+                 
                   <button 
-                    className='px-2 text-gray-700' 
+                    className='px-2 text-neutral-50 bg-blue-950' 
                     onClick={() => handleDecrease(item._id)}
                   >
                     &#8211;
                   </button>
                   <span className='mx-4 text-lg'>{item.quantity}</span>
                   <button 
-                    className='px-2 text-gray-700' 
+                    className='px-2 text-neutral-50 bg-blue-950' 
                     onClick={() => handleIncrease(item._id)}
                   >
                     &#43;

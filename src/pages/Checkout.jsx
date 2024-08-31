@@ -25,9 +25,19 @@ function Checkout() {
     city: "",
     phone: user?.phone,
     fullname: user?.name,
+    region: "Kigali", // Added default region
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+
+  // Define shipping costs by region
+  const shippingCosts = {
+    Kigali: 2000,
+    Northern : 3000,
+    Southern: 4000,
+    Western: 5000,
+    Eastern: 6000,
+  };
 
   useEffect(() => {
     dispatch(fetchProfile());
@@ -41,11 +51,16 @@ function Checkout() {
     }));
   };
 
+  // Update shippingCost based on region
+  const shippingCost =
+    deliveryMethod === "pickup"
+      ? 0
+      : shippingCosts[shippingInfo.region] || 2000;
+
   const totalPrice = cart.reduce(
     (total, item) => total + (item.price || 0) * (item.quantity || 0),
     0
   );
-  const shippingCost = deliveryMethod === "pickup" ? 0 : 2000;
   const subtotal = totalPrice;
   const totalAmount = subtotal + shippingCost;
 
@@ -104,6 +119,18 @@ function Checkout() {
     }
   };
 
+  // State to control the visibility of the shipping options panel
+  const [showShippingOptions, setShowShippingOptions] = useState(false);
+
+  // Toggle the visibility when delivery method changes to 'ship'
+  useEffect(() => {
+    if (deliveryMethod === "ship") {
+      setShowShippingOptions(true);
+    } else {
+      setShowShippingOptions(false);
+    }
+  }, [deliveryMethod]);
+
   return (
     <div className="flex flex-col min-h-screen">
       <Header />
@@ -154,7 +181,7 @@ function Checkout() {
               <div className="mb-6">
                 <h3 className="text-lg font-semibold">Store locations</h3>
                 <p className="text-sm text-gray-600 mb-4">
-                  There is 1 store with stock close to your location
+                  There is 1 store stock in Kabuga area
                 </p>
                 <div className="mb-2">
                   <label className="block bg-blue-50 p-4 rounded border border-blue-200">
@@ -165,16 +192,13 @@ function Checkout() {
                       </span>
                     </div>
                     <div className="text-sm text-gray-600">
-                      59 KN 59 Street, Kigali
+                      Kabuga, Gasabo, Kigali
                     </div>
                     <div className="text-sm text-gray-500">
                       Usually ready in 24 hours
                     </div>
                   </label>
                 </div>
-                <a href="#" className="text-blue-600 text-sm">
-                  Change my location
-                </a>
               </div>
             )}
 
@@ -238,6 +262,37 @@ function Checkout() {
                     </span>
                   </label>
                 </div>
+
+                {/* Shipping Options Panel */}
+                {showShippingOptions && (
+                  <div className="mt-6 transition-all duration-500 ease-in-out">
+                    <h3 className="text-lg font-semibold mb-4">
+                      Select Your Region
+                    </h3>
+                    <div className="flex flex-col space-y-4">
+                      {Object.keys(shippingCosts).map((region) => (
+                        <label key={region} className="flex items-center">
+                          <input
+                            type="radio"
+                            name="region"
+                            value={region}
+                            checked={shippingInfo.region === region}
+                            onChange={(e) =>
+                              setShippingInfo((prev) => ({
+                                ...prev,
+                                region: e.target.value,
+                              }))
+                            }
+                            className="form-radio h-4 w-4 text-blue-950"
+                          />
+                          <span className="ml-2">
+                            {region} ({shippingCosts[region].toLocaleString()} RWF)
+                          </span>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
             )}
 
@@ -266,10 +321,10 @@ function Checkout() {
                 {paymentMethod === "bank" && (
                   <div className="bg-gray-100 p-4 mt-4 border border-gray-200 rounded">
                     <h4 className="font-semibold">Bank Details</h4>
-                    <p>Bank Name: Your Bank</p>
-                    <p>Account Number: 1234567890</p>
-                    <p>Account Name: Your Name</p>
-                    <p>SWIFT/BIC: ABCDEF12</p>
+                    <p>Bank Name: Bank popular</p>
+                    <p>Account Number: 415235534210119</p>
+                    <p>Account Name: NDAYISHIMIYE Jason</p>
+                   
                   </div>
                 )}
               </label>
@@ -312,7 +367,6 @@ function Checkout() {
         </div>
 
         {/* Order Summary */}
-
         <div className="w-full md:w-1/3">
           <div className="bg-white p-6 rounded-lg shadow-lg">
             <div className="mb-4">
@@ -362,19 +416,22 @@ function Checkout() {
               disabled={loading}
               className="bg-blue-950 text-white px-4 py-2 rounded-lg w-full"
             >
-              {" "}
-              {loading ? "Processing..." : "Place Order"}{" "}
+              {loading ? "Processing..." : "Place Order"}
             </button>
           </div>
         </div>
       </main>
       {loading && (
         <div className="fixed inset-0 bg-white z-50 flex items-center justify-center">
-          <div className="flex flex-col">
-            <iframe src="https://lottie.host/embed/c350b974-c557-4b08-988f-94ef261d7410/js1HNBuLRg.json">
-              {" "}
-            </iframe>
-            <h1> Your order already sent succefully </h1>
+          <div className="flex flex-col items-center">
+            <iframe
+              src="https://lottie.host/embed/c350b974-c557-4b08-988f-94ef261d7410/js1HNBuLRg.json"
+              title="Loading Animation"
+              className="h-64 w-64"
+            ></iframe>
+            <h1 className="mt-4 text-xl font-semibold">
+              Your order has been sent successfully!
+            </h1>
           </div>
         </div>
       )}
