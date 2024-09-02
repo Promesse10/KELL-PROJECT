@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { useTranslation } from 'react-i18next';
 import './Infopage.css';
 import computer from "../components/images/computer.jpeg";
-import irembo from "../components/images/irembo.png";
+import Service from "../assets/Service.jpg";
 import printer from "../components/images/printer.png";
 import table from "../components/images/table.jpeg";
 
@@ -84,7 +84,7 @@ function Infopage() {
         </div>
 
         <div className="p-4 border rounded-lg shadow-lg flex flex-col md:flex-row justify-center md:justify-between items-center text-center md:text-left">
-          <img src={irembo} alt={t('infopage.onlineServiceAlt')} className="w-full h-48 object-cover mb-0 md:w-1/2 rounded-lg" />
+          <img src={Service} alt={t('infopage.onlineServiceAlt')} className="w-full h-48 object-cover mb-0 md:w-1/2 rounded-lg" />
           <div className="md:ml-4">
             <h3 className="text-2xl font-bold text-blue-950 mb-2">{t('infopage.onlineServiceTitle')}</h3>
             <ul className="mb-4 text-left">

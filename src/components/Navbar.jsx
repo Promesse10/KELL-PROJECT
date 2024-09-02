@@ -3,9 +3,11 @@ import { Link as RouterLink, useNavigate, useLocation } from "react-router-dom";
 import { Link as ScrollLink } from "react-scroll";
 import { AiOutlineClose, AiOutlineMenu } from "react-icons/ai";
 import Logo from "../assets/Logo.png";
+import Logo1 from "../assets/Logo1.png";
+import { logout } from "../slices/authSlice";
 import Cart1 from "../assets/Cart1.png";
 import { useSelector, useDispatch } from "react-redux";
-import { logout } from "../slices/authSlice";
+import Cart from "../assets/Cart.png";
 import { removeFromCart } from "../slices/cartSlice";
 import { useTranslation } from "react-i18next";
 import LanguageSwitcher from "./LanguageSwitcher";
@@ -280,121 +282,121 @@ const Navbar = () => {
         {nav ? <AiOutlineClose size={30} /> : <AiOutlineMenu size={30} />}
       </div>
 
-      <div
-        className={`fixed left-0 top-0 w-[60%] h-full bg-blue-950 text-white transition-transform duration-300 ease-in-out md:hidden ${
-          nav ? "transform translate-x-0" : "transform -translate-x-full"
-        }`}
+      <ul
+        className={`${
+          nav ? "fixed" : "hidden"
+        } left-0 top-0 w-60 h-full bg-blue-950 text-white ease-in-out duration-500 md:hidden z-10 px-4`}
       >
-        <img className="w-28 mt-4 ml-4" src={Logo} alt="Logo" />
-        <ul className="uppercase p-4">
-          <li>
-            <RouterLink to="/" onClick={handleNav}>
-              {t("navbar.home")}
-            </RouterLink>
-          </li>
-          <li>
-            <ScrollLink
-              to="services"
-              smooth={true}
-              duration={500}
-              className="cursor-pointer"
-              onClick={handleNav}
-            >
-              {t("navbar.services")}
-            </ScrollLink>
-          </li>
-          <li>
-            <RouterLink to="/infopage" onClick={handleNav}>
-              {t("navbar.products")}
-            </RouterLink>
-          </li>
-          <li>
-            <ScrollLink
-              to="aboutus"
-              smooth={true}
-              duration={500}
-              className="cursor-pointer"
-              onClick={handleNav}
-            >
-              {t("navbar.about")}
-            </ScrollLink>
-          </li>
-          <li>
-            <ScrollLink
-              to="contactus"
-              smooth={true}
-              duration={500}
-              className="cursor-pointer"
-              onClick={handleNav}
-            >
-              {t("navbar.contact")}
-            </ScrollLink>
-          </li>
-          <li className="mt-4">
-            <LanguageSwitcher />
-          </li>
-          {isLoggedIn ? (
-            <>
-              <li className="mt-4">
-                <img
-                  className="h-12 w-12 cursor-pointer rounded-full border border-gray-300"
-                  src={user.profilePic[0].url}
-                  alt="Account"
-                  onClick={handleAccountDropdown}
-                />
-              </li>
-              <li>
-                <RouterLink to="/profile" onClick={handleProfileClick}>
-                  {t("navbar.profile")}
-                </RouterLink>
-              </li>
-              <li>
-                <RouterLink to="/myorders" onClick={handleOrdersClick}>
-                  My Orders
-                </RouterLink>
-              </li>
-              <li>
-                <button
-                  className="w-full text-left"
-                  onClick={handleLogoutClick}
+        <li className="flex justify-between items-center border-b-2 border-blue-950 w-full">
+          <img className="w-36 cursor-pointer" src={Logo1} alt="Logo" />
+        
+        </li>
+
+        <li className="border-b-2 border-white w-full mt-2">
+          <span
+            onClick={handleHomeClick}
+            className="block text-white p-4 cursor-pointer"
+          >
+            {t("navbar.home")}
+          </span>
+        </li>
+        <li className="border-b-2 border-white w-full mt-2">
+          <ScrollLink
+            to="services"
+            smooth={true}
+            duration={500}
+            className="block text-white p-4 cursor-pointer"
+            onClick={() => setNav(false)}
+          >
+            {t("navbar.services")}
+          </ScrollLink>
+        </li>
+        <li className="border-b-2 border-white w-full mt-2 relative">
+          <span
+            className="block text-white p-4 cursor-pointer"
+            onClick={() => setDropdown(!dropdown)}
+          >
+            {t("navbar.products")}
+          </span>
+          {dropdown && (
+            <ul className="ml-4 bg-blue-950 text-white text-sm">
+              <li className="border-b-2 border-blue-950 w-full mt-2">
+                <RouterLink
+                  to="/infopage"
+                  className="block px-4 py-2 hover:bg-blue-950"
+                  onClick={() => setNav(false)}
                 >
-                  {t("navbar.logout")}
-                </button>
-              </li>
-            </>
-          ) : (
-            <>
-              <li>
-                <RouterLink to="/login" onClick={handleNav}>
-                  {t("navbar.login")}
+                  {t("navbar.it")}
                 </RouterLink>
               </li>
-              <li>
-                <RouterLink to="/createAccount" onClick={handleNav}>
-                  {t("navbar.register")}
+              <li className="border-b-2 border-blue-950 w-full mt-2">
+                <RouterLink
+                  to="/Construction"
+                  className="block px-4 py-2 hover:bg-blue-950"
+                  onClick={() => setNav(false)}
+                >
+                  {t("navbar.civil")}
                 </RouterLink>
               </li>
-            </>
+              <li className="border-b-2 border-blue-950 w-full mt-2">
+                <RouterLink
+                  to="/Food"
+                  className="block px-4 py-2 hover:bg-blue-900"
+                  onClick={() => setNav(false)}
+                >
+                  {t("navbar.food")}
+                </RouterLink>
+              </li>
+            </ul>
           )}
-        </ul>
-      </div>
+        </li>
+        <li className="border-b-2 border-white w-full mt-2">
+          <ScrollLink
+            to="aboutus"
+            smooth={true}
+            duration={500}
+            className="block text-white p-4 cursor-pointer"
+            onClick={() => setNav(false)}
+          >
+            {t("navbar.about")}
+          </ScrollLink>
+        </li>
+        <li className="border-b-2 border-white w-full mt-2">
+          <ScrollLink
+            to="contactus"
+            smooth={true}
+            duration={500}
+            className="block text-white p-4 cursor-pointer"
+            onClick={() => setNav(false)}
+          >
+            {t("navbar.contact")}
+          </ScrollLink>
+        </li>
+        <li className="border-b-2 border-blue-950 w-full mt-2">
+          <LanguageSwitcher />
+        </li>
+
+       
+      </ul>
 
       {showLogoutConfirm && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-          <div className="bg-white p-4 rounded shadow-lg">
-            <p>{t("navbar.logoutConfirm")}</p>
-            <div className="flex justify-end space-x-4 mt-4">
+        <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg">
+            <p className="text-lg font-semibold mb-4">
+              {t("navbar.logoutConfirm")}
+            </p>
+            <div className="flex justify-end gap-4">
               <button
-                className="bg-gray-300 px-4 py-2 rounded"
+                className="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded"
+                onClick={handleConfirmLogout}
+              >
+                {t("navbar.confirmLogout")}
+              </button>
+              <button
+                className="bg-gray-300 hover:bg-gray-400 text-gray-700 py-2 px-4 rounded"
                 onClick={handleCancelLogout}
               >
                 {t("navbar.cancel")}
-              </button>
-              <button
-                className="bg-red-500 text-white px-4 py-2 rounded"
-                onClick={handleConfirmLogout}
-              >
-                {t("navbar.confirm")}
               </button>
             </div>
           </div>
