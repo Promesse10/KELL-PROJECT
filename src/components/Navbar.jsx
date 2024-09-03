@@ -387,10 +387,10 @@ const Navbar = () => {
             </p>
             <div className="flex justify-end gap-4">
               <button
-                className="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded"
+                className="bg-blue-950 hover:bg-blue-900 text-white py-2 px-4 rounded"
                 onClick={handleConfirmLogout}
               >
-                {t("navbar.confirmLogout")}
+                {t("Logout")}
               </button>
               <button
                 className="bg-gray-300 hover:bg-gray-400 text-gray-700 py-2 px-4 rounded"
