@@ -374,10 +374,28 @@ const Navbar = () => {
             {t("navbar.contact")}
           </ScrollLink>
         </li>
+        <div className="flex flex-row">
         <li className="border-b-2 border-blue-950 w-full mt-2">
           <LanguageSwitcher />
+          
         </li>
+        <button
+              onClick={handleCartClick}
+              className="relative border-white border-2 p-1 rounded-2xl flex flex-row items-center mt-1 pr-6"
+            >
+              <img className="w-5 h-5" src={Cart} alt="Cart" />
+              <span className="ml-2">{t("navbar.cart")}</span>
+              {cartItems.length > 0 && (
+                <span className="absolute top-5 right-14 bg-red-500 text-white text-xs rounded-full px-2 py-1">
+                  {cartItems.reduce((total, item) => total + item.quantity, 0)}
+                </span>
+              )}
+            </button>
+        </div>
         
+        
+
+
 </ul>
 
 
