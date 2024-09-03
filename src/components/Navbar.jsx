@@ -158,14 +158,14 @@ const Navbar = () => {
                         {t("navbar.it")}
                       </RouterLink>
                     </li>
-                    <li>
+                    {/* <li>
                       <RouterLink
                         to="/Construction"
                         className="block px-4 py-2 hover:bg-blue-900"
                       >
                         {t("navbar.civil")}
                       </RouterLink>
-                    </li>
+                    </li> */}
                     <li>
                       <RouterLink
                         to="/Food"
@@ -282,13 +282,15 @@ const Navbar = () => {
         {nav ? <AiOutlineClose size={30} /> : <AiOutlineMenu size={30} />}
       </div>
 
+
+     {/* Menu bar */}
       <ul
         className={`${
           nav ? "fixed" : "hidden"
-        } left-0 top-0 w-60 h-full bg-blue-950 text-white ease-in-out duration-500 md:hidden z-10 px-4`}
+        } left-0 top-0 w-60 h-full bg-blue-950 text-white ease-in-out duration-500 md:hidden z-10 px-4 text-xs`}
       >
         <li className="flex justify-between items-center border-b-2 border-blue-950 w-full">
-          <img className="w-36 cursor-pointer" src={Logo1} alt="Logo" />
+          <img className="w-20 cursor-pointer" src={Logo1} alt="Logo" />
         
         </li>
 
@@ -329,7 +331,7 @@ const Navbar = () => {
                   {t("navbar.it")}
                 </RouterLink>
               </li>
-              <li className="border-b-2 border-blue-950 w-full mt-2">
+              {/* <li className="border-b-2 border-blue-950 w-full mt-2">
                 <RouterLink
                   to="/Construction"
                   className="block px-4 py-2 hover:bg-blue-950"
@@ -337,7 +339,7 @@ const Navbar = () => {
                 >
                   {t("navbar.civil")}
                 </RouterLink>
-              </li>
+              </li> */}
               <li className="border-b-2 border-blue-950 w-full mt-2">
                 <RouterLink
                   to="/Food"
@@ -375,9 +377,10 @@ const Navbar = () => {
         <li className="border-b-2 border-blue-950 w-full mt-2">
           <LanguageSwitcher />
         </li>
+        
+</ul>
 
-       
-      </ul>
+
 
       {showLogoutConfirm && (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">

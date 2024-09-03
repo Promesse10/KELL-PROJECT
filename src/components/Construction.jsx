@@ -12,7 +12,7 @@ const Construction = () => {
 
       <div className='flex my-10 md:flex-row justify-center items-center'>
         {/* <img className='w-24 h-20 mb-4 md:mb-0' src={logo} alt="" /> */}
-        <p className='text-blue-950 font-bold text-6xl md:text-2xl text-center md:text-left'>Civil engineering projects</p>
+        <p className='text-blue-950 font-bold text-2xl md:text-2xl text-center md:text-left'>Civil engineering projects</p>
       </div>
 
       <div className='flex flex-col lg:flex-row ml-4 md:ml-10 lg:ml-40 mb-8  lg:items-stretch'>

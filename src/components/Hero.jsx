@@ -4,10 +4,10 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import background1 from "../assets/printer-background.jpg";
-import background2 from "../assets/Civil 1.jpg";
+// import background2 from "../assets/Civil 1.jpg";
 import background3 from "../assets/grains.jpg";
 
-const backgrounds = [background1, background2, background3];
+const backgrounds = [background1,  background3];
 
 const Hero = () => {
   const { t } = useTranslation();
