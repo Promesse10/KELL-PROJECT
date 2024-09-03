@@ -35,6 +35,9 @@ const OrderList = () => {
     return <div className="p-4 text-lg text-red-600">Error: {error}</div>;
   }
 
+  // Sort orders by createdAt date, newest first
+  const sortedOrders = [...orders].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
   return (
     <div className="p-4 max-w-screen-2xl mx-auto">
       <h2 className="text-2xl font-bold mb-6 text-blue-950 text-center">Orders</h2>
@@ -53,9 +56,11 @@ const OrderList = () => {
             </tr>
           </thead>
           <tbody>
-            {orders.map((order) => (
+            {sortedOrders.map((order) => (
               <tr key={order._id} className="hover:bg-gray-100 transition-colors">
-                <td className="py-4 px-4 border-b whitespace-nowrap text-center">{new Date(order.createdAt).toLocaleDateString()}</td>
+                <td className="py-4 px-4 border-b whitespace-nowrap text-center">
+                  {new Date(order.createdAt).toLocaleDateString()} {new Date(order.createdAt).toLocaleTimeString()}
+                </td>
                 <td className="py-4 px-4 border-b text-center">
                   {order.user ? order.user.name : 'Unknown User'}
                 </td>

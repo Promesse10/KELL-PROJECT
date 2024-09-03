@@ -41,6 +41,7 @@ const MyOrder = () => {
               <th className="px-6 py-3 text-left text-xs sm:text-sm font-medium text-gray-500 uppercase tracking-wider">Total Amount</th>
               <th className="px-6 py-3 text-left text-xs sm:text-sm font-medium text-gray-500 uppercase tracking-wider">Shipping Address</th>
               <th className="px-6 py-3 text-left text-xs sm:text-sm font-medium text-gray-500 uppercase tracking-wider">Items</th>
+              <th className="px-6 py-3 text-left text-xs sm:text-sm font-medium text-gray-500 uppercase tracking-wider">Order Date & Time</th> {/* New column */}
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
@@ -63,6 +64,7 @@ const MyOrder = () => {
                     ))}
                   </ul>
                 </td>
+                <td className="px-6 py-4 whitespace-nowrap text-xs sm:text-sm text-gray-500">{new Date(order.createdAt).toLocaleString()}</td> {/* Displaying order date & time */}
               </tr>
             ))}
           </tbody>
@@ -119,12 +121,6 @@ const MyOrder = () => {
             >
               Search
             </button>
-            {/* <button
-              className="bg-gray-100 text-blue-950 p-2 rounded-md"
-              onClick={() => setSearchQuery('')}
-            >
-              Reset
-            </button> */}
           </div>
         </div>
         <div className="py-6">
