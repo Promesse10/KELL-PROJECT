@@ -7,7 +7,7 @@ import Modal from '../components/moadl'; // Ensure the path is correct
 import moreinfo from '../assets/moreinfo.png';
 import School from '../assets/School.png';
 import food from '../assets/food.jpeg';
-import realestate from '../assets/realestate.jpeg';
+// import realestate from '../assets/realestate.jpeg';
 import Mkelia from '../assets/Mkelia.png';
 import Pkelia from '../assets/Pkelia.png';
 
@@ -54,7 +54,7 @@ const Aboutus = () => {
             <div className="flex flex-wrap justify-center m-0 lg:justify-start ">
               <img className="w-64 h-40 mb-4 lg:mb-0 lg:ml-12 lg:absolute lg:top-20 rounded-xl" src={School} alt={t('aboutus.schoolAlt')} />
               <img className="w-64 h-46 mb-4 lg:mb-0 lg:ml-12 rounded-xl" src={food} alt={t('aboutus.foodAlt')} />
-              <img className="w-64 h-40 lg:ml-12 lg:absolute lg:top-48 rounded-xl" src={realestate} alt={t('aboutus.realEstateAlt')} />
+              {/* <img className="w-64 h-40 lg:ml-12 lg:absolute lg:top-48 rounded-xl" src={realestate} alt={t('aboutus.realEstateAlt')} /> */}
             </div>
           </div>
         </div>

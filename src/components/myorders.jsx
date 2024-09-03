@@ -119,12 +119,12 @@ const MyOrder = () => {
             >
               Search
             </button>
-            <button
+            {/* <button
               className="bg-gray-100 text-blue-950 p-2 rounded-md"
               onClick={() => setSearchQuery('')}
             >
               Reset
-            </button>
+            </button> */}
           </div>
         </div>
         <div className="py-6">

@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import foodS from '../assets/foodS.jpg';
-import construction from '../assets/construction.png';
+// import construction from '../assets/construction.png';
 import Itpic from '../assets/Itpic.png';
 
 const Service = () => {
@@ -17,7 +17,7 @@ const Service = () => {
   };
 
   return (
-    <div id="services" className='pt-24'>
+    <div id="services" className='pt-24  '>
       <section id="service" className="my-9 ">
         <h1 className="text-center text-blue-950 font-bold underline text-3xl mb-8">{t('service.title')}</h1>
 
@@ -36,7 +36,7 @@ const Service = () => {
             </div>
           </div>
 
-          <div className="p-6 border-blue-950 border-2 rounded-2xl hover:bg-blue-50 hover:text-blue-950 transform transition-transform">
+          {/* <div className="p-6 border-blue-950 border-2 rounded-2xl hover:bg-blue-50 hover:text-blue-950 transform transition-transform">
             <img className="w-full h-40 object-cover transition duration-300 ease-in-out transform hover:scale-105" src={construction} alt={t('service.constructionAlt')} />
             <h2 className="text-center font-semibold mt-5">{t('service.constructionTitle')}</h2>
             <p className="text-center text-xs">{t('service.constructionDescription')}</p>
@@ -48,7 +48,7 @@ const Service = () => {
                 {t('service.clickHere')}
               </button>
             </div>
-          </div>
+          </div> */}
 
           <div className="p-6 border-blue-950 border-2 rounded-2xl hover:bg-blue-50 hover:text-blue-950 transform transition-transform">
             <img className="w-52 h-40 object-cover rounded-3xl transition duration-300 ease-in-out transform hover:scale-105" src={foodS} alt={t('service.foodAlt')} />
