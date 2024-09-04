@@ -13,6 +13,7 @@ import { useTranslation } from "react-i18next";
 import LanguageSwitcher from "./LanguageSwitcher";
 import acount from "../assets/Account.png"
 import myorder from "../assets/order-delivery.png"
+import logot from "../assets/logout.png"
 const Navbar = () => {
   const [nav, setNav] = useState(false);
   const [showAccountDropdown, setShowAccountDropdown] = useState(false);
@@ -376,13 +377,13 @@ const Navbar = () => {
             <>
 
 
-              <div className="flex flex-row">
+              <div className="flex flex-row justify-center">
                 <RouterLink
                   to="/profile"
                   className="block text-white p-4 mt-2"
                   onClick={() => setNav(false)}
                 >
-                  <img src={acount} className="w-9 mb-2  " />
+                  <img src={acount} className="w-5 mb-2  " />
 
                   {t("navbar.profile")}
                 </RouterLink>
@@ -392,20 +393,20 @@ const Navbar = () => {
                   onClick={() => setNav(false)}
 
                 >
-                  <img src={myorder} className="w-9 mb-2 " />
-                  My Orders
+                  <img src={myorder} className="w-5 mb-2 " />
+                  MyOrders
                 </RouterLink>
-
+                <button
+                  className="block text-white p-4 mt-2 text-left"
+                  onClick={handleLogoutClick}
+                > <img src={logot} className="w-5 mb-2 " />
+                  {t("navbar.logout")}
+                </button>
 
               </div>
 
 
-              <button
-                className="block text-white p-4 mt-2 text-left"
-                onClick={handleLogoutClick}
-              >
-                {t("navbar.logout")}
-              </button>
+
               <button
                 onClick={handleCartClick}
                 className="relative border-white border-2 p-1 rounded-2xl flex flex-row items-center mt-1 mr-7 pr-6"
@@ -427,21 +428,33 @@ const Navbar = () => {
             : (
 
               <>
+                <div className=" flex flex-row space-x-4">
+                <button className="border border-white p-0 bg-transparent">
+                  <RouterLink
+                    to="/login"
+                    className="block text-white p-4 mt-2"
+                    onClick={() => setNav(false)}
+                  >
+                    {t("navbar.login")}
+                  </RouterLink>
+                </button>
 
-                <RouterLink
-                  to="/login"
-                  className="block text-white p-4 mt-2 border-b-2 border-white w-full"
-                  onClick={() => setNav(false)}
-                >
-                  {t("navbar.login")}
-                </RouterLink>
-                <RouterLink
+               <button className="border border-white p-0 bg-transparent" >
+               <RouterLink
                   to="/createAccount"
-                  className="block text-white p-4 mt-2 border-b-2 border-white w-full "
+                  className="block text-white p-4 mt-2 "
                   onClick={() => setNav(false)}
                 >
                   {t("navbar.register")}
                 </RouterLink>
+
+               </button>
+
+
+                </div>
+
+         
+              
               </>
             )}
         </div>
