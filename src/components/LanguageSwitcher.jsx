@@ -33,14 +33,14 @@ const LanguageSwitcher = () => {
         <div className="absolute left-0 mt-2 w-40 bg-white border border-gray-300 rounded shadow-lg">
           <button 
             onClick={() => changeLanguage('en')} 
-            className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 w-full text-left"
+            className="flex items-center px-2 py-2 text-gray-700 hover:bg-gray-100 w-full text-left"
           >
             <img src={eng} alt="English" className="w-4 h-4 rounded-full mr-2" />
             Eng
           </button>
           <button 
             onClick={() => changeLanguage('kin')} 
-            className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 w-full text-left"
+            className="flex items-center px-2 py-2 text-gray-700 hover:bg-gray-100 w-full text-left"
           >
             <img src={kiny} alt="Kinyarwanda" className="w-4 h-4 rounded-full mr-2" />
             Kiny
