@@ -91,7 +91,13 @@ function Home() {
       }
 
       toast.success('Your product was added to the cart successfully');
-      handleCartPopupClose();
+
+      // If on mobile, navigate to cart page immediately
+      if (window.innerWidth < 768) {
+        navigate('/cart');
+      } else {
+        handleCartPopupClose(); // Close the cart popup on larger screens
+      }
     }
   };
 
@@ -141,7 +147,6 @@ function Home() {
           >
             {t('Add ToCart & Buy Now')}
           </button>
-        
         </div>
       </div>
 
