@@ -152,7 +152,7 @@ function Home() {
 
       <div className="flex flex-col items-center w-full p-4 mt-28">
         <div className="text-center mb-8">
-          <h1 className="text-blue-950 text-4xl font-semibold">{t('products')}</h1>
+          <h1 className="text-blue-950 text-3xl font-semibold">{t('products')}</h1>
           <hr className="w-20 h-1 mx-auto my-4 bg-blue-950 border-0 rounded dark:bg-blue-950" />
         </div>
 
@@ -161,7 +161,7 @@ function Home() {
             <input
               type="search"
               placeholder={t('search_placeholder')}
-              className="w-full p-4 rounded-full bg-gray-100"
+              className="w-full p-2 rounded-full bg-gray-100"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />

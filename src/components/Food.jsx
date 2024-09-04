@@ -101,7 +101,7 @@ const Food = () => {
 
   
   return (
-    <div className='bg-gray-100 mt-20 min-h-screen flex flex-col'>
+    <div className='bg-gray-100 mt-24 flex flex-col'>
       {showPopup && <LoginPopup onClose={handleClosePopup} />}
 
       {showCart && (
@@ -153,8 +153,8 @@ const Food = () => {
         </>
       )}
 
-      <div className='flex my-5 justify-center items-center'>
-        <p className='text-blue-950 font-bold text-3xl'>{t('food.services')}</p>
+      <div className='flex my-10 justify-center items-center'>
+        <p className='text-blue-950 font-bold text-2xl'>{t('food.services')}</p>
       </div>
 
       <div className='flex-grow'>
