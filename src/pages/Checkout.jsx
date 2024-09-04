@@ -1,27 +1,47 @@
-import React, { useState } from 'react';
-import Header from '../components/Header';
-import { useLocation, useNavigate } from 'react-router-dom';
-import momo from '../assets/MTN.png'; 
-import { useDispatch } from 'react-redux';
-import { createOrder } from '../slices/orderSlice';
+import React, { useState, useEffect } from "react";
+import Header from "../components/Header";
+import { useLocation, useNavigate } from "react-router-dom";
+import momo from "../assets/MTN.png";
+import { useSelector, useDispatch } from "react-redux";
+import { createOrder } from "../slices/orderSlice";
+import { fetchProfile } from "../slices/authSlice";
+import { clearCart } from "../slices/cartSlice";
 
 function Checkout() {
   const location = useLocation();
   const { cart = [], userId } = location.state || {};
-  const [deliveryMethod, setDeliveryMethod] = useState('ship');
-  const [paymentMethod, setPaymentMethod] = useState('cod');
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const { user } = useSelector((state) => state.auth);
+
+  const [deliveryMethod, setDeliveryMethod] = useState("ship");
+  const [paymentMethod, setPaymentMethod] = useState("cod");
   const [saveInfo, setSaveInfo] = useState(false);
   const [shippingInfo, setShippingInfo] = useState({
-    country: 'Rwanda',
-    name: '',
-    address: '',
-    city: '',
-    phone: ''
+    country: "Rwanda",
+    name: user?.name || "",
+    address: user?.address,
+    city: "",
+    phone: user?.phone,
+    fullname: user?.name,
+    region: "Kigali", // Added default region
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
+
+  // Define shipping costs by region
+  const shippingCosts = {
+    Kigali: 2000,
+    Northern : 3000,
+    Southern: 4000,
+    Western: 5000,
+    Eastern: 6000,
+  };
+
+  useEffect(() => {
+    dispatch(fetchProfile());
+  }, [dispatch]);
 
   const handleShippingChange = (e) => {
     const { name, value } = e.target;
@@ -31,20 +51,34 @@ function Checkout() {
     }));
   };
 
-  const totalPrice = cart.reduce((total, item) => total + (item.price || 0) * (item.quantity || 0), 0);
-  const shippingCost = deliveryMethod === 'pickup' ? 0 : 2000;
+  // Update shippingCost based on region
+  const shippingCost =
+    deliveryMethod === "pickup"
+      ? 0
+      : shippingCosts[shippingInfo.region] || 2000;
+
+  const totalPrice = cart.reduce(
+    (total, item) => total + (item.price || 0) * (item.quantity || 0),
+    0
+  );
   const subtotal = totalPrice;
   const totalAmount = subtotal + shippingCost;
 
-  const formattedPaymentMethod = paymentMethod === 'bank' ? 'CARD' : paymentMethod === 'momo' ? 'MTN' : paymentMethod;
+  const formattedPaymentMethod =
+    paymentMethod === "bank"
+      ? "CARD"
+      : paymentMethod === "momo"
+      ? "MTN"
+      : paymentMethod;
+
   const handleOrderClick = async () => {
     setLoading(true);
     setError(null);
-  
+
     try {
       const orderData = {
         shippingInfo,
-        orderItems: cart.map(item => ({
+        orderItems: cart.map((item) => ({
           name: item.name,
           price: item.price,
           quantity: item.quantity,
@@ -54,27 +88,48 @@ function Checkout() {
         paymentMethod: formattedPaymentMethod,
         itemPrice: totalPrice,
         user: userId,
-        shippingCost: deliveryMethod === 'pickup' ? 0 : shippingCost,
-        totalAmount: totalPrice + (deliveryMethod === 'pickup' ? 0 : shippingCost),
+        shippingCost: deliveryMethod === "pickup" ? 0 : shippingCost,
+        totalAmount:
+          totalPrice + (deliveryMethod === "pickup" ? 0 : shippingCost),
       };
-  
-      // Simulate a delay before sending the order
-      await new Promise(resolve => setTimeout(resolve, 1000)); // 2-second delay
-  
+
+      await new Promise((resolve) => setTimeout(resolve, 1000));
       const response = await dispatch(createOrder(orderData)).unwrap();
       console.log("Order created:", response);
-      
-      // Simulate a delay after the order is processed
-      await new Promise(resolve => setTimeout(resolve, 3000)); // Another 2-second delay
-  
-      navigate('/receipt', { state: { shippingInfo, cart, totalPrice, deliveryMethod, shippingCost, paymentMethod } });
+
+      // Clear cart after order creation
+      dispatch(clearCart());
+
+      await new Promise((resolve) => setTimeout(resolve, 3000));
+      navigate("/receipt", {
+        state: {
+          shippingInfo,
+          cart,
+          totalPrice,
+          deliveryMethod,
+          shippingCost,
+          paymentMethod,
+        },
+      });
     } catch (error) {
       console.error("Error during checkout:", error);
-      setError('Failed to create order. Please try again.');
+      setError("Failed to create order. Please try again.");
     } finally {
       setLoading(false);
     }
   };
+
+  // State to control the visibility of the shipping options panel
+  const [showShippingOptions, setShowShippingOptions] = useState(false);
+
+  // Toggle the visibility when delivery method changes to 'ship'
+  useEffect(() => {
+    if (deliveryMethod === "ship") {
+      setShowShippingOptions(true);
+    } else {
+      setShowShippingOptions(false);
+    }
+  }, [deliveryMethod]);
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -87,71 +142,28 @@ function Checkout() {
             <div className="mb-4">
               <label
                 className={`block border-2 p-3 rounded-lg ${
-                  deliveryMethod === 'ship'
-                    ? 'border-blue-600'
-                    : 'border-gray-300'
+                  deliveryMethod === "ship"
+                    ? "border-blue-600"
+                    : "border-gray-300"
                 } hover:border-blue-600 cursor-pointer`}
               >
                 <input
                   type="radio"
                   name="deliveryMethod"
                   value="ship"
-                  checked={deliveryMethod === 'ship'}
-                  onChange={() => setDeliveryMethod('ship')}
+                  checked={deliveryMethod === "ship"}
+                  onChange={() => setDeliveryMethod("ship")}
                   className="hidden"
                 />
                 <span className="ml-2">Ship</span>
               </label>
-              <label
-                className={`block border-2 p-3 mt-4 rounded-lg ${
-                  deliveryMethod === 'pickup'
-                    ? 'border-blue-600'
-                    : 'border-gray-300'
-                } hover:border-blue-600 cursor-pointer`}
-              >
-                <input
-                  type="radio"
-                  name="deliveryMethod"
-                  value="pickup"
-                  checked={deliveryMethod === 'pickup'}
-                  onChange={() => setDeliveryMethod('pickup')}
-                  className="hidden"
-                />
-                <span className="ml-2">Pickup in store</span>
-              </label>
+            
             </div>
 
-            {/* Store Locations */}
-            {deliveryMethod === 'pickup' && (
-              <div className="mb-6">
-                <h3 className="text-lg font-semibold">Store locations</h3>
-                <p className="text-sm text-gray-600 mb-4">
-                  There is 1 store with stock close to your location
-                </p>
-                <div className="mb-2">
-                  <label className="block bg-blue-50 p-4 rounded border border-blue-200">
-                    <div className="flex justify-between items-center">
-                      <span>Online Stationery Supplies</span>
-                      <span className="text-sm text-blue-600 font-semibold">
-                        Free
-                      </span>
-                    </div>
-                    <div className="text-sm text-gray-600">
-                      59 KN 59 Street, Kigali
-                    </div>
-                    <div className="text-sm text-gray-500">
-                      Usually ready in 24 hours
-                    </div>
-                  </label>
-                </div>
-                <a href="#" className="text-blue-600 text-sm">
-                  Change my location
-                </a>
-              </div>
-            )}
+          
 
             {/* Shipping Information */}
-            {deliveryMethod === 'ship' && (
+            {deliveryMethod === "ship" && (
               <div className="mt-6">
                 <h3 className="text-lg font-semibold mb-4">
                   Shipping Information
@@ -165,7 +177,14 @@ function Checkout() {
                     disabled
                     className="p-3 border rounded-lg w-full bg-gray-100"
                   />
- <input type="text" name="fullname" placeholder="Enter Your Fullname" value={shippingInfo.fullname} onChange={handleShippingChange} className="p-3 border rounded-lg w-full" />
+                  <input
+                    type="text"
+                    name="fullname"
+                    placeholder="Enter Your Fullname"
+                    value={shippingInfo.fullname}
+                    onChange={handleShippingChange}
+                    className="p-3 border rounded-lg w-full"
+                  />
 
                   <input
                     type="text"
@@ -203,6 +222,37 @@ function Checkout() {
                     </span>
                   </label>
                 </div>
+
+                {/* Shipping Options Panel */}
+                {showShippingOptions && (
+                  <div className="mt-6 transition-all duration-500 ease-in-out">
+                    <h3 className="text-lg font-semibold mb-4">
+                      Select Your Region
+                    </h3>
+                    <div className="flex flex-col space-y-4">
+                      {Object.keys(shippingCosts).map((region) => (
+                        <label key={region} className="flex items-center">
+                          <input
+                            type="radio"
+                            name="region"
+                            value={region}
+                            checked={shippingInfo.region === region}
+                            onChange={(e) =>
+                              setShippingInfo((prev) => ({
+                                ...prev,
+                                region: e.target.value,
+                              }))
+                            }
+                            className="form-radio h-4 w-4 text-blue-950"
+                          />
+                          <span className="ml-2">
+                            {region} ({shippingCosts[region].toLocaleString()} RWF)
+                          </span>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
             )}
 
@@ -213,61 +263,44 @@ function Checkout() {
             </p>
             <div className="mb-6">
               <label
-                className={`block border-2 p-3 rounded-lg ${
-                  paymentMethod === 'cod'
-                    ? 'border-blue-600'
-                    : 'border-gray-300'
-                } hover:border-blue-600 cursor-pointer`}
-              >
-                <input
-                  type="radio"
-                  name="paymentMethod"
-                  value="cod"
-                  checked={paymentMethod === 'cod'}
-                  onChange={() => setPaymentMethod('cod')}
-                  className="hidden"
-                />
-                <span className="ml-2">Cash on Delivery (COD)</span>
-              </label>
-              <label
                 className={`block border-2 p-3 mt-4 rounded-lg ${
-                  paymentMethod === 'bank'
-                    ? 'border-blue-600'
-                    : 'border-gray-300'
+                  paymentMethod === "bank"
+                    ? "border-blue-600"
+                    : "border-gray-300"
                 } hover:border-blue-600 cursor-pointer`}
               >
                 <input
                   type="radio"
                   name="paymentMethod"
                   value="bank"
-                  checked={paymentMethod === 'bank'}
-                  onChange={() => setPaymentMethod('bank')}
+                  checked={paymentMethod === "bank"}
+                  onChange={() => setPaymentMethod("bank")}
                   className="hidden"
                 />
                 <span className="ml-2">Bank Deposit</span>
-                {paymentMethod === 'bank' && (
+                {paymentMethod === "bank" && (
                   <div className="bg-gray-100 p-4 mt-4 border border-gray-200 rounded">
                     <h4 className="font-semibold">Bank Details</h4>
-                    <p>Bank Name: Your Bank</p>
-                    <p>Account Number: 1234567890</p>
-                    <p>Account Name: Your Name</p>
-                    <p>SWIFT/BIC: ABCDEF12</p>
+                    <p>Bank Name: Bank popular</p>
+                    <p>Account Number: 415235534210119</p>
+                    <p>Account Name: NDAYISHIMIYE Jason</p>
+                   
                   </div>
                 )}
               </label>
               <label
                 className={`block border-2 p-3 mt-4 rounded-lg ${
-                  paymentMethod === 'momo'
-                    ? 'border-blue-600'
-                    : 'border-gray-300'
+                  paymentMethod === "momo"
+                    ? "border-blue-600"
+                    : "border-gray-300"
                 } hover:border-blue-600 cursor-pointer`}
               >
                 <input
                   type="radio"
                   name="paymentMethod"
                   value="momo"
-                  checked={paymentMethod === 'momo'}
-                  onChange={() => setPaymentMethod('momo')}
+                  checked={paymentMethod === "momo"}
+                  onChange={() => setPaymentMethod("momo")}
                   className="hidden"
                 />
                 <div className="flex items-center">
@@ -278,11 +311,11 @@ function Checkout() {
                   />
                   <span className="ml-2">MTN Mobile Money</span>
                 </div>
-                {paymentMethod === 'momo' && (
+                {paymentMethod === "momo" && (
                   <div className="bg-gray-100 p-4 mt-4 border border-gray-200 rounded">
                     <h4 className="font-semibold">Mobile Money Details</h4>
-                    <p>MTN Number: *182*8*1*1234567890#</p>
-                    <p>Account Name: Your Name</p>
+                    <p>MTN Number: *182*8*1*146577#</p>
+                    <p>Momo Name: Jason </p>
                   </div>
                 )}
               </label>
@@ -294,11 +327,9 @@ function Checkout() {
         </div>
 
         {/* Order Summary */}
-        
         <div className="w-full md:w-1/3">
-
           <div className="bg-white p-6 rounded-lg shadow-lg">
-          <div className="mb-4">
+            <div className="mb-4">
               <h3 className="text-lg font-semibold mb-2">Order Details</h3>
               <ul className="space-y-4 max-h-64 overflow-y-auto pr-2">
                 {cart.map((item, index) => (
@@ -339,19 +370,29 @@ function Checkout() {
                 </span>
               </div>
             </div>
-           
-            <button onClick={handleOrderClick} disabled={loading} className="bg-blue-950 text-white px-4 py-2 rounded-lg w-full"> {loading ? 'Processing...' : 'Place Order'} </button>
+
+            <button
+              onClick={handleOrderClick}
+              disabled={loading}
+              className="bg-blue-950 text-white px-4 py-2 rounded-lg w-full"
+            >
+              {loading ? "Processing..." : "Place Order"}
+            </button>
           </div>
         </div>
       </main>
       {loading && (
         <div className="fixed inset-0 bg-white z-50 flex items-center justify-center">
-          <div className='flex flex-col'>
-             <iframe src="https://lottie.host/embed/c350b974-c557-4b08-988f-94ef261d7410/js1HNBuLRg.json"> </iframe> 
-             <h1> Your order already sent succefully </h1>
+          <div className="flex flex-col items-center">
+            <iframe
+              src="https://lottie.host/embed/c350b974-c557-4b08-988f-94ef261d7410/js1HNBuLRg.json"
+              title="Loading Animation"
+              className="h-64 w-64"
+            ></iframe>
+            <h1 className="mt-4 text-xl font-semibold">
+              Your order has been sent successfully!
+            </h1>
           </div>
-        
-         
         </div>
       )}
     </div>
@@ -359,6 +400,3 @@ function Checkout() {
 }
 
 export default Checkout;
-
-
-
