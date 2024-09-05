@@ -80,7 +80,8 @@ const Dashboard = () => {
         </div>
       </header>
 
-      <h1 className="text-2xl font-bold mb-4">{user.name}</h1>
+      {/* Add a check for user existence before accessing user.name */}
+      <h1 className="text-2xl font-bold mb-4">{user?.name || 'User'}</h1>
       <p className="mb-6"> Welcome to the admin dashboard!</p>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
@@ -136,7 +137,7 @@ const Dashboard = () => {
                     <td className="border px-2 py-1 text-sm sm:text-base">
                       <div className="flex items-center space-x-2">
                        
-                        <span>{order.user.name}</span>
+                        <span>{order.user?.name}</span>
                       </div>
                       
                     </td>
