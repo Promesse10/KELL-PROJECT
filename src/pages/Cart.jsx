@@ -26,10 +26,6 @@ const Cart = () => {
     navigate('/checkout', { state: { cart } });
   };
 
-  const handleClose = () => {
-    navigate('/');
-  };
-
   const totalPrice = Array.isArray(cart)
     ? cart.reduce((total, item) => total + (item.price || 0) * (item.quantity || 0), 0)
     : 0;
@@ -79,15 +75,16 @@ const Cart = () => {
                 </p>
               </div>
             ))}
-            <div className='mt-6 sm:mt-8'>
-              <h2 className='text-lg sm:text-xl font-bold text-right'>
+            
+            {/* Center the total and checkout button on small and medium devices, keep them right-aligned on large devices */}
+            <div className='mt-6 sm:mt-8 text-center lg:text-right'>
+              <h2 className='text-lg sm:text-xl font-bold'>
                 {t('cart.total')}: {totalPrice} {t('cart.currency')}
               </h2>
             </div>
-            <div className='flex flex-row  sm:flex-row justify-between mt-6 sm:mt-8'>
-         
+            <div className='mt-4 sm:mt-6 text-center lg:text-right'>
               <button 
-                className='text-white bg-blue-950 px-4 py-2 sm:px-5 sm:py-2 rounded-md sm:ml-4'
+                className='text-white bg-blue-950 px-4 py-2 sm:px-5 sm:py-2 rounded-md'
                 onClick={handleCheckout}
               >
                 {t('cart.checkout')}

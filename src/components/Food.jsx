@@ -96,10 +96,7 @@ const Food = () => {
   const handleCheckout = (product) => {
     navigate('/checkout', { state: { product } });
   };
-  
 
-
-  
   return (
     <div className='bg-gray-100 mt-24 flex flex-col'>
       {showPopup && <LoginPopup onClose={handleClosePopup} />}
@@ -114,35 +111,39 @@ const Food = () => {
 
           {/* Cart Popup */}
           <div
-            className={`fixed right-0 top-0 w-[35%] h-full bg-gray-50 text-black shadow-lg z-50 transform transition-transform duration-300 ${
+            className={`fixed right-0 top-0 w-full sm:w-[60%] md:w-[40%] lg:w-[35%] h-full bg-gray-50 text-black shadow-lg z-50 transform transition-transform duration-300 ${
               animationState === 'slide-in' ? 'translate-x-0' : 'translate-x-full'
             }`}
           >
             <button onClick={handleCartPopupClose} className="absolute top-4 right-4 text-2xl">×</button>
             {selectedProduct && (
               <div className="p-6 flex flex-col items-center">
-                <img src={selectedProduct.images[0].url} alt={selectedProduct.name} className="w-40 h-40 object-cover" />
-                <p className="text-xl font-semibold mt-4">{selectedProduct.name}</p>
-                <p className="text-lg text-gray-500 mt-2">{selectedProduct.price} RWF</p>
+                <img
+                  src={selectedProduct.images[0].url}
+                  alt={selectedProduct.name}
+                  className="w-32 h-32 object-cover sm:w-40 sm:h-40"
+                />
+                <p className="text-lg sm:text-xl font-semibold mt-4">{selectedProduct.name}</p>
+                <p className="text-md sm:text-lg text-gray-500 mt-2">{selectedProduct.price} RWF</p>
 
                 <div className="flex items-center mt-4">
-                  <button onClick={handleDecreaseQuantity} className="text-lg px-4 py-2 bg-gray-200 rounded-l-lg">-</button>
-                  <span className="text-lg px-6 py-2 border-t border-b border-gray-200">
+                  <button onClick={handleDecreaseQuantity} className="text-md sm:text-lg px-3 sm:px-4 py-2 bg-gray-200 rounded-l-lg">-</button>
+                  <span className="text-md sm:text-lg px-4 sm:px-6 py-2 border-t border-b border-gray-200">
                     {cartItems.find(item => item._id === selectedProduct._id)?.quantity || 1}
                   </span>
-                  <button onClick={handleIncreaseQuantity} className="text-lg px-4 py-2 bg-gray-200 rounded-r-lg">+</button>
+                  <button onClick={handleIncreaseQuantity} className="text-md sm:text-lg px-3 sm:px-4 py-2 bg-gray-200 rounded-r-lg">+</button>
                 </div>
 
-                <div className="flex w-full mt-8">
+                <div className="flex w-full mt-6 sm:mt-8">
                   <button
                     onClick={() => handleAddToCart(selectedProduct)}
-                    className="flex-grow text-white bg-blue-950 px-4 py-2 rounded-lg mr-2"
+                    className="flex-grow text-white bg-blue-950 px-3 py-2 sm:px-4 sm:py-2 rounded-lg mr-2"
                   >
                     {t('food.addToCart')}
                   </button>
                   <button
                     onClick={handleCheckout}
-                    className="flex-grow text-white bg-blue-950 px-4 py-2 rounded-lg"
+                    className="flex-grow text-white bg-blue-950 px-3 py-2 sm:px-4 sm:py-2 rounded-lg"
                   >
                     {t('food.buyNow')}
                   </button>
@@ -173,11 +174,11 @@ const Food = () => {
                     {t('food.addToCart')}
                   </button>
                   <button
-  onClick={() => handleCheckout(item)} // Updated to correctly reference the function
-  className="text-blue-950 bg-white px-2 py-1 rounded-md mt-2 transition duration-300 transform hover:scale-110 hover:bg-blue-950 hover:text-white hover:shadow-lg hover:font-bold text-sm"
->
-  {t('food.buyNow')}
-</button>
+                    onClick={() => handleCheckout(item)} 
+                    className="text-blue-950 bg-white px-2 py-1 rounded-md mt-2 transition duration-300 transform hover:scale-110 hover:bg-blue-950 hover:text-white hover:shadow-lg hover:font-bold text-sm"
+                  >
+                    {t('food.buyNow')}
+                  </button>
                 </div>
               </div>
             ))}
