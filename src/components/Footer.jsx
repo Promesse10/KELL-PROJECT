@@ -26,9 +26,18 @@ const Footer = () => {
             <a href="https://www.instagram.com/karykelly1/" target="_blank" rel="noopener noreferrer">
               <img className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 lg:w-9 lg:h-9" src={Instagram} alt="Instagram" />
             </a>
-            <a href="https://www.whatsapp.com" target="_blank" rel="noopener noreferrer">
-              <img className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 lg:w-9 lg:h-9" src={WhatsApp} alt="WhatsApp" />
-            </a>
+            <a
+  href="https://wa.me/+250788788605" // Replace with your WhatsApp number in international format
+  target="_blank"
+  rel="noopener noreferrer"
+>
+  <img
+    className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 lg:w-9 lg:h-9"
+    src={WhatsApp}
+    alt="WhatsApp"
+  />
+</a>
+
             <a href="https://x.com/kary_kelly1" target="_blank" rel="noopener noreferrer">
               <img className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 lg:w-9 lg:h-9" src={TwitterX} alt="TwitterX" />
             </a>
