@@ -58,8 +58,8 @@ const Hero = () => {
       <div className="absolute inset-0 bg-blue-950 bg-opacity-50"></div>
       <div className="relative z-10 flex items-center justify-center h-full text-center text-white">
         <div>
-          <h1 className="text-xl md:text-5xl font-extrabold shadow-2xl">{t('hero.welcome')}</h1>
-          <p className="mt-4 text-xs font-thin md:text-lg">
+          <h1 className="text-xl md:text-5xl  sm:text-3xl font-extrabold shadow-2xl">{t('hero.welcome')}</h1>
+          <p className="mt-4 text-xs font-normal md:text-lg sm:text-lg">
             {t('hero.description')} <br />
             {t('hero.tagline')}
           </p>

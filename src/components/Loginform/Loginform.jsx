@@ -67,7 +67,7 @@ function LoginForm() {
             </div>
           )}
           <form onSubmit={handleSubmit} className="space-y-6">
-            <h1 className="text-4xl font-semibold text-center text-600">{t('login.title')}</h1>
+            <h1 className="text-2xl font-semibold text-center text-600">{t('login.title')}</h1>
             <div>
               <input
                 type="text"

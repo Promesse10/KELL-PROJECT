@@ -25,8 +25,8 @@ const Aboutus = () => {
 
   return (
     <div>
-      <section id="aboutus" className="px-4 sm:px-8 lg:px-24 mt-20 ">
-        <h1 className="text-center text-blue-950 font-bold underline text-2xl sm:text-2xl lg:text-3xl ">{t('aboutus.title')}</h1>
+      <section id="aboutus" className="px-4 sm:px-8 lg:px-24 mt-28 mb-5">
+        <h1 className="text-center text-blue-950 font-bold underline text-2xl sm:text-2xl  lg:text-3xl ">{t('aboutus.title')}</h1>
         <div className="container mt-7 flex flex-col lg:flex-row lg:gap-16">
           <div className="left flex-1">
             <h1 className="text-blue-950 font-semibold">{t('aboutus.getToKnowUs')}</h1>

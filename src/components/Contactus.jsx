@@ -64,18 +64,18 @@ const Contactus = () => {
 
   return (
     <div>
-      <section id="contactus" className="px-4 sm:px-8 lg:px-24 my-9">
+      <section id="contactus" className="px-4 sm:px-8 lg:px-24 my-9 mt-28">
         <h1 className="text-center text-blue-950 font-bold underline text-2xl sm:text-2xl lg:text-3xl my-16">{t('contactus.title')}</h1>
         <div className="flex flex-col lg:flex-row justify-center gap-8 lg:gap-16 bg-gray-100 py-9 mx-4 sm:mx-8 lg:mx-24 rounded-3xl shadow-lg">
           <div className="bg-blue-950 rounded-r-3xl p-7 rounded-l-md flex-1">
             <h1 className="text-white text-center font-bold mb-4 text-xl ">{t('contactus.getInTouch')}</h1>
             <div className="flex items-center mb-6">
               <img className="w-9 h-8 mr-4" src={Email1} alt={t('contactus.emailAlt')} />
-              <p className="text-white break-all ">Karkellycompany@gmail.com</p>
+              <p className="text-white break-all ">Karykellycompany@gmail.com</p>
             </div>
             <div className="flex items-center mb-6">
               <img className="w-9 h-8 mr-4" src={location} alt={t('contactus.locationAlt')} />
-              <p className="text-white break-words ">Kigali, Gasabo-Kabuga</p>
+              <p className="text-white break-words ">Kigali, Kicukiro-Kabuga</p>
             </div>
             <div className="map-container">
               <iframe width="90%" height="200" frameBorder="0" scrolling="no" marginHeight="0" marginWidth="0" src="https://maps.google.com/maps?width=100%25&amp;height=600&amp;hl=en&amp;q=1%C2%B059'09.5%22S%2030%C2%B013'25.2%22E+(My%20Business%20Name)&amp;t=&amp;z=14&amp;ie=UTF8&amp;iwloc=B&amp;output=embed"><a href="https://www.gps.ie/">gps systems</a></iframe>

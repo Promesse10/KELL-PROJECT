@@ -21,16 +21,16 @@ const Footer = () => {
         <div className="flex flex-col items-center gap-3">
           <div className="flex flex-row mx-2 gap-6">
             <a href="https://www.facebook.com/profile.php?id=61563584132736" target="_blank" rel="noopener noreferrer">
-              <img className="w-4 h-4 md:w-6 md:h-6 lg:w-8 lg:h-8" src={Facebook} alt="Facebook" />
+              <img className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 lg:w-9 lg:h-9" src={Facebook} alt="Facebook" />
             </a>
             <a href="https://www.instagram.com/karykelly1/" target="_blank" rel="noopener noreferrer">
-              <img className="w-4 h-4 md:w-6 md:h-6 lg:w-8 lg:h-8" src={Instagram} alt="Instagram" />
+              <img className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 lg:w-9 lg:h-9" src={Instagram} alt="Instagram" />
             </a>
             <a href="https://www.whatsapp.com" target="_blank" rel="noopener noreferrer">
-              <img className="w-4 h-4 md:w-6 md:h-6 lg:w-8 lg:h-8" src={WhatsApp} alt="WhatsApp" />
+              <img className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 lg:w-9 lg:h-9" src={WhatsApp} alt="WhatsApp" />
             </a>
             <a href="https://x.com/kary_kelly1" target="_blank" rel="noopener noreferrer">
-              <img className="w-4 h-4 md:w-6 md:h-6 lg:w-8 lg:h-8" src={TwitterX} alt="TwitterX" />
+              <img className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 lg:w-9 lg:h-9" src={TwitterX} alt="TwitterX" />
             </a>
           </div>
 

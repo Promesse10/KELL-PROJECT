@@ -14,7 +14,7 @@ const Service = () => {
   };
 
   return (
-    <div id="services" className='pt-15'>
+    <div id="services" className='mt-15'>
       <section id="service" className="my-9">
         <h1 className="text-center text-blue-950 font-bold underline text-2xl sm:text-2xl lg:text-3xl mb-8">
           {t('service.title')}
