@@ -28,23 +28,27 @@ function Receipt() {
 
   const handleDownloadPdf = () => {
     const receiptElement = receiptRef.current;
-
+  
     // Only generate the PDF if all images are loaded
     if (isImageLoaded) {
       html2canvas(receiptElement, { useCORS: true, scale: 2 }).then((canvas) => {
         const imgData = canvas.toDataURL('image/png');
-        const pdf = new jsPDF('p', 'mm', 'a4');
-        const pdfWidth = pdf.internal.pageSize.getWidth();
-        const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
-
-        pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+        const pdf = new jsPDF('p', 'mm', 'a4'); // Ensure A4 size (210mm x 297mm)
+  
+        const pdfWidth = pdf.internal.pageSize.getWidth(); // 210mm for A4
+        const pdfHeight = (canvas.height * pdfWidth) / canvas.width; // Maintain aspect ratio
+  
+        // Center the content on the page vertically if necessary
+        const margin = (297 - pdfHeight) / 2; // Calculate vertical margin for A4 height
+  
+        pdf.addImage(imgData, 'PNG', 0, margin > 0 ? margin : 0, pdfWidth, pdfHeight);
         pdf.save('receipt.pdf');
       });
     } else {
       alert(t('receipt.waitForImages'));
     }
   };
-
+  
   return (
     <div>
       <div ref={receiptRef} className="max-w-2xl mx-auto border border-gray-300 shadow-lg p-4 mt-32 mb-5">
