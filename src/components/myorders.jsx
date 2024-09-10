@@ -13,11 +13,13 @@ const MyOrder = () => {
   const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
-    if (['delivered', 'processing', 'cancelled', 'shipped'].includes(activeTab)) {
+    
+    if (['delivered', 'processing', 'canceled', 'shipped'].includes(activeTab)) {
       dispatch(getOrders());
     }
   }, [activeTab, dispatch]);
 
+  
   const handleSearch = () => {
     const filteredOrders = orders.filter(order => {
       const nameMatch = order.orderItems.some(item => item.name?.toLowerCase().includes(searchQuery.toLowerCase()));
@@ -27,6 +29,7 @@ const MyOrder = () => {
     return filteredOrders.filter(order => order.orderStatus === activeTab);
   };
 
+  // Render the content based on filtered orders
   const renderContent = () => {
     const filteredOrders = handleSearch();
 
@@ -81,8 +84,11 @@ const MyOrder = () => {
     <div className="p-4 sm:p-6 lg:p-8 bg-gray-50 min-h-screen mt-24">
       <div className="max-w-full sm:max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto bg-white shadow-md rounded-lg p-4 sm:p-6 lg:p-8">
         <h1 className="text-2xl sm:text-3xl font-bold text-blue-900 mb-4">{t('myOrders.title')}</h1>
-        <p className="text-gray-700 mb-6">
+        <p className="text-gray-900 mb-6">
           {t('myOrders.description')}
+        </p>
+        <p className="text-gray-500 mb-6">
+          {t('myOrders.worning')}
         </p>
         <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 mb-6">
           <button
@@ -92,8 +98,8 @@ const MyOrder = () => {
             {t('myOrders.processing')}
           </button>
           <button
-            onClick={() => setActiveTab('cancelled')}
-            className={`pb-1 ${activeTab === 'cancelled' ? 'text-blue-800 border-b-4 border-blue-800' : 'text-gray-400'}`}
+            onClick={() => setActiveTab('canceled')}
+            className={`pb-1 ${activeTab === 'canceled' ? 'text-blue-800 border-b-4 border-blue-800' : 'text-gray-400'}`}
           >
             {t('myOrders.cancelled')}
           </button>
