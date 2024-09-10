@@ -1,6 +1,5 @@
-
 {
-    "navbar": {
+  "navbar": {
     "home": "Home",
     "services": "Services",
     "products": "Products",
@@ -18,10 +17,10 @@
     "cart": "Cart",
     "cartEmpty": "Your cart is empty",
     "total": "Total",
-    "checkout":"Checkout",
-    "confirm" : "confirm",
-    "cancel" :"cancel",
-    "logoutConfirm":"are you sure want to  logout"
+    "checkout": "Checkout",
+    "confirm": "confirm",
+    "cancel": "cancel",
+    "logoutConfirm": "are you sure want to  logout"
   },
   "hero": {
     "welcome": "Welcome to KarKelly ltd",
@@ -111,7 +110,7 @@
     "onlineServiceItem4": "Other online service",
     "onlineServiceContent": "Here is more detailed information about the Online Service. We provide Irembo, Land Declaration, RRA Declaration, and other online services to cater to your needs."
   },
- 
+
   "createAccount": {
     "title": "Create Account",
     "imageAlt": "Login Illustration",
@@ -128,7 +127,7 @@
     "loginNow": "Login now",
     "visibleAlt": "Visible",
     "unvisibleAlt": "Not Visible",
-    "uploadProfilePicture":"Upload profile picture"
+    "uploadProfilePicture": "Upload profile picture"
   },
   "terms": {
     "title": "Terms of Service",
@@ -181,7 +180,7 @@
     "back": "Back",
     "empty": "Your cart is empty",
     "proceedingToCheckout": "Proceeding to checkout!",
-    "title":"Cart"
+    "title": "Cart"
   },
   "dashboard": {
     "search": "Search...",
@@ -222,7 +221,7 @@
     "resetSuccess": "Password reset successful, please login.",
     "resetError": "Error resetting password: {{error}}"
   },
- "food": {
+  "food": {
     "services": "Food Services",
     "topImageAlt": "Top Image",
     "addToCart": "Add to Cart",
@@ -235,7 +234,6 @@
       "sack_of_soy_bean": "Sack of Soybeans",
       "sack_of_sorghum": "Sack of Sorghum"
     }
-  
   },
   "products": "Products",
   "search_placeholder": "Search here...",
@@ -303,7 +301,7 @@
     "delivered": "Delivered",
     "shipped": "Shipped",
     "searchPlaceholder": "ex. Item No, Item Name",
-    "searchButton": "Search"
+    "searchButton": "Search",
+    "worning": "Thank you for placing an order, KARKELLY COMPANY, hurry up to pay your order within two days, because after 2 days we cancel your order."
   }
 }
-  
