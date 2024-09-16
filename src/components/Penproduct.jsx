@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import { addToCart } from '../slices/cartSlice';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import ClipLoader from "react-spinners/ClipLoader"; // spinner component
 
 const productsPerPage = 9;
 
@@ -19,9 +20,10 @@ function Home() {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [animationState, setAnimationState] = useState('');
   const [selectedQuantity, setSelectedQuantity] = useState(1);
+  const [imageLoading, setImageLoading] = useState({}); // image loading state
 
   const dispatch = useDispatch();
-  const products = useSelector((state) => state.products.products || []);
+  const { products, isLoading } = useSelector((state) => state.products);
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
   const { t } = useTranslation();
   const cartItems = useSelector((state) => state.cart.items);
@@ -108,6 +110,22 @@ function Home() {
     }
   };
 
+  // Handles when an image starts loading
+  const handleImageLoadStart = (productId) => {
+    setImageLoading((prevState) => ({
+      ...prevState,
+      [productId]: true,
+    }));
+  };
+
+  // Handles when an image finishes loading
+  const handleImageLoadEnd = (productId) => {
+    setImageLoading((prevState) => ({
+      ...prevState,
+      [productId]: false,
+    }));
+  };
+
   return (
     <section className="min-h-screen flex flex-col bg-gray-200">
       <ToastContainer />
@@ -123,12 +141,16 @@ function Home() {
         <div className="p-4 border-b">
           {selectedProduct ? (
             <div className="flex items-center flex-col">
+              {imageLoading[selectedProduct._id] && (
+                <ClipLoader size={50} color={"#0000FF"} loading={true} />
+              )}
               <img
                 src={selectedProduct.images[0].url}
                 alt={selectedProduct.name}
                 className="w-64 h-96 object-cover mr-4"
+                onLoadStart={() => handleImageLoadStart(selectedProduct._id)}
+                onLoad={() => handleImageLoadEnd(selectedProduct._id)}
               />
-
               <div className="flex flex-col items-center">
                 <p className="text-gray-600 text-sm">{selectedProduct.company}</p>
                 <p className="font-semibold text-lg mb-1">{selectedProduct.name}</p>
@@ -156,28 +178,26 @@ function Home() {
           <hr className="w-20 h-1 mx-auto my-4 bg-blue-950 border-0 rounded dark:bg-blue-950" />
         </div>
 
-        <div className="flex flex-col items-center w-full mb-6">
-          <form className="w-full max-w-md relative mb-4">
-            <input
-              type="search"
-              placeholder={t('search_placeholder')}
-              className="w-full p-2 rounded-full bg-gray-100"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-            <img src={search} className="absolute right-2 top-1/2 transform -translate-y-1/2 p-2 bg-blue-950 rounded-full w-8 md:w-10" alt={t('search_icon_alt')} />
-          </form>
-
+        {isLoading ? (
+          <div className="flex justify-center items-center min-h-[50vh]">
+            <ClipLoader size={50} color={"#0000FF"} loading={true} />
+          </div>
+        ) : (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {displayedProducts.map(product => (
               <div
                 key={product._id}
                 className="bg-white p-4 flex flex-col items-center relative group"
               >
+                {imageLoading[product._id] && (
+                  <ClipLoader size={50} color={"#0000FF"} loading={true} />
+                )}
                 <img
                   src={product.images[0].url}
                   className="w-24 h-24 object-cover"
                   alt={translateProductName(product)}
+                  onLoadStart={() => handleImageLoadStart(product._id)}
+                  onLoad={() => handleImageLoadEnd(product._id)}
                 />
                 <p className="mt-2 text-lg font-semibold">
                   {translateProductName(product)}
@@ -196,14 +216,14 @@ function Home() {
               </div>
             ))}
           </div>
-        </div>
+        )}
 
         <div className="flex justify-center mt-4">
-          {Array.from({ length: totalPages }, (_, index) => (
+          {Array.from({ length: totalPages }).map((_, index) => (
             <button
-              key={index}
-              className={`mx-1 px-3 py-1 rounded ${currentPage === index + 1 ? 'bg-blue-950 text-white' : 'bg-gray-300 text-black'}`}
+              key={index + 1}
               onClick={() => handlePageChange(index + 1)}
+              className={`mx-1 px-4 py-2 rounded-lg ${currentPage === index + 1 ? 'bg-blue-950 text-white' : 'bg-gray-200 text-black'}`}
             >
               {index + 1}
             </button>

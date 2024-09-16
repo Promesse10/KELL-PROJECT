@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
@@ -10,16 +10,34 @@ const Cart = () => {
   const dispatch = useDispatch();
   const cart = useSelector((state) => state.cart.items);
 
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedItemId, setSelectedItemId] = useState(null);
+
+  const openModal = (itemId) => {
+    setSelectedItemId(itemId);
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setSelectedItemId(null);
+    setIsModalOpen(false);
+  };
+
   const handleIncrease = (itemId) => {
     dispatch(increaseQuantity(itemId));
   };
 
-  const handleDecrease = (itemId) => {
-    dispatch(decreaseQuantity(itemId));
+  const handleDecrease = (itemId, quantity) => {
+    if (quantity === 1) {
+      openModal(itemId);
+    } else {
+      dispatch(decreaseQuantity(itemId));
+    }
   };
 
-  const handleDelete = (itemId) => {
-    dispatch(removeFromCart(itemId));
+  const handleDelete = () => {
+    dispatch(removeFromCart(selectedItemId));
+    closeModal();
   };
 
   const handleCheckout = () => {
@@ -47,7 +65,7 @@ const Cart = () => {
                     <p className='text-gray-600'>{t('cart.currency')} {item.price}</p>
                     <button 
                       className='text-blue-950 mt-2 underline '
-                      onClick={() => handleDelete(item._id)}
+                      onClick={() => openModal(item._id)}
                     >
                       {t('Remove product')}
                     </button>
@@ -55,10 +73,9 @@ const Cart = () => {
                 </div>
                
                 <div className='flex items-center mt-4 sm:mt-0 '>
-                 
                   <button 
                     className='px-2 text-neutral-50 bg-blue-950' 
-                    onClick={() => handleDecrease(item._id)}
+                    onClick={() => handleDecrease(item._id, item.quantity)}
                   >
                     &#8211;
                   </button>
@@ -76,7 +93,6 @@ const Cart = () => {
               </div>
             ))}
             
-            {/* Center the total and checkout button on small and medium devices, keep them right-aligned on large devices */}
             <div className='mt-6 sm:mt-8 text-center lg:text-right'>
               <h2 className='text-lg sm:text-xl font-bold'>
                 {t('cart.total')}: {totalPrice} {t('cart.currency')}
@@ -95,8 +111,32 @@ const Cart = () => {
           <p className='text-center text-lg sm:text-xl'>{t('cart.empty')}</p>
         )}
       </main>
+
+      {/* Modal for confirming removal */}
+      {isModalOpen && (
+        <div className='fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50'>
+          <div className='bg-white rounded-lg p-6 shadow-lg'>
+            <h2 className='text-lg font-semibold mb-4'>{t('Sure you want to remove Product ?')}</h2>
+          
+            <div className='flex justify-center'>
+              <button 
+                className='bg-gray-500 text-white px-4 py-2 rounded-md mr-4'
+                onClick={closeModal}
+              >
+                {t('Cancel')}
+              </button>
+              <button 
+                className='bg-blue-950 text-white px-4 py-2 rounded-md'
+                onClick={handleDelete}
+              >
+                {t('Remove')}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
-}
+};
 
 export default Cart;

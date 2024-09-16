@@ -26,7 +26,7 @@ const Contactus = () => {
     }).then((res) => res.json());
 
     if (res.success) {
-     alert(res.message);
+      alert(res.message);
     }
   };
 
@@ -78,9 +78,19 @@ const Contactus = () => {
               <p className="text-white break-words ">Kigali, Kicukiro-Kabuga</p>
             </div>
             <div className="map-container">
-              <iframe width="90%" height="200" frameBorder="0" scrolling="no" marginHeight="0" marginWidth="0" src="https://maps.google.com/maps?width=100%25&amp;height=600&amp;hl=en&amp;q=1%C2%B059'09.5%22S%2030%C2%B013'25.2%22E+(My%20Business%20Name)&amp;t=&amp;z=14&amp;ie=UTF8&amp;iwloc=B&amp;output=embed"><a href="https://www.gps.ie/">gps systems</a></iframe>
+              <iframe
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d220.00910963383117!2d30.223558070185927!3d-1.9859983357037614!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x19db59007433291f%3A0x88ad69ba4cb15854!2sKarkelly%20ltd!5e1!3m2!1sen!2sus!4v1726288453388!5m2!1sen!2sus"
+                width="90%"
+                height="200"
+                style={{ border: 0 }}
+                allowFullScreen=""
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+              ></iframe>
+
             </div>
             <br />
+
             <div className="flex items-center mb-6">
               <img className="w-9 h-8 mr-4" src={Phone1} alt={t('contactus.phoneAlt')} />
               <p className="text-white break-words ">0788788605</p>
