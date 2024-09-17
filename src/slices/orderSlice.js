@@ -10,7 +10,7 @@ import {
   fetchAllOrders,
   changeOrderStatus,
   createOrder as apiCreateOrder,
-} from "../sevices/api";
+} from "../services/api";
 
 // Define the async thunks
 export const getOrders = createAsyncThunk("orders/getOrders", fetchOrders);

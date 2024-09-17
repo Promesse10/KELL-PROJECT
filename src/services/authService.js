@@ -3,7 +3,9 @@ import Cookies from 'js-cookie';
 
 const register = async (userData) => {
   try {
-    const response = await api.post('/users/register', userData);
+    const response = await api.post('/users/register', userData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
     return response.data;
   } catch (error) {
     throw new Error(error.response?.data?.message || 'Registration failed');
@@ -22,9 +24,14 @@ const login = async (email, password) => {
   }
 };
 
-const logout = () => {
-  Cookies.remove('token');
-  Cookies.remove('user');
+const logout = async () => {
+  try {
+    await api.get('/users/logout');
+    Cookies.remove('token');
+    Cookies.remove('user');
+  } catch (error) {
+    throw new Error('Failed to log out');
+  }
 };
 
 const getProfile = async () => {
@@ -74,6 +81,15 @@ const resetPassword = async (resetData) => {
   }
 };
 
+const verifyEmail = async (token) => {
+  try {
+    const response = await api.get(`/users/verify-email?token=${token}`);
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response?.data?.message || 'Email verification failed');
+  }
+};
+
 export default {
   register,
   login,
@@ -83,4 +99,5 @@ export default {
   updatePassword,
   updateProfilePic,
   resetPassword,
+  verifyEmail,
 };
