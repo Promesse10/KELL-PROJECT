@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect } from 'react';
+import React, { createContext, useContext, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchProfile, login, logout, register } from '../slices/authSlice';
 
@@ -7,20 +7,33 @@ const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const dispatch = useDispatch();
   const { user, isLoggedIn, loading, error } = useSelector((state) => state.auth);
+  const [fetchProfileAfterLogin, setFetchProfileAfterLogin] = useState(false);
 
   useEffect(() => {
-    if (isLoggedIn) {
+    if (isLoggedIn && fetchProfileAfterLogin) {
       dispatch(fetchProfile())
         .unwrap()
         .catch((error) => {
           console.error('Failed to fetch profile:', error.message || error);
         });
+      setFetchProfileAfterLogin(false); // Reset flag after fetching profile
     }
-  }, [isLoggedIn, dispatch]);
+  }, [isLoggedIn, dispatch, fetchProfileAfterLogin]);
 
-  const registerUser = (userData) => dispatch(register(userData));
-  const loginUser = (credentials) => dispatch(login(credentials));
-  const logoutUser = () => dispatch(logout());
+  const registerUser = async (userData) => {
+    await dispatch(register(userData));
+    // Do not fetch profile after registration
+  };
+
+  const loginUser = (credentials) => {
+    setFetchProfileAfterLogin(true); // Set flag to fetch profile after login
+    return dispatch(login(credentials));
+  };
+
+  const logoutUser = () => {
+    setFetchProfileAfterLogin(false); // Reset flag on logout
+    return dispatch(logout());
+  };
 
   return (
     <AuthContext.Provider 

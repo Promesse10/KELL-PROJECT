@@ -37,6 +37,8 @@ import { AuthProvider } from "./context/authContext";
 import LoginAdmin from "./layout/Login";
 import MyOrders from "./components/myorders";
 import Receipt from "./components/Receipt";
+import VerifyEmail from "./components/VerifyEmail";
+import CheckEmail from "./components/CheckEmail";
 
 function App() {
   const location = useLocation();
@@ -77,6 +79,8 @@ function App() {
         <Route path="/myorders" element={<MyOrders />} />
         <Route path="/checkout" element={<Checkout />} />
         <Route path="/receipt" element={<Receipt />} />
+        <Route path="/verify-email/:token" element={<VerifyEmail />} />
+        <Route path="/check-email" element={<CheckEmail />} />
         <Route path="*" element={<NotFound />} />
         <Route element={<PrivateRoute isAdminRoute />}>
           <Route path="/admin" element={<AdminLayout />}>
