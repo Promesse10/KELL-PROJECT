@@ -7,18 +7,17 @@ import {
   updateProduct,
 } from "../services/api";
 
-// Thunks for async actions
 export const getProducts = createAsyncThunk(
   "products/getProducts",
-  async (category) => {
-    return await fetchProducts(category);
+  async ({ category, searchTerm }) => {
+    return await fetchProducts(category, searchTerm);
   }
 );
 
 export const getAllProducts = createAsyncThunk(
   "products/getAllProducts",
-  async () => {
-    return await fetchAllProducts();
+  async (searchTerm) => {
+    return await fetchAllProducts(searchTerm);
   }
 );
 
