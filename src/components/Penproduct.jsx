@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useDispatch, useSelector } from 'react-redux';
 import { getProducts } from '../slices/productSlice';
 import search from "../assets/Search.png";
@@ -9,6 +9,7 @@ import { addToCart } from '../slices/cartSlice';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Spinner } from '@material-tailwind/react';
+import debounce from 'lodash/debounce';
 
 const productsPerPage = 9;
 
@@ -28,9 +29,21 @@ function Home() {
   const { t } = useTranslation();
   const cartItems = useSelector((state) => state.cart.items);
 
+  const debouncedSearch = useCallback(
+    debounce((term) => {
+      dispatch(getProducts({ category: "schoolmatetial", searchTerm: term }));
+    }, 1000),
+    [dispatch]
+  );
+
   useEffect(() => {
-    dispatch(getProducts('schoolmatetial'));
-  }, [dispatch]);
+    if (searchTerm) {
+      debouncedSearch(searchTerm);
+    } else {
+      dispatch(getProducts({ category: "schoolmatetial", searchTerm: "" }));
+    }
+    return debouncedSearch.cancel;
+  }, [searchTerm, debouncedSearch, dispatch]);
 
   const translateProductName = (product) => {
     return t(`product_names.${product._id}`, { defaultValue: product.name });
@@ -229,9 +242,9 @@ function Home() {
         <div className="flex justify-center mt-4">
           {Array.from({ length: totalPages }).map((_, index) => (
             <button
-              key={index + 1}
+              key={index}
               onClick={() => handlePageChange(index + 1)}
-              className={`mx-1 px-4 py-2 rounded-lg ${currentPage === index + 1 ? 'bg-blue-950 text-white' : 'bg-gray-200 text-black'}`}
+              className={`px-4 py-2 mx-1 border rounded ${currentPage === index + 1 ? 'bg-blue-950 text-white' : 'bg-gray-300 text-black'}`}
             >
               {index + 1}
             </button>
