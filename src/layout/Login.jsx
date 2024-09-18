@@ -6,10 +6,29 @@ import visible from '../assets/visible.png';
 import unvisible from '../assets/Unvisible.png';
 import { useAuth } from '../context/authContext';
 
+const Spinner = () => (
+  <svg
+    className="w-5 h-5 animate-spin text-white"
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth="2"
+      d="M4 12a8 8 0 118 8V4a8 8 0 00-8 8z"
+    />
+  </svg>
+);
+
 const LoginAdmin = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [passwordVisible, setPasswordVisible] = useState(false);
+  const [loading, setLoading] = useState(false); // State for loading
+  const [notification, setNotification] = useState(''); // State for notifications
   const { loginUser } = useAuth();
   const navigate = useNavigate();
 
@@ -19,12 +38,23 @@ const LoginAdmin = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true); // Start loading
+    setNotification(''); // Clear previous notifications
     try {
       await loginUser({ email: username, password });
       navigate('/admin/dashboard'); // Redirect to admin dashboard on successful login
       toast.success('Login successful!');
-    } catch (error) {
-      toast.error(error.message || 'Login failed');
+    } catch (err) {
+      // Display the error message from the backend response if available
+      if (err.response && err.response.data && err.response.data.message) {
+        setNotification(err.response.data.message);
+        toast.error(err.response.data.message);
+      } else {
+        setNotification(err.toString());
+        toast.error(err.toString());
+      }
+    } finally {
+      setLoading(false); // Stop loading
     }
   };
 
@@ -63,8 +93,12 @@ const LoginAdmin = () => {
             )}
           </button>
         </div>
-        <button type="submit" className="w-full p-2 bg-blue-950 text-white rounded">
-          Login
+        <button
+          type="submit"
+          className="w-full p-2 bg-blue-950 text-white rounded flex items-center justify-center"
+          disabled={loading} 
+        >
+          {loading ? <Spinner /> : 'Login'}
         </button>
       </form>
       <ToastContainer />

@@ -8,7 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import { addToCart } from '../slices/cartSlice';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import ClipLoader from "react-spinners/ClipLoader"; // spinner component
+import { Spinner } from '@material-tailwind/react';
 
 const productsPerPage = 9;
 
@@ -20,7 +20,7 @@ function Home() {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [animationState, setAnimationState] = useState('');
   const [selectedQuantity, setSelectedQuantity] = useState(1);
-  const [imageLoading, setImageLoading] = useState({}); // image loading state
+  const [imageLoading, setImageLoading] = useState({});
 
   const dispatch = useDispatch();
   const { products, isLoading } = useSelector((state) => state.products);
@@ -75,8 +75,8 @@ function Home() {
 
   const handleAddToCart = () => {
     if (!isLoggedIn) {
-      setShowPopup(true); // Show login popup
-      return; // Prevent adding to cart
+      setShowPopup(true);
+      return;
     }
 
     if (selectedProduct) {
@@ -94,11 +94,10 @@ function Home() {
 
       toast.success('Your product was added to the cart successfully');
 
-      // If on mobile, navigate to cart page immediately
       if (window.innerWidth < 768) {
         navigate('/cart');
       } else {
-        handleCartPopupClose(); // Close the cart popup on larger screens
+        handleCartPopupClose();
       }
     }
   };
@@ -110,7 +109,6 @@ function Home() {
     }
   };
 
-  // Handles when an image starts loading
   const handleImageLoadStart = (productId) => {
     setImageLoading((prevState) => ({
       ...prevState,
@@ -118,7 +116,6 @@ function Home() {
     }));
   };
 
-  // Handles when an image finishes loading
   const handleImageLoadEnd = (productId) => {
     setImageLoading((prevState) => ({
       ...prevState,
@@ -142,7 +139,7 @@ function Home() {
           {selectedProduct ? (
             <div className="flex items-center flex-col">
               {imageLoading[selectedProduct._id] && (
-                <ClipLoader size={50} color={"#0000FF"} loading={true} />
+                <Spinner color="blue" size="lg" />
               )}
               <img
                 src={selectedProduct.images[0].url}
@@ -178,9 +175,20 @@ function Home() {
           <hr className="w-20 h-1 mx-auto my-4 bg-blue-950 border-0 rounded dark:bg-blue-950" />
         </div>
 
+        <div className="flex items-center mb-8">
+          <input
+            type="text"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            placeholder={t('searchPlaceholder')}
+            className="p-2 border rounded-lg w-full bg-slate-700 text-white"
+          />
+          <img src={search} alt="Search" className="ml-2 w-6 h-6 cursor-pointer " />
+        </div>
+
         {isLoading ? (
           <div className="flex justify-center items-center min-h-[50vh]">
-            <ClipLoader size={50} color={"#0000FF"} loading={true} />
+            <Spinner color="blue" size="lg" />
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -190,7 +198,7 @@ function Home() {
                 className="bg-white p-4 flex flex-col items-center relative group"
               >
                 {imageLoading[product._id] && (
-                  <ClipLoader size={50} color={"#0000FF"} loading={true} />
+                  <Spinner color="blue" size="lg" />
                 )}
                 <img
                   src={product.images[0].url}

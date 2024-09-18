@@ -12,10 +12,12 @@ function LoginForm() {
   const [formData, setFormData] = useState({ email: '', password: '' });
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [formErrors, setFormErrors] = useState({});
+  const [notification, setNotification] = useState(''); // Add notification state
+  const [loading, setLoading] = useState(false); // Add loading state
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const { loading, error } = useSelector((state) => state.auth);
+  const auth = useSelector((state) => state.auth);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -40,16 +42,22 @@ function LoginForm() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setFormErrors({}); // Clear previous errors
+    setFormErrors({});
+    setNotification(''); // Clear previous notifications
+    setLoading(true); // Set loading to true while processing request
+
     try {
       await dispatch(login(formData)).unwrap();
-      navigate('/'); // Redirect to home page after successful login
+      navigate('/'); 
     } catch (err) {
-      if (err.response && err.response.data) {
-        setFormErrors(err.response.data.errors || { general: t('login.failed') });
+      // Display the error message from the backend response if available
+      if (err.response && err.response.data && err.response.data.message) {
+        setNotification(err.response.data.message);
       } else {
-        setFormErrors({ general: t('login.failed') });
+        setNotification(err.toString());
       }
+    } finally {
+      setLoading(false); // Set loading to false after request completes
     }
   };
 
@@ -61,9 +69,9 @@ function LoginForm() {
     <div className="flex flex-col justify-center items-center min-h-screen bg-gray-100">
       <div className="flex flex-col md:flex-row w-full h-full max-w-4xl p-10 bg-white rounded-lg shadow-md flex-grow mt-44 mb-44">
         <div className="w-full md:w-1/2 space-y-6 flex flex-col justify-center">
-          {formErrors.general && (
+          {notification && (
             <div className="p-4 mb-4 text-sm text-red-800 bg-red-100 rounded-lg" role="alert">
-              {formErrors.general}
+              {notification}
             </div>
           )}
           <form onSubmit={handleSubmit} className="space-y-6">
@@ -109,7 +117,6 @@ function LoginForm() {
                 {loading ? <Spinner /> : t('login.button')}
               </button>
             </div>
-            {error && <p className="text-red-500 text-center">{t(`login.errors.${error.message}`)}</p>}
           </form>
           <p className="text-center text-gray-400">
             <a href="/ForgotPassword" className="text-600 hover:underline">{t('login.forgotPassword')}</a>

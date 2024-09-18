@@ -1,11 +1,28 @@
 import React, { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { register } from '../../slices/authSlice';
 import image from '../images/image.jpg';
 import visible from '../images/visible.png';
 import unvisible from '../images/Unvisible.png';
+
+const Spinner = () => (
+  <svg
+    className="w-5 h-5 animate-spin text-white"
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth="2"
+      d="M4 12a8 8 0 118 8V4a8 8 0 00-8 8z"
+    />
+  </svg>
+);
 
 function CreateAccount() {
   const [formData, setFormData] = useState({
@@ -19,9 +36,8 @@ function CreateAccount() {
   });
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [notification, setNotification] = useState(null);
-  const [formErrors, setFormErrors] = useState({});
+  const [loading, setLoading] = useState(false); // Add loading state
   const dispatch = useDispatch();
-  const { error } = useSelector((state) => state.auth);
   const navigate = useNavigate();
   const { t } = useTranslation();
 
@@ -35,10 +51,12 @@ function CreateAccount() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setFormErrors({});
+    setNotification(null);
+    setLoading(true); // Set loading to true when the request starts
 
     if (!formData.agreeToTerms) {
-      alert(t('createAccount.agreeToTermsAlert'));
+      setNotification(t('createAccount.agreeToTermsAlert'));
+      setLoading(false); // Set loading to false if validation fails
       return;
     }
 
@@ -55,14 +73,17 @@ function CreateAccount() {
 
     try {
       const resultAction = await dispatch(register(data)).unwrap();
-      setNotification(resultAction.message);
-      navigate('/login');
+      setNotification(resultAction.message); 
+      navigate('/check-email');
     } catch (err) {
-      if (err.response && err.response.data) {
-        setFormErrors(err.response.data.errors || { general: 'registrationFailed' });
+      // Display the error message from the backend response if available
+      if (err.response && err.response.data && err.response.data.message) {
+        setNotification(err.response.data.message);
       } else {
-        setFormErrors({ general: 'registrationFailed' });
+        setNotification(err.toString());
       }
+    } finally {
+      setLoading(false); // Set loading to false after request completes
     }
   };
 
@@ -79,17 +100,12 @@ function CreateAccount() {
           </div>
           <div className="w-full md:w-1/2 space-y-6 flex flex-col justify-center">
             {notification && (
-              <div className="p-4 mb-4 text-sm text-green-800 bg-green-100 rounded-lg" role="alert">
+              <div className={`p-4 mb-4 text-sm ${notification.includes('Failed') ? 'text-red-800 bg-red-100' : 'text-green-800 bg-green-100'} rounded-lg`} role="alert">
                 {notification}
               </div>
             )}
-            {formErrors.general && (
-              <div className="p-4 mb-4 text-sm text-red-800 bg-red-100 rounded-lg" role="alert">
-                {formErrors.general}
-              </div>
-            )}
             <form onSubmit={handleSubmit} className="space-y-6">
-              <h1 className="text-2xl  font-semibold text-center text-custom-blue">{t('createAccount.title')}</h1>
+              <h1 className="text-2xl font-semibold text-center text-custom-blue">{t('createAccount.title')}</h1>
               <div>
                 <input
                   type="text"
@@ -99,7 +115,6 @@ function CreateAccount() {
                   required
                   className="w-full p-3 border border-gray-300 rounded-lg bg-gray-200 focus:outline-none focus:ring focus:ring-blue-200"
                 />
-                {formErrors.name && <p className="text-red-500 text-sm">{formErrors.name}</p>}
               </div>
               <div>
                 <input
@@ -110,7 +125,6 @@ function CreateAccount() {
                   required
                   className="w-full p-3 border border-gray-300 rounded-lg bg-gray-200 focus:outline-none focus:ring focus:ring-blue-200"
                 />
-                {formErrors.email && <p className="text-red-500 text-sm">{formErrors.email}</p>}
               </div>
               <div className="relative">
                 <input
@@ -142,7 +156,6 @@ function CreateAccount() {
                   required
                   className="w-full p-3 border border-gray-300 rounded-lg bg-gray-200 focus:outline-none focus:ring focus:ring-blue-200"
                 />
-                {formErrors.address && <p className="text-red-500 text-sm">{formErrors.address}</p>}
               </div>
               <div>
                 <input
@@ -153,7 +166,6 @@ function CreateAccount() {
                   required
                   className="w-full p-3 border border-gray-300 rounded-lg bg-gray-200 focus:outline-none focus:ring focus:ring-blue-200"
                 />
-                {formErrors.phone && <p className="text-red-500 text-sm">{formErrors.phone}</p>}
               </div>
               <div>
                 <label
@@ -170,7 +182,6 @@ function CreateAccount() {
                   onChange={handleChange}
                   className="w-full p-3 border border-gray-300 rounded-lg bg-gray-200 focus:outline-none focus:ring focus:ring-blue-200"
                 />
-                {formErrors.profilePic && <p className="text-red-500 text-sm">{formErrors.profilePic}</p>}
               </div>
               <div className="flex items-center space-x-2">
                 <input
@@ -190,9 +201,9 @@ function CreateAccount() {
               <div className="flex justify-center">
                 <button
                   type="submit"
-                  className="w-40 p-3 text-white bg-blue-950 rounded-lg focus:outline-none focus:ring focus:ring-blue-200"
+                  className="w-40 p-3 text-white bg-blue-950 rounded-lg focus:outline-none focus:ring focus:ring-blue-200 flex items-center justify-center"
                 >
-                  {t('createAccount.registerButton')}
+                  {loading ? <Spinner /> : t('createAccount.registerButton')}
                 </button>
               </div>
               <p className="text-center text-gray-400">

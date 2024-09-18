@@ -1,16 +1,16 @@
-import React, { useState, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
-import { toast, ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import { addProduct } from '../../slices/productSlice';
-import { fetchCategories } from '../../sevices/api';
+import React, { useState, useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { addProduct } from "../../slices/productSlice";
+import { fetchCategories } from "../../services/api";
 
 const CreateEditProduct = () => {
-  const [name, setName] = useState('');
-  const [description, setDescription] = useState('');
-  const [price, setPrice] = useState('');
-  const [stock, setStock] = useState('');
-  const [category, setCategory] = useState('');
+  const [name, setName] = useState("");
+  const [description, setDescription] = useState("");
+  const [price, setPrice] = useState("");
+  const [stock, setStock] = useState("");
+  const [category, setCategory] = useState("");
   const [categories, setCategories] = useState([]);
   const [file, setFile] = useState(null);
   const dispatch = useDispatch();
@@ -41,14 +41,14 @@ const CreateEditProduct = () => {
     }
 
     const formData = new FormData();
-    formData.append('name', name);
-    formData.append('description', description);
-    formData.append('price', price);
-    formData.append('stock', stock);
-    formData.append('category', category);
+    formData.append("name", name);
+    formData.append("description", description);
+    formData.append("price", price);
+    formData.append("stock", stock);
+    formData.append("category", category);
 
     if (file) {
-      formData.append('file', file);
+      formData.append("file", file);
     }
 
     try {
@@ -56,17 +56,20 @@ const CreateEditProduct = () => {
       const newProduct = response; // Assuming response contains the new product details
 
       // Store product data in local storage
-      localStorage.setItem('newProduct', JSON.stringify(newProduct));
+      localStorage.setItem("newProduct", JSON.stringify(newProduct));
 
       // Store notification in local storage
       const now = new Date().toISOString();
-      localStorage.setItem('productNotification', JSON.stringify({ createdAt: now }));
+      localStorage.setItem(
+        "productNotification",
+        JSON.stringify({ createdAt: now })
+      );
 
-      setName('');
-      setDescription('');
-      setPrice('');
-      setStock('');
-      setCategory('');
+      setName("");
+      setDescription("");
+      setPrice("");
+      setStock("");
+      setCategory("");
       setFile(null);
 
       toast.success("Product created successfully!");
@@ -123,7 +126,9 @@ const CreateEditProduct = () => {
             onChange={(e) => setCategory(e.target.value)}
             className="border p-2 w-full shadow-md rounded"
           >
-            <option value="" disabled>Select category</option>
+            <option value="" disabled>
+              Select category
+            </option>
             {categories.map((cat) => (
               <option key={cat._id} value={cat._id}>
                 {cat.category}
@@ -148,7 +153,12 @@ const CreateEditProduct = () => {
             />
           </div>
         )}
-        <button type="submit" className="bg-blue-500 text-white p-2 rounded hover:bg-blue-600">Create</button>
+        <button
+          type="submit"
+          className="bg-blue-500 text-white p-2 rounded hover:bg-blue-600"
+        >
+          Create
+        </button>
       </form>
       <ToastContainer />
     </div>
