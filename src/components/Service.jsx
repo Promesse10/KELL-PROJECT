@@ -20,12 +20,15 @@ const Service = () => {
           {t('service.title')}
         </h1>
 
-        <div className="flex flex-col lg:flex-row gap-8 lg:gap-32 justify-center items-center">
-          <div className="p-6 border-blue-950 border-2 rounded-2xl hover:bg-blue-50 hover:text-blue-950 transform transition-transform">
-            <img className="w-full h-40 object-cover transition duration-300 ease-in-out transform hover:scale-105" src={Itpic} alt={t('service.itAlt')} />
-            <h2 className="text-center font-semibold mt-5">{t('service.itTitle')}</h2>
-            <p className="text-center text-xs">{t('service.itDescription')}</p>
-            <div className="flex justify-center mt-5">
+        <div className="flex flex-col gap-8 lg:flex-row lg:gap-32 justify-center items-center mx-4 sm:mx-12">
+          {/* First Card */}
+          <div className="p-4 border-blue-950 border-2 rounded-2xl hover:bg-blue-50 hover:text-blue-950 transform transition-transform flex flex-col justify-between h-full w-full sm:w-52 md:w-60 lg:w-64 min-h-[20rem]">
+            <img className="w-full h-36 object-cover transition duration-300 ease-in-out transform hover:scale-105" src={Itpic} alt={t('service.itAlt')} />
+            <div className="flex flex-col justify-center mt-4">
+              <h2 className="text-center font-semibold">{t('service.itTitle')}</h2>
+              <p className="text-center text-xs truncate">{t('service.itDescription')}</p>
+            </div>
+            <div className="flex justify-center mt-4">
               <button 
                 className="bg-blue-950 text-white text-xs p-2 rounded-lg hover:bg-white hover:text-blue-950"
                 onClick={() => navigate('/infopage')}
@@ -35,11 +38,14 @@ const Service = () => {
             </div>
           </div>
 
-          <div className="p-6 border-blue-950 border-2 rounded-2xl hover:bg-blue-50 hover:text-blue-950 transform transition-transform">
-            <img className="w-52 h-40 object-cover rounded-3xl transition duration-300 ease-in-out transform hover:scale-105" src={foodS} alt={t('service.foodAlt')} />
-            <h2 className="text-center font-semibold mt-5">{t('service.foodTitle')}</h2>
-            <p className="text-center text-xs">{t('service.foodDescription')}</p>
-            <div className="flex justify-center mt-5">
+          {/* Second Card */}
+          <div className="p-4 border-blue-950 border-2 rounded-2xl hover:bg-blue-50 hover:text-blue-950 transform transition-transform flex flex-col justify-between h-full w-full sm:w-52 md:w-60 lg:w-64 min-h-[20rem]">
+            <img className="w-full h-36 object-cover transition duration-300 ease-in-out transform hover:scale-105" src={foodS} alt={t('service.foodAlt')} />
+            <div className="flex flex-col justify-center mt-4">
+              <h2 className="text-center font-semibold">{t('service.foodTitle')}</h2>
+              <p className="text-center text-xs truncate">{t('service.foodDescription')}</p>
+            </div>
+            <div className="flex justify-center mt-4">
               <button className="bg-blue-950 text-white text-xs p-2 rounded-lg hover:bg-white hover:text-blue-950 shadow-2xl transition-all"
                 onClick={() => navigate('/Food')}
               >
@@ -49,25 +55,6 @@ const Service = () => {
           </div>
         </div>
       </section>
-
-      {showPopup && (
-        <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
-          <div className="bg-white p-8 rounded-lg shadow-lg relative w-full max-w-md">
-            <h2 className="text-2xl font-semibold mb-4">{t('service.popupMessage')}</h2>
-            <button className="bg-blue-950 text-white text-xs p-2 rounded-lg hover:bg-white hover:text-blue-950 shadow-2xl transition-all"
-                onClick={() => navigate('/Loginform')}
-              >
-                {t('service.loginSignup')}
-              </button>
-            <button
-              onClick={handleClosePopup}
-              className="absolute top-2 right-2 text-gray-600 hover:text-gray-900 text-xl"
-            >
-              &times;
-            </button>
-          </div>
-        </div>
-      )}
     </div>
   );
 };

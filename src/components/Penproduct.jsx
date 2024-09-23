@@ -137,7 +137,7 @@ function Home() {
   };
 
   return (
-    <section className="min-h-screen flex flex-col bg-gray-200">
+    <section className="min-h-screen flex flex-col bg-gray-100">
       <ToastContainer />
       {showPopup && <LoginPopup onClose={handleClosePopup} />}
 
@@ -188,16 +188,20 @@ function Home() {
           <hr className="w-20 h-1 mx-auto my-4 bg-blue-950 border-0 rounded dark:bg-blue-950" />
         </div>
 
-        <div className="flex items-center mb-8">
-          <input
-            type="text"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            placeholder={t('searchPlaceholder')}
-            className="p-2 border rounded-lg w-full bg-slate-700 text-white"
-          />
-          <img src={search} alt="Search" className="ml-2 w-6 h-6 cursor-pointer " />
-        </div>
+  <div className="relative flex items-center mb-8 ">
+  <input
+    type="text"
+    value={searchTerm}
+    onChange={(e) => setSearchTerm(e.target.value)}
+    placeholder={t('search...')}
+    className="p-2 border-gray-950 rounded-2xl w-full bg-gray-300 text-blue-950 pl-10  shadow-gray-900 " // Added padding on the left for the icon space
+  />
+  <img
+    src={search}
+    alt="Search"
+    className="absolute left-3 w-6 h-6 cursor-pointer" // Positioning the icon inside the input field
+  />
+</div>
 
         {isLoading ? (
           <div className="flex justify-center items-center min-h-[50vh]">
