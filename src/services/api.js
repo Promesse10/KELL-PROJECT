@@ -1,8 +1,10 @@
-import api from '../../axiosConfig';
+import api from "../../axiosConfig";
 
-export const fetchProducts = async (category) => {
+export const fetchProducts = async (category, searchTerm = "") => {
   try {
-    const response = await api.get(`/products/get-all?category=${category}`);
+    const response = await api.get(
+      `/products/get-all?category=${category}&search=${searchTerm}`
+    );
     return response.data.products;
   } catch (error) {
     console.error("Error fetching products:", error);
@@ -12,7 +14,7 @@ export const fetchProducts = async (category) => {
 
 export const fetchAllProducts = async () => {
   try {
-    const response = await api.get('/products/get-all');
+    const response = await api.get("/products/get-all");
     return response.data.products;
   } catch (error) {
     console.error("Error fetching all products:", error);
@@ -22,7 +24,7 @@ export const fetchAllProducts = async () => {
 
 export const createProduct = async (product) => {
   try {
-    const response = await api.post('/products/create', product);
+    const response = await api.post("/products/create", product);
     return response.data;
   } catch (error) {
     console.error("Error creating product:", error);
@@ -51,7 +53,7 @@ export const updateProduct = async (product) => {
 
 export const fetchOrders = async () => {
   try {
-    const response = await api.get('/orders/my-orders');
+    const response = await api.get("/orders/my-orders");
     return response.data.orders;
   } catch (error) {
     console.error("Error fetching orders:", error);
@@ -61,7 +63,7 @@ export const fetchOrders = async () => {
 
 export const createOrder = async (orderData) => {
   try {
-    const response = await api.post('/orders/create', orderData);
+    const response = await api.post("/orders/create", orderData);
     return response.data;
   } catch (error) {
     console.error("Error creating order:", error);
@@ -71,7 +73,7 @@ export const createOrder = async (orderData) => {
 
 export const fetchPopularProducts = async () => {
   try {
-    const response = await api.get('/products/top');
+    const response = await api.get("/products/top");
     return response.data.products;
   } catch (error) {
     console.error("Error fetching popular products:", error);
@@ -81,7 +83,7 @@ export const fetchPopularProducts = async () => {
 
 export const fetchCategories = async () => {
   try {
-    const response = await api.get('/category/get-all');
+    const response = await api.get("/category/get-all");
     return response.data.categories;
   } catch (error) {
     console.error("Error fetching categories:", error);
@@ -91,7 +93,7 @@ export const fetchCategories = async () => {
 
 export const createCategory = async (category) => {
   try {
-    const response = await api.post('/category/create', category);
+    const response = await api.post("/category/create", category);
     return response.data;
   } catch (error) {
     console.error("Error creating category:", error);
@@ -101,7 +103,7 @@ export const createCategory = async (category) => {
 
 export const fetchUsers = async () => {
   try {
-    const response = await api.get('/users/all');
+    const response = await api.get("/users/all");
     return response.data.users;
   } catch (error) {
     console.error("Error fetching users:", error);
@@ -111,7 +113,7 @@ export const fetchUsers = async () => {
 
 export const fetchTotalSales = async () => {
   try {
-    const response = await api.get('/orders/admin/total-sales');
+    const response = await api.get("/orders/admin/total-sales");
     return response.data.totalSales;
   } catch (error) {
     console.error("Error fetching total sales:", error);
@@ -121,7 +123,7 @@ export const fetchTotalSales = async () => {
 
 export const fetchTotalOrders = async () => {
   try {
-    const response = await api.get('/orders/admin/total-orders');
+    const response = await api.get("/orders/admin/total-orders");
     return response.data.totalOrders;
   } catch (error) {
     console.error("Error fetching total orders:", error);
@@ -131,7 +133,7 @@ export const fetchTotalOrders = async () => {
 
 export const fetchTotalCustomers = async () => {
   try {
-    const response = await api.get('/orders/admin/total-customers');
+    const response = await api.get("/orders/admin/total-customers");
     return response.data.totalCustomers;
   } catch (error) {
     console.error("Error fetching total customers:", error);
@@ -141,7 +143,7 @@ export const fetchTotalCustomers = async () => {
 
 export const fetchRecentOrders = async () => {
   try {
-    const response = await api.get('/orders/admin/recent-orders');
+    const response = await api.get("/orders/admin/recent-orders");
     return response.data.recentOrders;
   } catch (error) {
     console.error("Error fetching recent orders:", error);
@@ -151,7 +153,7 @@ export const fetchRecentOrders = async () => {
 
 export const processPayment = async (paymentData) => {
   try {
-    const response = await api.post('/orders/payments', paymentData);
+    const response = await api.post("/orders/payments", paymentData);
     return response.data;
   } catch (error) {
     console.error("Error processing payment:", error);
@@ -162,7 +164,7 @@ export const processPayment = async (paymentData) => {
 // Fetch all orders for admin
 export const fetchAllOrders = async () => {
   try {
-    const response = await api.get('/orders/admin/get-all-orders');
+    const response = await api.get("/orders/admin/get-all-orders");
     return response.data.orders;
   } catch (error) {
     console.error("Error fetching all orders:", error);
@@ -173,7 +175,9 @@ export const fetchAllOrders = async () => {
 // Change order status (admin)
 export const changeOrderStatus = async (orderId, status) => {
   try {
-    const response = await api.put(`/orders/admin/order/${orderId}`, { status });
+    const response = await api.put(`/orders/admin/order/${orderId}`, {
+      status,
+    });
     return response.data;
   } catch (error) {
     console.error("Error changing order status:", error);
@@ -192,7 +196,9 @@ export const deleteCategory = async (id) => {
 
 export const updateCategory = async (id, updatedCategory) => {
   try {
-    const response = await api.put(`/category/update/${id}`, { updatedCategory });
+    const response = await api.put(`/category/update/${id}`, {
+      updatedCategory,
+    });
     return response.data;
   } catch (error) {
     console.error("Error updating category:", error);

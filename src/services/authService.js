@@ -1,83 +1,89 @@
-import api from '../../axiosConfig';
-import Cookies from 'js-cookie';
+import api from "../../axiosConfig";
+import Cookies from "js-cookie";
 
 const register = async (userData) => {
   try {
-    const response = await api.post('/users/register', userData, {
-      headers: { 'Content-Type': 'multipart/form-data' },
+    const response = await api.post("/users/register", userData, {
+      headers: { "Content-Type": "multipart/form-data" },
     });
     return response.data;
   } catch (error) {
-    throw new Error(error.response?.data?.message || 'Registration failed');
+    throw new Error(error.response?.data?.message || "Registration failed");
   }
 };
 
 const login = async (email, password) => {
   try {
-    const response = await api.post('/users/login', { email, password });
+    const response = await api.post("/users/login", { email, password });
     if (response.data.token) {
-      Cookies.set('token', response.data.token, { expires: 15 });
+      Cookies.set("token", response.data.token, { expires: 15 });
     }
     return response.data;
   } catch (error) {
-    throw new Error(error.response?.data?.message || 'Login failed');
+    throw new Error(error.response?.data?.message || "Login failed");
   }
 };
 
 const logout = async () => {
   try {
-    await api.get('/users/logout');
-    Cookies.remove('token');
-    Cookies.remove('user');
+    await api.get("/users/logout");
+    Cookies.remove("token");
+    Cookies.remove("user");
   } catch (error) {
-    throw new Error('Failed to log out');
+    throw new Error("Failed to log out");
   }
 };
 
 const getProfile = async () => {
   try {
-    const response = await api.get('/users/profile');
+    const response = await api.get("/users/profile");
     return response.data;
   } catch (error) {
-    throw new Error('Failed to fetch profile');
+    throw new Error("Failed to fetch profile");
   }
 };
 
 const updateProfile = async (userData) => {
   try {
-    const response = await api.put('/users/profile-update', userData);
+    const response = await api.put("/users/profile-update", userData);
     return response.data;
   } catch (error) {
-    throw new Error(error.response?.data?.message || 'Failed to update profile');
+    throw new Error(
+      error.response?.data?.message || "Failed to update profile"
+    );
   }
 };
 
 const updatePassword = async (passwordData) => {
   try {
-    const response = await api.put('/users/update-password', passwordData);
+    const response = await api.put("/users/update-password", passwordData);
     return response.data;
   } catch (error) {
-    throw new Error(error.response?.data?.message || 'Failed to update password');
+    throw new Error(
+      error.response?.data?.message || "Failed to update password"
+    );
   }
 };
 
 const updateProfilePic = async (formData) => {
   try {
-    const response = await api.put('/users/update-picture', formData, {
-      headers: { 'Content-Type': 'multipart/form-data' },
+    const response = await api.put("/users/update-picture", formData, {
+      headers: { "Content-Type": "multipart/form-data" },
     });
     return response.data;
   } catch (error) {
-    throw new Error(error.response?.data?.message || 'Failed to update profile picture');
+    throw new Error(
+      error.response?.data?.message || "Failed to update profile picture"
+    );
   }
 };
 
 const resetPassword = async (resetData) => {
   try {
-    const response = await api.post('/users/forget-password', resetData);
+    const response = await api.post("/users/forget-password", resetData);
     return response.data;
   } catch (error) {
-    throw new Error(error.response?.data?.message || 'Password reset failed');
+    throw new Error(error.response?.data?.message || "Password reset failed");
   }
 };
 
@@ -86,7 +92,9 @@ const verifyEmail = async (token) => {
     const response = await api.get(`/users/verify-email?token=${token}`);
     return response.data;
   } catch (error) {
-    throw new Error(error.response?.data?.message || 'Email verification failed');
+    throw new Error(
+      error.response?.data?.message || "Email verification failed"
+    );
   }
 };
 
