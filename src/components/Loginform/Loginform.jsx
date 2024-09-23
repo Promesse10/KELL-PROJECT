@@ -12,8 +12,8 @@ function LoginForm() {
   const [formData, setFormData] = useState({ email: '', password: '' });
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [formErrors, setFormErrors] = useState({});
-  const [notification, setNotification] = useState(''); // Add notification state
-  const [loading, setLoading] = useState(false); // Add loading state
+  const [notification, setNotification] = useState('');
+  const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { t } = useTranslation();
@@ -43,21 +43,20 @@ function LoginForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setFormErrors({});
-    setNotification(''); // Clear previous notifications
-    setLoading(true); // Set loading to true while processing request
+    setNotification('');
+    setLoading(true);
 
     try {
       await dispatch(login(formData)).unwrap();
-      navigate('/'); 
+      navigate('/');
     } catch (err) {
-      // Display the error message from the backend response if available
       if (err.response && err.response.data && err.response.data.message) {
         setNotification(err.response.data.message);
       } else {
         setNotification(err.toString());
       }
     } finally {
-      setLoading(false); // Set loading to false after request completes
+      setLoading(false);
     }
   };
 
@@ -76,26 +75,44 @@ function LoginForm() {
           )}
           <form onSubmit={handleSubmit} className="space-y-6">
             <h1 className="text-2xl font-semibold text-center text-600">{t('login.title')}</h1>
-            <div>
+
+            {/* Email Input with Floating Label */}
+            <div className="relative">
               <input
                 type="text"
                 name="email"
-                placeholder={t('login.emailPlaceholder')}
+                id="email"
+                value={formData.email}
                 onChange={handleChange}
                 required
-                className="w-full p-3 border border-gray-300 rounded-lg bg-gray-200 focus:outline-none focus:ring focus:ring-blue-200"
+                className="peer w-full p-3 border border-gray-300 rounded-lg bg-gray-200 focus:outline-none focus:ring focus:ring-blue-200"
               />
+              <label
+                htmlFor="email"
+                className={`absolute left-3 top-3 text-gray-400 transition-transform transform scale-75 origin-top-left peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:text-gray-500 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:text-blue-800`}
+              >
+                {t('login.emailPlaceholder')}
+              </label>
               {formErrors.email && <p className="text-red-500 text-sm">{formErrors.email}</p>}
             </div>
+
+            {/* Password Input with Floating Label */}
             <div className="relative">
               <input
                 type={passwordVisible ? 'text' : 'password'}
                 name="password"
-                placeholder={t('login.passwordPlaceholder')}
+                id="password"
+                value={formData.password}
                 onChange={handleChange}
                 required
-                className="w-full p-3 border border-gray-300 rounded-lg bg-gray-200 focus:outline-none focus:ring focus:ring-blue-200"
+                className="peer w-full p-3 border border-gray-300 rounded-lg bg-gray-200 focus:outline-none focus:ring focus:ring-blue-200"
               />
+              <label
+                htmlFor="password"
+                className={`absolute left-3 top-3 text-gray-400 transition-transform transform scale-75 origin-top-left peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:text-gray-500 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:text-blue-800`}
+              >
+                {t('login.passwordPlaceholder')}
+              </label>
               <button
                 type="button"
                 onClick={togglePasswordVisibility}
@@ -108,6 +125,7 @@ function LoginForm() {
                 )}
               </button>
             </div>
+
             <div className="flex justify-center">
               <button
                 type="submit"

@@ -91,6 +91,8 @@ function CreateAccount() {
     setPasswordVisible(!passwordVisible);
   };
 
+  const floatingLabelClasses = "absolute top-2 left-2 text-gray-500 transition-transform transform scale-75 -translate-y-4 origin-top-left";
+
   return (
     <div className="flex flex-col min-h-screen bg-gray-100">
       <div className="flex-grow flex justify-center items-center px-4 sm:px-6 lg:px-8 mt-16 p-24">
@@ -106,35 +108,59 @@ function CreateAccount() {
             )}
             <form onSubmit={handleSubmit} className="space-y-6">
               <h1 className="text-2xl font-semibold text-center text-custom-blue">{t('createAccount.title')}</h1>
-              <div>
+              <div className="relative">
                 <input
                   type="text"
                   name="name"
+                  id="name"
                   placeholder={t('createAccount.namePlaceholder')}
                   onChange={handleChange}
+                  value={formData.name}
                   required
-                  className="w-full p-3 border border-gray-300 rounded-lg bg-gray-200 focus:outline-none focus:ring focus:ring-blue-200"
+                  className="peer w-full p-3 border border-gray-300 rounded-lg bg-gray-200 focus:outline-none focus:ring focus:ring-blue-200"
                 />
+                <label
+                  htmlFor="name"
+                  className={`absolute top-3 left-3 text-gray-500 transition-transform transform -translate-y-4 scale-75 origin-top-left peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:text-gray-500 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:text-blue-800`}
+                >
+                  {t('createAccount.namePlaceholder')}
+                </label>
               </div>
-              <div>
+              <div className="relative">
                 <input
                   type="text"
                   name="email"
+                  id="email"
                   placeholder={t('createAccount.emailPlaceholder')}
                   onChange={handleChange}
+                  value={formData.email}
                   required
-                  className="w-full p-3 border border-gray-300 rounded-lg bg-gray-200 focus:outline-none focus:ring focus:ring-blue-200"
+                  className="peer w-full p-3 border border-gray-300 rounded-lg bg-gray-200 focus:outline-none focus:ring focus:ring-blue-200"
                 />
+                <label
+                  htmlFor="email"
+                  className={`absolute top-3 left-3 text-gray-500 transition-transform transform -translate-y-4 scale-75 origin-top-left peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:text-gray-500 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:text-blue-800`}
+                >
+                  {t('createAccount.emailPlaceholder')}
+                </label>
               </div>
               <div className="relative">
                 <input
                   type={passwordVisible ? 'text' : 'password'}
                   name="password"
+                  id="password"
                   placeholder={t('createAccount.passwordPlaceholder')}
                   onChange={handleChange}
+                  value={formData.password}
                   required
-                  className="w-full p-3 border border-gray-300 rounded-lg bg-gray-200 focus:outline-none focus:ring focus:ring-blue-200"
+                  className="peer w-full p-3 border border-gray-300 rounded-lg bg-gray-200 focus:outline-none focus:ring focus:ring-blue-200"
                 />
+                <label
+                  htmlFor="password"
+                  className={`absolute top-3 left-3 text-gray-500 transition-transform transform -translate-y-4 scale-75 origin-top-left peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:text-gray-500 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:text-blue-800`}
+                >
+                  {t('createAccount.passwordPlaceholder')}
+                </label>
                 <button
                   type="button"
                   onClick={togglePasswordVisibility}
@@ -147,25 +173,41 @@ function CreateAccount() {
                   )}
                 </button>
               </div>
-              <div>
+              <div className="relative">
                 <input
                   type="text"
                   name="address"
+                  id="address"
                   placeholder={t('createAccount.addressPlaceholder')}
                   onChange={handleChange}
+                  value={formData.address}
                   required
-                  className="w-full p-3 border border-gray-300 rounded-lg bg-gray-200 focus:outline-none focus:ring focus:ring-blue-200"
+                  className="peer w-full p-3 border border-gray-300 rounded-lg bg-gray-200 focus:outline-none focus:ring focus:ring-blue-200"
                 />
+                <label
+                  htmlFor="address"
+                  className={`absolute top-3 left-3 text-gray-500 transition-transform transform -translate-y-4 scale-75 origin-top-left peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:text-gray-500 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:text-blue-800`}
+                >
+                  {t('createAccount.addressPlaceholder')}
+                </label>
               </div>
-              <div>
+              <div className="relative">
                 <input
                   type="number"
                   name="phone"
+                  id="phone"
                   placeholder={t('createAccount.phonePlaceholder')}
                   onChange={handleChange}
+                  value={formData.phone}
                   required
-                  className="w-full p-3 border border-gray-300 rounded-lg bg-gray-200 focus:outline-none focus:ring focus:ring-blue-200"
+                  className="peer w-full p-3 border border-gray-300 rounded-lg bg-gray-200 focus:outline-none focus:ring focus:ring-blue-200"
                 />
+                <label
+                  htmlFor="phone"
+                  className={`absolute top-3 left-3 text-gray-500 transition-transform transform -translate-y-4 scale-75 origin-top-left peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:text-gray-500 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:text-blue-800`}
+                >
+                  {t('createAccount.phonePlaceholder')}
+                </label>
               </div>
               <div>
                 <label

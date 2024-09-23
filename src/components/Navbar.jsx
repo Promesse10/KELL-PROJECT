@@ -398,7 +398,7 @@ const Navbar = () => {
     <ul
         className={`${
           nav ? "fixed" : "hidden"
-        } left-0 top-0 w-60 h-full bg-blue-950 font-normal text-white p-4 text-xs transition-transform transform ${nav ? "translate-x-0" : "-translate-x-full"} `}
+        } left-0 top-0 w-64 h-full bg-blue-950 font-normal text-white p-4 text-xs transition-transform transform ${nav ? "translate-x-0" : "-translate-x-full"} `}
       >
         <img
           className="w-28 mb-4"
@@ -482,10 +482,10 @@ const Navbar = () => {
         )}
         {isLoggedIn ? (
           <>
-           <div className="flex flex-row justify-center">
+           <div className="flex flex-row justify-center ">
                 <RouterLink
                   to="/profile"
-                  className="block text-white p-4 mt-2"
+                  className="block text-white p-3 mt-2"
                   onClick={() => setNav(false)}
                 >
                   <img src={acount} className="w-5 mb-2  " />
@@ -494,7 +494,7 @@ const Navbar = () => {
                 </RouterLink>
                 <RouterLink
                   to="/myorders"
-                  className="block text-white p-4 mt-2"
+                  className="block text-white p-3 mt-2"
                   onClick={() => setNav(false)}
 
                 >
@@ -502,13 +502,14 @@ const Navbar = () => {
                   MyOrders
                 </RouterLink>
                 <button
-                  className="block text-white p-4 mt-2 text-left"
+                  className="block text-white p-3 mt-2 text-left"
                   onClick={handleLogoutClick}
                 > <img src={logot} className="w-5 mb-2 " />
                   {t("navbar.logout")}
                 </button>
 
               </div>
+
             <li>
             <button
                 onClick={handleCartClick}
@@ -550,7 +551,11 @@ const Navbar = () => {
                 </RouterLink>
 
                </button>
+               
                 </div>
+                <li >
+                <LanguageSwitcher />
+              </li>
           </>
         )}
       </ul>
