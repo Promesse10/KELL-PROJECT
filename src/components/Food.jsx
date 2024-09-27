@@ -117,7 +117,7 @@ const Food = () => {
       <div className="flex-grow mt-10">
         {displayedProducts.length === 0 ? (
           <div className="flex justify-center items-center">
-            {searchTerm ? t('food.noResults') : <Spinner />}
+            {searchTerm ? t('food.noResults') : <Spinner color="blue" />}
           </div>
         ) : (
           <div className='flex flex-wrap justify-center gap-10 px-4 md:px-0'>
