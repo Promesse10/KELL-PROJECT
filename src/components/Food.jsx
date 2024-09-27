@@ -1,10 +1,17 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getProducts } from '../slices/productSlice';
-import { addToCart, decreaseQuantity, increaseQuantity, removeFromCart, selectCartItems } from '../slices/cartSlice';
+import { addToCart, increaseQuantity, decreaseQuantity, removeFromCart, selectCartItems } from '../slices/cartSlice';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import LoginPopup from './LoginPopup';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import debounce from 'lodash/debounce';
+import { Spinner } from '@material-tailwind/react';
+import search from "../assets/Search.png"; // Assuming you're using this image for the search icon
+
+const productsPerPage = 9; // Setting number of products per page
 
 const Food = () => {
   const { t } = useTranslation();
@@ -13,33 +20,48 @@ const Food = () => {
   const products = useSelector((state) => state.products.products);
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
   const cartItems = useSelector(selectCartItems);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
   const [showPopup, setShowPopup] = useState(false);
-  const [productToAdd, setProductToAdd] = useState(null);
   const [showCart, setShowCart] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [animationState, setAnimationState] = useState('');
+  const [imageLoading, setImageLoading] = useState({});
+  
+  const debouncedSearch = useCallback(
+    debounce((term) => {
+      dispatch(getProducts({ category: "foodservices", searchTerm: term }));
+    }, 1000),
+    [dispatch]
+  );
 
   useEffect(() => {
-    dispatch(getProducts('foodservices'));
+    if (searchTerm) {
+      debouncedSearch(searchTerm);
+    } else {
+      dispatch(getProducts({ category: "foodservices", searchTerm: "" }));
+    }
+    return debouncedSearch.cancel;
+  }, [searchTerm, debouncedSearch, dispatch]);
+
+  useEffect(() => {
+    dispatch(getProducts({ category: "foodservices" }));
   }, [dispatch]);
 
-  useEffect(() => {
-    if (isLoggedIn && productToAdd) {
-      dispatch(addToCart(productToAdd));
-      setProductToAdd(null);
-    }
-  }, [isLoggedIn, dispatch, productToAdd]);
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value);
+  };
 
   const handleAddToCart = (product) => {
     if (!isLoggedIn) {
-      setProductToAdd(product);
       setShowPopup(true);
     } else {
       const existingProduct = cartItems.find(item => item._id === product._id);
       if (existingProduct) {
         dispatch(increaseQuantity(product._id));
       } else {
-        dispatch(addToCart(product));
+        dispatch(addToCart({ ...product, quantity: 1 }));
+        toast.success(t('food.addToCartSuccess'));
       }
       setSelectedProduct(product);
       setAnimationState('slide-in');
@@ -47,124 +69,69 @@ const Food = () => {
     }
   };
 
-  const handleIncreaseQuantity = () => {
-    if (selectedProduct) {
-      dispatch(increaseQuantity(selectedProduct._id));
-    }
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
   };
 
-  const handleDecreaseQuantity = () => {
-    if (selectedProduct) {
-      dispatch(decreaseQuantity(selectedProduct._id));
-    }
+  const filteredProducts = products.filter(product =>
+    product.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
+  const displayedProducts = filteredProducts.slice(
+    (currentPage - 1) * productsPerPage,
+    currentPage * productsPerPage
+  );
+
+  const handleImageLoadStart = (productId) => {
+    setImageLoading((prevState) => ({
+      ...prevState,
+      [productId]: true,
+    }));
   };
 
-  const handleRemoveProduct = () => {
-    if (selectedProduct) {
-      dispatch(removeFromCart(selectedProduct._id));
-      setShowCart(false);
-      setSelectedProduct(null);
-    }
-  };
-
-  const handleClosePopup = () => {
-    setShowPopup(false);
-  };
-
-  const handleCartPopupClose = () => {
-    setAnimationState('slide-out');
-    setTimeout(() => {
-      setShowCart(false);
-      setSelectedProduct(null);
-      setAnimationState('');
-    }, 300); // Duration of the animation
-  };
-
-  const normalizeProductName = (name) => {
-    return name.toLowerCase().replace(/\s+/g, '_');
-  };
-
-  const rows = [];
-  for (let i = 0; i < products.length; i += 3) {
-    rows.push(products.slice(i, i + 3));
-  }
-
-  const calculateCartTotal = () => {
-    return cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
-  };
-
-  const handleCheckout = (product) => {
-    navigate('/checkout', { state: { product } });
+  const handleImageLoadEnd = (productId) => {
+    setImageLoading((prevState) => ({
+      ...prevState,
+      [productId]: false,
+    }));
   };
 
   return (
     <div className='bg-gray-100 mt-24 flex flex-col'>
-      {showPopup && <LoginPopup onClose={handleClosePopup} />}
+      <ToastContainer />
+      {showPopup && <LoginPopup onClose={() => setShowPopup(false)} />}
 
-      {showCart && (
-        <>
-          {/* Overlay */}
-          <div
-            className="fixed inset-0 bg-black opacity-50 z-40"
-            onClick={handleCartPopupClose}
-          ></div>
-
-          {/* Cart Popup */}
-          <div
-            className={`fixed right-0 top-0 w-full sm:w-[60%] md:w-[40%] lg:w-[35%] h-full bg-gray-50 text-black shadow-lg z-50 transform transition-transform duration-300 ${
-              animationState === 'slide-in' ? 'translate-x-0' : 'translate-x-full'
-            }`}
-          >
-            <button onClick={handleCartPopupClose} className="absolute top-4 right-4 text-2xl">×</button>
-            {selectedProduct && (
-              <div className="p-6 flex flex-col items-center">
-                <img
-                  src={selectedProduct.images[0].url}
-                  alt={selectedProduct.name}
-                  className="w-32 h-32 object-cover sm:w-40 sm:h-40"
-                />
-                <p className="text-lg sm:text-xl font-semibold mt-4">{selectedProduct.name}</p>
-                <p className="text-md sm:text-lg text-gray-500 mt-2">{selectedProduct.price} RWF</p>
-
-                <div className="flex items-center mt-4">
-                  <button onClick={handleDecreaseQuantity} className="text-md sm:text-lg px-3 sm:px-4 py-2 bg-gray-200 rounded-l-lg">-</button>
-                  <span className="text-md sm:text-lg px-4 sm:px-6 py-2 border-t border-b border-gray-200">
-                    {cartItems.find(item => item._id === selectedProduct._id)?.quantity || 1}
-                  </span>
-                  <button onClick={handleIncreaseQuantity} className="text-md sm:text-lg px-3 sm:px-4 py-2 bg-gray-200 rounded-r-lg">+</button>
-                </div>
-
-                <div className="flex w-full mt-6 sm:mt-8">
-                  <button
-                    onClick={() => handleAddToCart(selectedProduct)}
-                    className="flex-grow text-white bg-blue-950 px-3 py-2 sm:px-4 sm:py-2 rounded-lg mr-2"
-                  >
-                    {t('food.addToCart')}
-                  </button>
-                  <button
-                    onClick={handleCheckout}
-                    className="flex-grow text-white bg-blue-950 px-3 py-2 sm:px-4 sm:py-2 rounded-lg"
-                  >
-                    {t('food.buyNow')}
-                  </button>
-                </div>
-              </div>
-            )}
-          </div>
-        </>
-      )}
-
-      <div className='flex my-10 justify-center items-center'>
-        <p className='text-blue-950 font-bold text-2xl'>{t('food.services')}</p>
+      {/* Search Bar */}
+      <div className="flex justify-center mt-6">
+        <input
+          type="text"
+          value={searchTerm}
+          onChange={handleSearchChange}
+          placeholder={t('food.searchPlaceholder')}
+          className="px-4 py-2 w-full sm:w-96 border rounded-md"
+        />
       </div>
 
-      <div className='flex-grow'>
-        {rows.map((row, index) => (
-          <div key={index} className="flex flex-wrap justify-center gap-10 mb-12 px-4 md:px-0">
-            {row.map((item) => (
+      {/* Product Grid */}
+      <div className="flex-grow mt-10">
+        {displayedProducts.length === 0 ? (
+          <div className="flex justify-center items-center">
+            {searchTerm ? t('food.noResults') : <Spinner />}
+          </div>
+        ) : (
+          <div className='flex flex-wrap justify-center gap-10 px-4 md:px-0'>
+            {displayedProducts.map((item) => (
               <div key={item._id} className='bg-gray-300 pb-8 flex flex-col justify-center items-center w-full sm:w-72 transform transition-transform duration-500 hover:scale-105'>
-                <img className='w-full h-56 object-cover' src={item.images[0].url} alt={t(`${normalizeProductName(item.name)}`)} />
-                <p className='mt-5 text-center font-bold'>{t(`${normalizeProductName(item.name)}`)}</p>
+                {imageLoading[item._id] && <Spinner />} {/* Show spinner while loading */}
+                <img
+                  className='w-full h-56 object-cover'
+                  src={item.images[0].url}
+                  alt={t(`${item.name}`)}
+                  onLoadStart={() => handleImageLoadStart(item._id)}
+                  onLoad={() => handleImageLoadEnd(item._id)}
+                />
+                <p className='mt-5 text-center font-bold'>{t(`${item.name}`)}</p>
                 <p className='mt-2 text-center text-gray-600'>{item.description}</p>
                 <div className='flex justify-between items-center gap-5 mx-8'>
                   <button
@@ -174,7 +141,7 @@ const Food = () => {
                     {t('food.addToCart')}
                   </button>
                   <button
-                    onClick={() => handleCheckout(item)} 
+                    onClick={() => navigate('/checkout', { state: { product: item } })}
                     className="text-blue-950 bg-white px-2 py-1 rounded-md mt-2 transition duration-300 transform hover:scale-110 hover:bg-blue-950 hover:text-white hover:shadow-lg hover:font-bold text-sm"
                   >
                     {t('food.buyNow')}
@@ -183,7 +150,22 @@ const Food = () => {
               </div>
             ))}
           </div>
-        ))}
+        )}
+
+        {/* Pagination */}
+        {totalPages > 1 && (
+          <div className="flex justify-center mt-10">
+            {[...Array(totalPages)].map((_, index) => (
+              <button
+                key={index}
+                onClick={() => handlePageChange(index + 1)}
+                className={`px-4 py-2 mx-1 rounded-lg ${index + 1 === currentPage ? 'bg-blue-950 text-white' : 'bg-gray-200 text-black'}`}
+              >
+                {index + 1}
+              </button>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

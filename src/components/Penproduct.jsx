@@ -242,6 +242,7 @@ function Home() {
             ))}
           </div>
         )}
+        <Spinner color="blue" size={"lg mt-8 text-blue-950"} />
 
         <div className="flex justify-center mt-4">
           {Array.from({ length: totalPages }).map((_, index) => (
