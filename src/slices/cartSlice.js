@@ -38,6 +38,7 @@ const initialState = {
   items: [],
   userId: null,
   token: Cookies.get('token') || null,
+  isDrawerOpen: false,
 };
 
 const cartSlice = createSlice({
@@ -97,6 +98,9 @@ const cartSlice = createSlice({
         clearCartCookie(state.userId);
       }
     },
+    setCartDrawerOpen: (state, action) => {
+      state.isDrawerOpen = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -114,6 +118,7 @@ export const {
   decreaseQuantity,
   clearCart,
   setUser,
+  setCartDrawerOpen,
 } = cartSlice.actions;
 
 // Add selector to access cart items

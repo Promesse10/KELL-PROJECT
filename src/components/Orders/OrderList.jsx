@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import { getAllOrders, updateOrderStatus } from '../../slices/orderSlice';
 
 const OrderList = () => {
+  const { t, i18n } = useTranslation();
   const dispatch = useDispatch();
   const { orders, status, error } = useSelector((state) => state.orders);
   const [editingOrderId, setEditingOrderId] = useState(null);
@@ -28,11 +30,11 @@ const OrderList = () => {
   };
 
   if (status === 'loading') {
-    return <div className="kk-admin-state">Loading orders…</div>;
+    return <div className="kk-admin-state">{t('admin.orders.loading')}</div>;
   }
 
   if (status === 'failed') {
-    return <div className="kk-admin-state is-error">Could not load orders: {error}</div>;
+    return <div className="kk-admin-state is-error">{t('admin.orders.loadError')}: {error}</div>;
   }
 
   // Sort orders by createdAt date, newest first
@@ -42,34 +44,34 @@ const OrderList = () => {
     <section className="kk-admin-page">
       <div className="kk-admin-page-heading">
         <div>
-          <span className="kk-admin-eyebrow">FULFILMENT</span>
-          <h1>Orders</h1>
-          <p>Review customer orders and keep delivery status up to date.</p>
+          <span className="kk-admin-eyebrow">{t('admin.orders.eyebrow')}</span>
+          <h1>{t('admin.orders.title')}</h1>
+          <p>{t('admin.orders.intro')}</p>
         </div>
-        <span className="kk-admin-count">{orders.length} total</span>
+        <span className="kk-admin-count">{t('admin.orders.total', { count: orders.length })}</span>
       </div>
       <div className="overflow-x-auto shadow-lg rounded-lg border border-gray-200">
         <table className="min-w-full bg-white">
           <thead className="bg-blue-950 text-white">
             <tr>
-              <th className="py-3 px-4 border-b">Order DATE</th>
-              <th className="py-3 px-4 border-b">User</th>
-              <th className="py-3 px-4 border-b">Shipping Info</th>
-              <th className="py-3 px-4 border-b">Payment Method</th>
-              <th className="py-3 px-4 border-b">Order Status</th>
-              <th className="py-3 px-4 border-b">Items</th>
-              <th className="py-3 px-4 border-b">Total</th>
-              <th className="py-3 px-4 border-b">Actions</th>
+              <th className="py-3 px-4 border-b">{t('admin.orders.date')}</th>
+              <th className="py-3 px-4 border-b">{t('admin.orders.user')}</th>
+              <th className="py-3 px-4 border-b">{t('admin.orders.shipping')}</th>
+              <th className="py-3 px-4 border-b">{t('admin.orders.payment')}</th>
+              <th className="py-3 px-4 border-b">{t('admin.orders.status')}</th>
+              <th className="py-3 px-4 border-b">{t('admin.orders.items')}</th>
+              <th className="py-3 px-4 border-b">{t('admin.orders.totalColumn')}</th>
+              <th className="py-3 px-4 border-b">{t('admin.orders.actions')}</th>
             </tr>
           </thead>
           <tbody>
             {sortedOrders.map((order) => (
               <tr key={order._id} className="hover:bg-gray-100 transition-colors">
                 <td className="py-4 px-4 border-b whitespace-nowrap text-center">
-                  {new Date(order.createdAt).toLocaleDateString()} {new Date(order.createdAt).toLocaleTimeString()}
+                  {new Date(order.createdAt).toLocaleDateString(i18n.resolvedLanguage?.startsWith('kin') ? 'rw-RW' : 'en')} {new Date(order.createdAt).toLocaleTimeString(i18n.resolvedLanguage?.startsWith('kin') ? 'rw-RW' : 'en')}
                 </td>
                 <td className="py-4 px-4 border-b text-center">
-                  {order.user ? order.user.name : 'Unknown User'}
+                  {order.user ? order.user.name : t('admin.orders.unknownUser')}
                 </td>
                 <td className="py-3 px-2 sm:px-4 border-b text-center whitespace-nowrap">
                   {order.shippingInfo.address}, {order.shippingInfo.city}
@@ -82,13 +84,13 @@ const OrderList = () => {
                       onChange={handleStatusChange}
                       className="border rounded p-1 sm:p-2"
                     >
-                      <option value="processing">Processing</option>
-                      <option value="shipped">Shipped</option>
-                      <option value="delivered">Delivered</option>
-                      <option value="canceled">Canceled</option>
+                      <option value="processing">{t('admin.orders.processing')}</option>
+                      <option value="shipped">{t('admin.orders.shipped')}</option>
+                      <option value="delivered">{t('admin.orders.delivered')}</option>
+                      <option value="canceled">{t('admin.orders.canceled')}</option>
                     </select>
                   ) : (
-                    order.orderStatus
+                    t(`admin.orders.${String(order.orderStatus || '').toLowerCase()}`, { defaultValue: order.orderStatus })
                   )}
                 </td>
                 <td className="py-3 px-2 sm:px-4 border-b text-center">
@@ -96,9 +98,9 @@ const OrderList = () => {
                     <table className="min-w-full bg-gray-50 rounded">
                       <thead>
                         <tr className="bg-gray-100">
-                          <th className="py-1 px-2 border-b text-xs sm:text-sm">Name</th>
-                          <th className="py-1 px-2 border-b text-xs sm:text-sm">Quantity</th>
-                          <th className="py-1 px-2 border-b text-xs sm:text-sm">Price</th>
+                          <th className="py-1 px-2 border-b text-xs sm:text-sm">{t('admin.orders.name')}</th>
+                          <th className="py-1 px-2 border-b text-xs sm:text-sm">{t('admin.orders.quantity')}</th>
+                          <th className="py-1 px-2 border-b text-xs sm:text-sm">{t('admin.orders.price')}</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -120,20 +122,20 @@ const OrderList = () => {
                       onClick={() => handleSaveStatus(order._id)}
                       className="bg-green-500 text-white px-3 sm:px-4 py-1 sm:py-2 rounded hover:bg-green-600 text-xs sm:text-sm"
                     >
-                      Save
+                      {t('admin.orders.save')}
                     </button>
                   ) : (
                     <button
                       onClick={() => handleEditClick(order._id, order.orderStatus)}
                       className="bg-blue-500 text-white px-3 sm:px-4 py-1 sm:py-2 rounded hover:bg-blue-600 text-xs sm:text-sm"
                     >
-                      Edit Status
+                      {t('admin.orders.editStatus')}
                     </button>
                   )}
                 </td>
               </tr>
             ))}
-            {!sortedOrders.length && <tr><td className="kk-admin-empty" colSpan="8">No orders have been placed yet.</td></tr>}
+            {!sortedOrders.length && <tr><td className="kk-admin-empty" colSpan="8">{t('admin.orders.empty')}</td></tr>}
           </tbody>
         </table>
       </div>

@@ -1,0 +1,64 @@
+.hardware-store__filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+  margin: -8px 0 25px;
+}
+
+.hardware-store__filters button {
+  min-height: 37px;
+  padding: 0 14px;
+  border: 1px solid #dfe3ed;
+  border-radius: 999px;
+  color: #53607a;
+  background: #fff;
+  cursor: pointer;
+  font: inherit;
+  font-size: .77rem;
+  font-weight: 600;
+  transition: color .18s ease, border-color .18s ease, background .18s ease;
+}
+
+.hardware-store__filters button:hover,
+.hardware-store__filters button.is-active {
+  border-color: #172454;
+  color: #fff;
+  background: #172454;
+}
+
+.hardware-store__filters button:focus-visible,
+.hardware-store__search button:focus-visible {
+  outline: 3px solid rgba(23, 36, 84, .25);
+  outline-offset: 2px;
+}
+
+.hardware-store__empty-icon {
+  width: 32px;
+  height: 32px;
+  color: #172454;
+  stroke-width: 1.5;
+}
+
+.hardware-product-card .food-product-card__badge {
+  color: #172454;
+}
+
+.hardware-product-card .hardware-product-card__specs {
+  color: #737d92;
+  font-size: .72rem;
+  line-height: 1.5;
+}
+
+@media (max-width: 640px) {
+  .hardware-store__filters {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    margin-right: -18px;
+    padding: 0 18px 6px 0;
+    scrollbar-width: thin;
+  }
+
+  .hardware-store__filters button {
+    flex: 0 0 auto;
+  }
+}

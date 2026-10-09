@@ -1,7 +1,10 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { FiArrowUpRight, FiDollarSign, FiShoppingBag, FiUsers } from 'react-icons/fi';
+import { useTranslation } from 'react-i18next';
+import {
+  FiArrowUpRight, FiBookOpen, FiDollarSign, FiShoppingBag, FiTool, FiTruck, FiUsers,
+} from 'react-icons/fi';
 import {
   getTotalSales,
   getTotalOrders,
@@ -13,8 +16,16 @@ import { fetchProfile } from '../slices/authSlice';
 
 const formatCurrency = (amount) => `RWF ${Number(amount || 0).toLocaleString()}`;
 const formatDate = (date) => (date ? new Date(date).toLocaleDateString() : '—');
+const serviceLinks = [
+  { title: 'stationery', description: 'stationeryText', service: 'stationery', icon: FiBookOpen },
+  { title: 'food', description: 'foodText', service: 'food', icon: FiShoppingBag },
+  { title: 'hardware', description: 'hardwareText', service: 'hardware', icon: FiTool },
+  { title: 'carSale', description: 'carSaleText', service: 'car-sale', icon: FiTruck },
+  { title: 'carRental', description: 'carRentalText', service: 'car-rental', icon: FiTruck },
+];
 
 const Dashboard = () => {
+  const { t, i18n } = useTranslation();
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
   const {
@@ -37,28 +48,28 @@ const Dashboard = () => {
   }, [dispatch]);
 
   const metrics = [
-    { label: 'Total sales', value: formatCurrency(totalSales), icon: FiDollarSign, tone: 'gold' },
-    { label: 'Total orders', value: Number(totalOrders || 0).toLocaleString(), icon: FiShoppingBag, tone: 'blue' },
-    { label: 'Customers', value: Number(totalCustomers || 0).toLocaleString(), icon: FiUsers, tone: 'violet' },
+    { label: 'totalSales', value: formatCurrency(totalSales), icon: FiDollarSign, tone: 'gold' },
+    { label: 'totalOrders', value: Number(totalOrders || 0).toLocaleString(), icon: FiShoppingBag, tone: 'blue' },
+    { label: 'customers', value: Number(totalCustomers || 0).toLocaleString(), icon: FiUsers, tone: 'violet' },
   ];
 
   return (
     <section className="kk-admin-page kk-admin-dashboard">
       <div className="kk-admin-page-heading">
         <div>
-          <span className="kk-admin-eyebrow">YOUR BUSINESS AT A GLANCE</span>
-          <h1>Good day, {user?.name?.split(' ')[0] || 'Admin'} <span aria-hidden="true">✦</span></h1>
-          <p>Here’s what’s happening across KarKelly today.</p>
+          <span className="kk-admin-eyebrow">{t('admin.dashboard.eyebrow')}</span>
+          <h1>{t('admin.dashboard.greeting', { name: user?.name?.split(' ')[0] || 'Admin' })} <span aria-hidden="true">✦</span></h1>
+          <p>{t('admin.dashboard.intro')}</p>
         </div>
         <div className="kk-admin-dashboard__actions">
-          <div className="kk-admin-date">{new Date().toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' })}</div>
-          <Link className="kk-admin-quick-add" to="/admin/product">+ Add products</Link>
+          <div className="kk-admin-date">{new Date().toLocaleDateString(i18n.resolvedLanguage?.startsWith('kin') ? 'rw-RW' : 'en', { weekday: 'long', month: 'long', day: 'numeric' })}</div>
+          <Link className="kk-admin-quick-add" to="/admin/product">{t('admin.dashboard.addProducts')}</Link>
         </div>
       </div>
 
       {status === 'failed' && (
         <div className="kk-admin-alert" role="status">
-          Some dashboard information could not be loaded{error ? `: ${error}` : '.'}
+          {t('admin.dashboard.loadError')}{error ? `: ${error}` : '.'}
         </div>
       )}
 
@@ -67,35 +78,50 @@ const Dashboard = () => {
           <article className="kk-admin-metric" key={label}>
             <div className={`kk-admin-metric__icon is-${tone}`}><Icon aria-hidden="true" /></div>
             <div className="kk-admin-metric__copy">
-              <span>{label}</span>
+              <span>{t(`admin.dashboard.${label}`)}</span>
               <strong>{value}</strong>
-              <small><FiArrowUpRight aria-hidden="true" /> Business overview</small>
+              <small><FiArrowUpRight aria-hidden="true" /> {t('admin.dashboard.overview')}</small>
             </div>
           </article>
         ))}
       </div>
 
+      <section className="kk-admin-services" aria-labelledby="kk-admin-services-title">
+        <div className="kk-admin-card__heading">
+          <div><h2 id="kk-admin-services-title">{t('admin.dashboard.manageServices')}</h2><p>{t('admin.dashboard.manageServicesText')}</p></div>
+        </div>
+        <div className="kk-admin-service-links">
+          {serviceLinks.map(({ title, description, service, icon: Icon }) => (
+            <Link className="kk-admin-service-link" key={service} to={`/admin/product?service=${service}`}>
+              <span className="kk-admin-service-link__icon"><Icon aria-hidden="true" /></span>
+              <span className="kk-admin-service-link__copy"><strong>{t(`admin.dashboard.${title}`)}</strong><small>{t(`admin.dashboard.${description}`)}</small></span>
+              <span className="kk-admin-service-link__action">{t('admin.dashboard.addItem')} <span aria-hidden="true">↗</span></span>
+            </Link>
+          ))}
+        </div>
+      </section>
+
       <div className="kk-admin-dashboard-grid">
         <section className="kk-admin-card kk-admin-recent">
           <div className="kk-admin-card__heading">
-            <div><h2>Recent orders</h2><p>Your latest customer activity</p></div>
-            <span className="kk-admin-count">{recentOrders.length} recent</span>
+            <div><h2>{t('admin.dashboard.recentOrders')}</h2><p>{t('admin.dashboard.recentOrdersText')}</p></div>
+            <span className="kk-admin-count">{t('admin.dashboard.recent', { count: recentOrders.length })}</span>
           </div>
           <div className="kk-admin-table-wrap">
             <table className="kk-admin-table">
-              <thead><tr><th>Customer</th><th>Items</th><th>Total</th><th>Status</th><th>Date</th></tr></thead>
+              <thead><tr><th>{t('admin.dashboard.customer')}</th><th>{t('admin.dashboard.items')}</th><th>{t('admin.dashboard.total')}</th><th>{t('admin.dashboard.status')}</th><th>{t('admin.dashboard.date')}</th></tr></thead>
               <tbody>
                 {recentOrders.map((order) => (
                   <tr key={order._id}>
-                    <td><strong>{order.user?.name || 'Unknown customer'}</strong></td>
-                    <td>{(order.orderItems || []).reduce((count, item) => count + Number(item.quantity || 0), 0)} items</td>
+                    <td><strong>{order.user?.name || t('admin.dashboard.unknownCustomer')}</strong></td>
+                    <td>{t('admin.dashboard.itemCount', { count: (order.orderItems || []).reduce((count, item) => count + Number(item.quantity || 0), 0) })}</td>
                     <td>{formatCurrency(order.totalAmount)}</td>
                     <td><span className={`kk-admin-status is-${String(order.orderStatus || 'pending').toLowerCase()}`}>{order.orderStatus || 'Pending'}</span></td>
                     <td>{formatDate(order.createdAt)}</td>
                   </tr>
                 ))}
                 {!recentOrders.length && (
-                  <tr><td className="kk-admin-empty" colSpan="5">{status === 'loading' ? 'Loading recent orders…' : 'No recent orders to show yet.'}</td></tr>
+                  <tr><td className="kk-admin-empty" colSpan="5">{status === 'loading' ? t('admin.dashboard.loadingOrders') : t('admin.dashboard.noOrders')}</td></tr>
                 )}
               </tbody>
             </table>
@@ -104,7 +130,7 @@ const Dashboard = () => {
 
         <section className="kk-admin-card kk-admin-popular">
           <div className="kk-admin-card__heading">
-            <div><h2>Popular products</h2><p>Items customers are browsing</p></div>
+            <div><h2>{t('admin.dashboard.popularProducts')}</h2><p>{t('admin.dashboard.popularProductsText')}</p></div>
           </div>
           <div className="kk-admin-popular__list">
             {popularProducts.map((product) => (
@@ -112,10 +138,10 @@ const Dashboard = () => {
                 {product.images?.[0]?.url
                   ? <img src={product.images[0].url} alt="" />
                   : <div className="kk-admin-popular__placeholder"><FiShoppingBag aria-hidden="true" /></div>}
-                <div><strong>{product.name}</strong><span>{formatCurrency(product.price)} · {product.stock ?? 0} in stock</span></div>
+                <div><strong>{product.name}</strong><span>{formatCurrency(product.price)} · {t('admin.dashboard.stockCount', { count: product.stock ?? 0 })}</span></div>
               </article>
             ))}
-            {!popularProducts.length && <p className="kk-admin-empty">{status === 'loading' ? 'Loading products…' : 'Popular products will appear here.'}</p>}
+            {!popularProducts.length && <p className="kk-admin-empty">{status === 'loading' ? t('admin.dashboard.loadingProducts') : t('admin.dashboard.noPopularProducts')}</p>}
           </div>
         </section>
       </div>

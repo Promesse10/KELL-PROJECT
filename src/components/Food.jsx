@@ -1,47 +1,81 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { getProducts } from '../slices/productSlice';
-import { addToCart, increaseQuantity, selectCartItems } from '../slices/cartSlice';
+import { addToCart, increaseQuantity, selectCartItems, setCartDrawerOpen } from '../slices/cartSlice';
+import { fetchAllProducts, fetchProducts } from '../services/api';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import LoginPopup from './LoginPopup';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import debounce from 'lodash/debounce';
 import search from '../assets/Search.png';
 import ServiceStoreHero from './ServiceStoreHero';
 import foodHero from '../assets/foodS.jpg';
 
 const productsPerPage = 9;
 
+const getProductCategory = (product) => {
+  const category = product.category;
+  if (typeof category === 'string') return category;
+  return category?.category || category?.name || product.categoryName || '';
+};
+
+const isFoodProduct = (product) => (
+  ['food', 'food-service', 'foodservices'].includes(String(product.serviceType || '').toLowerCase())
+  || /food|grocery|groceries/i.test(getProductCategory(product))
+);
+
 const Food = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const products = useSelector((state) => state.products.products);
-  const status = useSelector((state) => state.products.status);
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
   const cartItems = useSelector(selectCartItems);
+  const [products, setProducts] = useState([]);
+  const [status, setStatus] = useState('loading');
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [showPopup, setShowPopup] = useState(false);
 
-  const debouncedSearch = useCallback(
-    debounce((term) => {
-      dispatch(getProducts({ category: 'foodservices', searchTerm: term }));
-    }, 350),
-    [dispatch]
-  );
+  const loadProducts = useCallback(async () => {
+    setStatus('loading');
+    try {
+      const [allResult, legacyResult] = await Promise.allSettled([
+        fetchAllProducts(),
+        fetchProducts('foodservices'),
+      ]);
+      const allProducts = allResult.status === 'fulfilled' && Array.isArray(allResult.value) ? allResult.value : null;
+      const legacyProducts = legacyResult.status === 'fulfilled' && Array.isArray(legacyResult.value) ? legacyResult.value : null;
+      if (!allProducts) {
+        console.error('Failed to load the full product catalogue:', allResult.status === 'rejected'
+          ? allResult.reason
+          : new Error('The product catalogue response was not a list.'));
+      }
+      if (!legacyProducts) {
+        console.error('Failed to load products from the legacy food category:', legacyResult.status === 'rejected'
+          ? legacyResult.reason
+          : new Error('The food category response was not a list.'));
+      }
+      if (!allProducts && !legacyProducts) {
+        throw new Error('The product API did not return a product list.');
+      }
+
+      const foodCategoryProducts = (legacyProducts || [])
+        .map((product) => ({ ...product, serviceType: product.serviceType || 'food' }));
+      const uniqueProducts = new Map(
+        [...(allProducts || []), ...foodCategoryProducts]
+          .map((product, index) => [product._id || product.id || index, product])
+      );
+      setProducts([...uniqueProducts.values()].filter(isFoodProduct));
+      setStatus('succeeded');
+    } catch (error) {
+      console.error('Failed to load food products:', error);
+      setStatus('failed');
+    }
+  }, [dispatch]);
 
   useEffect(() => {
-    const term = searchTerm.trim();
-    if (term) {
-      debouncedSearch(term);
-    } else {
-      dispatch(getProducts({ category: 'foodservices', searchTerm: '' }));
-    }
-    return debouncedSearch.cancel;
-  }, [searchTerm, debouncedSearch, dispatch]);
+    loadProducts();
+  }, [loadProducts]);
 
   const handleSearchChange = (event) => {
     setSearchTerm(event.target.value);
@@ -60,19 +94,21 @@ const Food = () => {
     } else {
       dispatch(addToCart({ ...product, quantity: 1 }));
     }
+    dispatch(setCartDrawerOpen(true));
     toast.success(t('food.addToCartSuccess'));
   };
 
-  const filteredProducts = products.filter((product) =>
-    product.name?.toLowerCase().includes(searchTerm.trim().toLowerCase())
-  );
+  const filteredProducts = useMemo(() => {
+    const term = searchTerm.trim().toLowerCase();
+    return products.filter((product) => (
+      `${product.name || ''} ${product.description || ''}`.toLowerCase().includes(term)
+    ));
+  }, [products, searchTerm]);
   const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
   const displayedProducts = filteredProducts.slice(
     (currentPage - 1) * productsPerPage,
     currentPage * productsPerPage
   );
-  const cartCount = cartItems.reduce((total, item) => total + item.quantity, 0);
-
   return (
     <main className="food-store">
       <ToastContainer position="bottom-right" />
@@ -131,7 +167,7 @@ const Food = () => {
             <button
               className="kk-button kk-button--outline"
               type="button"
-              onClick={() => dispatch(getProducts({ category: 'foodservices', searchTerm: searchTerm.trim() }))}
+              onClick={loadProducts}
             >
               {t('food.tryAgain')}
             </button>

@@ -4,26 +4,18 @@ import { useTranslation } from 'react-i18next';
 import foodImage from '../assets/foodS.jpg';
 import itImage from '../assets/Itpic.png';
 import carImage from '../assets/car-showroom-sample.png';
-import surveyImage from './image-food/plott.jpeg';
+import hardwareImage from '../assets/construction.png';
 
 const services = [
   { key: 'food', image: foodImage, href: '/food' },
   { key: 'it', image: itImage, href: '/infopage' },
   { key: 'cars', image: carImage, href: '/cars' },
-  { key: 'survey', image: surveyImage, href: null },
+  { key: 'hardware', image: hardwareImage, href: '/hardware' },
 ];
 
 const Service = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
-
-  const openService = (href) => {
-    if (href) {
-      navigate(href);
-      return;
-    }
-    navigate('/', { state: { scrollTo: 'contactus' } });
-  };
 
   return (
     <section id="services" className="kk-services">
@@ -51,7 +43,7 @@ const Service = () => {
                 <button
                   className="kk-text-link"
                   type="button"
-                  onClick={() => openService(service.href)}
+                  onClick={() => navigate(service.href)}
                 >
                   {t('service.viewService')} <span aria-hidden="true">↗</span>
                 </button>

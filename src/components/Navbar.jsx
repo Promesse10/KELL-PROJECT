@@ -9,14 +9,13 @@ import Logo from '../assets/Logo.png';
 import Logo1 from '../assets/Logo1.png';
 import LanguageSwitcher from './LanguageSwitcher';
 import { logout } from '../slices/authSlice';
-import { decreaseQuantity, increaseQuantity, removeFromCart } from '../slices/cartSlice';
+import { decreaseQuantity, increaseQuantity, removeFromCart, setCartDrawerOpen } from '../slices/cartSlice';
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isProductsOpen, setIsProductsOpen] = useState(false);
   const [isAccountOpen, setIsAccountOpen] = useState(false);
-  const [isCartOpen, setIsCartOpen] = useState(false);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const accountRef = useRef(null);
   const { t } = useTranslation();
@@ -25,12 +24,14 @@ const Navbar = () => {
   const dispatch = useDispatch();
   const { user, isLoggedIn } = useSelector((state) => state.auth);
   const cartItems = useSelector((state) => state.cart.items) || [];
+  const isCartOpen = useSelector((state) => state.cart.isDrawerOpen);
   const profileImage = typeof user?.profilePic === 'string'
     ? user.profilePic
     : user?.profilePic?.[0]?.url || user?.profilePic?.url;
   const cartCount = cartItems.reduce((total, item) => total + item.quantity, 0);
   const cartTotal = cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
   const isCheckoutPage = location.pathname === '/checkout';
+  const isCarSalesPage = location.pathname === '/cars';
 
   useEffect(() => {
     const updateScrollState = () => setIsScrolled(window.scrollY > 12);
@@ -42,9 +43,9 @@ const Navbar = () => {
   useEffect(() => {
     setIsMobileMenuOpen(false);
     setIsProductsOpen(false);
-    setIsCartOpen(false);
+    dispatch(setCartDrawerOpen(false));
     setIsAccountOpen(false);
-  }, [location.pathname]);
+  }, [location.pathname, dispatch]);
 
   useEffect(() => {
     if (!isMobileMenuOpen && !isCartOpen && !showLogoutConfirm) return undefined;
@@ -53,7 +54,7 @@ const Navbar = () => {
     const closeOnEscape = (event) => {
       if (event.key === 'Escape') {
         setIsMobileMenuOpen(false);
-        setIsCartOpen(false);
+        dispatch(setCartDrawerOpen(false));
         setShowLogoutConfirm(false);
       }
     };
@@ -62,7 +63,7 @@ const Navbar = () => {
       document.body.style.overflow = previousOverflow;
       document.removeEventListener('keydown', closeOnEscape);
     };
-  }, [isMobileMenuOpen, isCartOpen, showLogoutConfirm]);
+  }, [isMobileMenuOpen, isCartOpen, showLogoutConfirm, dispatch]);
 
   useEffect(() => {
     const closeAccountOnOutsideClick = (event) => {
@@ -109,10 +110,11 @@ const Navbar = () => {
     { label: t('navbar.it'), to: '/infopage' },
     { label: t('navbar.food'), to: '/food' },
     { label: t('navbar.cars'), to: '/cars' },
+    { label: t('navbar.hardware'), to: '/hardware' },
   ];
 
   const handleCheckout = () => {
-    setIsCartOpen(false);
+    dispatch(setCartDrawerOpen(false));
     navigate('/checkout', { state: { cart: cartItems } });
   };
 
@@ -154,11 +156,11 @@ const Navbar = () => {
 
         <div className="kk-navigation__actions">
           <LanguageSwitcher />
-          {!isCheckoutPage && (
+          {!isCheckoutPage && !isCarSalesPage && (
             <button
               type="button"
               className="kk-navigation__cart-button"
-              onClick={() => setIsCartOpen(true)}
+              onClick={() => dispatch(setCartDrawerOpen(true))}
               aria-label={t('navbar.cartWithCount', { count: cartCount })}
             >
               <FiShoppingBag aria-hidden="true" />
@@ -259,7 +261,7 @@ const Navbar = () => {
             type="button"
             className="kk-cart-layer__backdrop"
             aria-label={t('cart.closeCart')}
-            onClick={() => setIsCartOpen(false)}
+            onClick={() => dispatch(setCartDrawerOpen(false))}
           />
           <aside className="kk-cart-drawer" role="dialog" aria-modal="true" aria-labelledby="kk-cart-title">
             <div className="kk-cart-drawer__heading">
@@ -267,7 +269,7 @@ const Navbar = () => {
                 <span className="kk-eyebrow">{t('cart.yourSelection')}</span>
                 <h2 id="kk-cart-title">{t('cart.shoppingCart')} <span>({cartCount})</span></h2>
               </div>
-              <button type="button" onClick={() => setIsCartOpen(false)} aria-label={t('cart.closeCart')}>
+              <button type="button" onClick={() => dispatch(setCartDrawerOpen(false))} aria-label={t('cart.closeCart')}>
                 <FiX />
               </button>
             </div>
@@ -276,7 +278,7 @@ const Navbar = () => {
               <div className="kk-cart-drawer__empty">
                     <FiShoppingBag aria-hidden="true" />
                 <p>{t('cart.empty')}</p>
-                <button type="button" className="kk-button kk-button--primary" onClick={() => { setIsCartOpen(false); navigate('/food'); }}>
+                <button type="button" className="kk-button kk-button--primary" onClick={() => { dispatch(setCartDrawerOpen(false)); navigate('/food'); }}>
                   {t('cart.continueShopping')} <FiArrowRight aria-hidden="true" />
                 </button>
               </div>
@@ -306,9 +308,6 @@ const Navbar = () => {
                   </div>
                   <button type="button" className="kk-button kk-button--primary" onClick={handleCheckout}>
                     {t('cart.checkout')} <FiArrowRight aria-hidden="true" />
-                  </button>
-                  <button type="button" className="kk-cart-drawer__view-full" onClick={() => { setIsCartOpen(false); navigate('/cart'); }}>
-                    {t('cart.viewFullCart')}
                   </button>
                 </div>
               </>

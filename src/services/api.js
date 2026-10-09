@@ -43,7 +43,16 @@ export const deleteProduct = async (id) => {
 
 export const updateProduct = async (product) => {
   try {
-    const response = await api.put(`/products/${product.id}`, product);
+    const { id, imageFile, ...fields } = product;
+    let updateData = fields;
+    if (imageFile) {
+      updateData = new FormData();
+      Object.entries(fields).forEach(([field, value]) => {
+        updateData.append(field, String(value));
+      });
+      updateData.append("file", imageFile);
+    }
+    const response = await api.put(`/products/${id}`, updateData);
     return response.data;
   } catch (error) {
     console.error("Error updating product:", error);

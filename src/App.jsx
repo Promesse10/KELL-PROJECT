@@ -10,7 +10,6 @@ import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import Landingpage from "./pages/Landingpage";
 import LoginSignup from "./pages/LoginSignup";
-import Cart from "./pages/Cart";
 import Service from "./components/Service";
 import Infopage from "./components/Infopage";
 import Hero from "./components/Hero";
@@ -24,7 +23,6 @@ import ProductsPage from "./pages/Product";
 import Dashboard from "./components/Dashboard";
 import ProfileManager from "./components/profileManager";
 import OrderList from "./components/Orders/OrderList";
-import CategoriesPage from "./pages/CategoriesPage";
 import UserList from "./components/Users/UserList";
 import ForgotPasswordForm from "./components/ForgetPassword";
 import NotFound from "./components/NotFound";
@@ -38,6 +36,7 @@ import Receipt from "./components/Receipt";
 import VerifyEmail from "./components/VerifyEmail";
 import CheckEmail from "./components/CheckEmail";
 import CarSales from "./pages/CarSales";
+import HardwareShop from "./pages/HardwareShop";
 
 function App() {
   const location = useLocation();
@@ -70,7 +69,6 @@ function App() {
         <Route path="/login" element={<LoginSignup />} />
         <Route path="/createAccount" element={<LoginSignup />} />
         <Route path="/login-admin" element={<LoginAdmin />} />
-        <Route path="/cart" element={<Cart />} />
         <Route path="/hero" element={<Hero />} />
         <Route path="/aboutus" element={<Aboutus />} />
         <Route path="/contactus" element={<Contactus />} />
@@ -79,6 +77,7 @@ function App() {
         <Route path="/service" element={<Service />} />
         <Route path="/food" element={<Food />} />
         <Route path="/cars" element={<CarSales />} />
+        <Route path="/hardware" element={<HardwareShop />} />
         <Route path="/infopage" element={<Infopage />} />
         <Route path="/profile" element={<ProfileManager />} />
         <Route path="/ForgotPassword" element={<ForgotPasswordForm />} />
@@ -94,7 +93,6 @@ function App() {
             <Route path="product" element={<ProductsPage />} />
             <Route path="dashboard" element={<Dashboard />} />
             <Route path="orders" element={<OrderList />} />
-            <Route path="categories" element={<CategoriesPage />} />
             <Route path="users" element={<UserList />} />
           </Route>
         </Route>

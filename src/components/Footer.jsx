@@ -13,7 +13,7 @@ const Footer = () => {
     { key: 'food', to: '/food' },
     { key: 'it', to: '/infopage' },
     { key: 'cars', to: '/cars' },
-    { key: 'survey', to: '/contactus' },
+    { key: 'hardware', to: '/hardware' },
   ];
 
   return (

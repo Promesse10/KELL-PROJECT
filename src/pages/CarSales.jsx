@@ -14,9 +14,14 @@ const getTextValue = (...values) => {
   return value === undefined ? '' : String(value);
 };
 
-const getVehicleCategory = (vehicle) => getTextValue(vehicle.vehicleCategory, vehicle.category, vehicle.type);
+const getVehicleCategory = (vehicle) => getTextValue(vehicle.vehicleCategory, vehicle.bodyStyle, vehicle.category, vehicle.type);
 const getVehicleFuel = (vehicle) => getTextValue(vehicle.fuelType, vehicle.fuel, vehicle.engineType);
 const getVehicleSeats = (vehicle) => Number(vehicle.seats || vehicle.seatCount || vehicle.capacity || 0);
+const getVehicleListingType = (vehicle) => (
+  ['rent', 'rental', 'car-rental'].includes(String(vehicle.listingType || '').toLowerCase()) ? 'rent' : 'sale'
+);
+
+const vehiclesPerPage = 9;
 
 const CarSales = () => {
   const { t } = useTranslation();
@@ -26,10 +31,12 @@ const CarSales = () => {
   const status = useSelector((state) => state.products.status);
   const [searchTerm, setSearchTerm] = useState('');
   const [category, setCategory] = useState('all');
+  const [listingType, setListingType] = useState('all');
   const [fuel, setFuel] = useState('all');
   const [seats, setSeats] = useState('all');
   const [maximumPrice, setMaximumPrice] = useState('');
   const [sortOrder, setSortOrder] = useState('featured');
+  const [currentPage, setCurrentPage] = useState(1);
   const [selectedVehicle, setSelectedVehicle] = useState(null);
 
   useEffect(() => {
@@ -56,19 +63,33 @@ const CarSales = () => {
       const vehicleCategory = getVehicleCategory(vehicle);
       const vehicleFuel = getVehicleFuel(vehicle);
       const vehicleSeats = getVehicleSeats(vehicle);
+      const matchesListingType = listingType === 'all' || getVehicleListingType(vehicle) === listingType;
       const matchesSearch = `${vehicle.name || ''} ${vehicle.make || ''} ${vehicle.model || ''} ${vehicleCategory} ${vehicleFuel}`.toLowerCase().includes(term);
       const matchesCategory = category === 'all' || vehicleCategory.toLowerCase() === category.toLowerCase();
       const matchesFuel = fuel === 'all' || vehicleFuel.toLowerCase() === fuel.toLowerCase();
       const matchesSeats = seats === 'all' || vehicleSeats === Number(seats);
       const matchesPrice = !maximumPrice || Number(vehicle.price) <= Number(maximumPrice);
-      return matchesSearch && matchesCategory && matchesFuel && matchesSeats && matchesPrice;
+      return matchesSearch && matchesCategory && matchesListingType && matchesFuel && matchesSeats && matchesPrice;
     });
 
     if (sortOrder === 'price-low') filtered.sort((a, b) => Number(a.price) - Number(b.price));
     if (sortOrder === 'price-high') filtered.sort((a, b) => Number(b.price) - Number(a.price));
     if (sortOrder === 'newest') filtered.sort((a, b) => Number(b.year) - Number(a.year));
     return filtered;
-  }, [vehicles, searchTerm, category, fuel, seats, maximumPrice, sortOrder]);
+  }, [vehicles, searchTerm, category, listingType, fuel, seats, maximumPrice, sortOrder]);
+  const pageCount = Math.ceil(filteredVehicles.length / vehiclesPerPage);
+  const displayedVehicles = filteredVehicles.slice(
+    (currentPage - 1) * vehiclesPerPage,
+    currentPage * vehiclesPerPage
+  );
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm, category, listingType, fuel, seats, maximumPrice, sortOrder]);
+
+  useEffect(() => {
+    if (pageCount > 0 && currentPage > pageCount) setCurrentPage(pageCount);
+  }, [currentPage, pageCount]);
 
   const refreshVehicles = () => {
     dispatch(getProducts({ category: 'carservices', searchTerm: '' }));
@@ -87,10 +108,12 @@ const CarSales = () => {
   const clearFilters = () => {
     setSearchTerm('');
     setCategory('all');
+    setListingType('all');
     setFuel('all');
     setSeats('all');
     setMaximumPrice('');
     setSortOrder('featured');
+    setCurrentPage(1);
   };
 
   return (
@@ -133,6 +156,14 @@ const CarSales = () => {
               <option value="SUV">{t('cars.categories.suv')}</option>
               <option value="Sedan">{t('cars.categories.sedan')}</option>
               <option value="Hatchback">{t('cars.categories.hatchback')}</option>
+            </select>
+          </label>
+          <label>
+            <span>{t('cars.listingType')}</span>
+            <select value={listingType} onChange={(event) => setListingType(event.target.value)}>
+              <option value="all">{t('cars.allListings')}</option>
+              <option value="sale">{t('cars.forSale')}</option>
+              <option value="rent">{t('cars.forRent')}</option>
             </select>
           </label>
           <label>
@@ -193,10 +224,11 @@ const CarSales = () => {
           </div>
         ) : filteredVehicles.length ? (
           <div className="car-store__grid">
-            {filteredVehicles.map((vehicle) => (
+            {displayedVehicles.map((vehicle) => (
               <article className="car-card" key={vehicle._id}>
                 <div className="car-card__image">
                   <img src={vehicle.images?.[0]?.url || carImage} alt={vehicle.name || t('cars.heroImageAlt')} loading="lazy" />
+                  {getVehicleListingType(vehicle) === 'rent' && <span className="car-card__listing-type">{t('cars.rentalListing')}</span>}
                   <span className="car-card__fuel">
                     {getVehicleFuel(vehicle).toLowerCase() === 'electric' ? <FaBolt aria-hidden="true" /> : <FaGasPump aria-hidden="true" />}
                     {getFuelLabel(vehicle)}
@@ -217,8 +249,8 @@ const CarSales = () => {
                   </div>
                   <div className="car-card__footer">
                     <div>
-                      <small>{t('cars.price')}</small>
-                      <strong>{Number(vehicle.price || 0).toLocaleString()} <small>{t('cart.currency')}</small></strong>
+                      <small>{getVehicleListingType(vehicle) === 'rent' ? t('cars.dailyRate') : t('cars.price')}</small>
+                      <strong>{Number(vehicle.price || 0).toLocaleString()} <small>{t('cart.currency')}{getVehicleListingType(vehicle) === 'rent' ? ` ${t('cars.perDay')}` : ''}</small></strong>
                     </div>
                     <button type="button" onClick={() => setSelectedVehicle(vehicle)} aria-label={t('cars.viewDetails', { car: vehicle.name })}>
                       <FiArrowRight aria-hidden="true" />
@@ -234,6 +266,13 @@ const CarSales = () => {
             <p>{vehicles.length ? t('cars.noResults') : t('cars.noVehiclesYet')}</p>
             {vehicles.length > 0 && <button type="button" className="kk-button kk-button--outline" onClick={clearFilters}>{t('cars.clearFilters')}</button>}
           </div>
+        )}
+        {pageCount > 1 && (
+          <nav className="food-store__pagination" aria-label={t('cars.inventoryTitle')}>
+            <button type="button" onClick={() => setCurrentPage((page) => Math.max(1, page - 1))} disabled={currentPage === 1}>{t('food.previous')}</button>
+            <span>{t('food.pageCount', { current: currentPage, total: pageCount })}</span>
+            <button type="button" onClick={() => setCurrentPage((page) => Math.min(pageCount, page + 1))} disabled={currentPage === pageCount}>{t('food.next')}</button>
+          </nav>
         )}
       </section>
 
@@ -255,7 +294,7 @@ const CarSales = () => {
             <img className="car-detail__image" src={selectedVehicle.images?.[0]?.url || carImage} alt={selectedVehicle.name || t('cars.heroImageAlt')} />
             <div className="car-detail__content">
               <h2 id="car-detail-title">{selectedVehicle.name}</h2>
-              <p>{t('cars.detailNotice')}</p>
+              <p>{t(getVehicleListingType(selectedVehicle) === 'rent' ? 'cars.rentalDetailNotice' : 'cars.detailNotice')}</p>
               <dl>
                 <div><dt>{t('cars.category')}</dt><dd>{getCategoryLabel(selectedVehicle)}</dd></div>
                 <div><dt>{t('cars.fuelType')}</dt><dd>{getFuelLabel(selectedVehicle)}</dd></div>
@@ -266,15 +305,15 @@ const CarSales = () => {
                 <div><dt>{t('cars.range')}</dt><dd>{selectedVehicle.range || t('cars.notListed')}</dd></div>
               </dl>
               <div className="car-detail__price">
-                <span>{t('cars.price')}</span>
-                <strong>{Number(selectedVehicle.price || 0).toLocaleString()} {t('cart.currency')}</strong>
+                <span>{getVehicleListingType(selectedVehicle) === 'rent' ? t('cars.dailyRate') : t('cars.price')}</span>
+                <strong>{Number(selectedVehicle.price || 0).toLocaleString()} {t('cart.currency')}{getVehicleListingType(selectedVehicle) === 'rent' ? ` ${t('cars.perDay')}` : ''}</strong>
               </div>
               <button
                 type="button"
                 className="kk-button kk-button--primary"
                 onClick={() => { setSelectedVehicle(null); navigate('/', { state: { scrollTo: 'contactus' } }); }}
               >
-                {t('cars.askAboutCar')} <FiArrowRight aria-hidden="true" />
+                {t(getVehicleListingType(selectedVehicle) === 'rent' ? 'cars.askAboutRental' : 'cars.askAboutCar')} <FiArrowRight aria-hidden="true" />
               </button>
             </div>
           </section>

@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { FiArrowRight } from 'react-icons/fi';
 import { getProducts } from '../slices/productSlice';
-import { addToCart, increaseQuantity, selectCartItems } from '../slices/cartSlice';
+import { addToCart, increaseQuantity, selectCartItems, setCartDrawerOpen } from '../slices/cartSlice';
 import LoginPopup from './LoginPopup';
 import { toast, ToastContainer } from 'react-toastify';
 import debounce from 'lodash/debounce';
@@ -17,9 +17,12 @@ import table from '../components/images/table.jpeg';
 import Modal from './moadl';
 import ServiceStoreHero from './ServiceStoreHero';
 
+const productsPerPage = 9;
+
 const Infopage = () => {
   const [popupContent, setPopupContent] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
   const [showLoginPopup, setShowLoginPopup] = useState(false);
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -33,6 +36,15 @@ const Infopage = () => {
       .toLowerCase()
       .includes(searchTerm.trim().toLowerCase())
   );
+  const pageCount = Math.ceil(filteredProducts.length / productsPerPage);
+  const displayedProducts = filteredProducts.slice(
+    (currentPage - 1) * productsPerPage,
+    currentPage * productsPerPage
+  );
+
+  useEffect(() => {
+    if (pageCount > 0 && currentPage > pageCount) setCurrentPage(pageCount);
+  }, [currentPage, pageCount]);
   const debouncedSearch = useCallback(
     debounce((term) => dispatch(getProducts({ category: 'schoolmatetial', searchTerm: term })), 350),
     [dispatch]
@@ -53,6 +65,7 @@ const Infopage = () => {
     const existing = cartItems.find((item) => item._id === product._id);
     if (existing) dispatch(increaseQuantity(product._id));
     else dispatch(addToCart({ ...product, quantity: 1 }));
+    dispatch(setCartDrawerOpen(true));
     toast.success(t('food.addToCartSuccess'));
   };
 
@@ -136,7 +149,10 @@ const Infopage = () => {
           <input
             type="search"
             value={searchTerm}
-            onChange={(event) => setSearchTerm(event.target.value)}
+            onChange={(event) => {
+              setSearchTerm(event.target.value);
+              setCurrentPage(1);
+            }}
             placeholder={t('infopage.searchPlaceholder')}
           />
         </label>
@@ -164,7 +180,7 @@ const Infopage = () => {
           </div>
         ) : (
           <div className="food-store__grid">
-            {filteredProducts.map((product) => (
+            {displayedProducts.map((product) => (
               <article className="food-product-card" key={product._id}>
                 <div className="food-product-card__image">
                   {product.images?.[0]?.url
@@ -185,6 +201,13 @@ const Infopage = () => {
               </article>
             ))}
           </div>
+        )}
+        {pageCount > 1 && (
+          <nav className="food-store__pagination" aria-label={t('food.pagination')}>
+            <button type="button" onClick={() => setCurrentPage((page) => Math.max(1, page - 1))} disabled={currentPage === 1}>{t('food.previous')}</button>
+            <span>{t('food.pageCount', { current: currentPage, total: pageCount })}</span>
+            <button type="button" onClick={() => setCurrentPage((page) => Math.min(pageCount, page + 1))} disabled={currentPage === pageCount}>{t('food.next')}</button>
+          </nav>
         )}
         <div className="info-store__grid">
           {infoCards.map((info) => (

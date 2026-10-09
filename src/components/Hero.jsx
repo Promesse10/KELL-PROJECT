@@ -5,20 +5,20 @@ import { FaCarSide } from 'react-icons/fa';
 import foodImage from '../assets/food.jpeg';
 import itImage from '../assets/Itpic.png';
 import carImage from '../assets/car-showroom-sample.png';
-import surveyImage from './image-food/plott.jpeg';
+import hardwareImage from '../assets/construction.png';
 
 const services = [
   { key: 'food', image: foodImage, href: '/food', objects: ['🌽', '🫘', '🥔', '🥜', '🌾', '🥕'] },
   { key: 'it', image: itImage, href: '/infopage', objects: ['✏️', '📚', '📐', '🧮', '🖊️', '📏'] },
   { key: 'cars', image: carImage, href: '/cars', objects: ['🚙', '🔋', '🚘', '⚡', '🚗', '🔌'] },
-  { key: 'survey', image: surveyImage, href: '/contactus', objects: ['📐', '🧭', '📍', '🗺️', '📡', '📏'] },
+  { key: 'hardware', image: hardwareImage, href: '/hardware', objects: ['🔨', '🔩', '🚿', '🚰', '🪠', '🧰'] },
 ];
 
 const serviceLinks = [
   { key: 'food', href: '/food', image: foodImage },
   { key: 'it', href: '/infopage', image: itImage },
   { key: 'cars', href: '/cars', image: carImage },
-  { key: 'survey', href: '/contactus', image: surveyImage },
+  { key: 'hardware', href: '/hardware', image: hardwareImage },
 ];
 
 const Hero = () => {

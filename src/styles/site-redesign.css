@@ -2377,6 +2377,19 @@
   transition: transform .5s ease;
 }
 
+.car-card__listing-type {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  z-index: 1;
+  padding: 6px 9px;
+  border-radius: 99px;
+  color: #24345e;
+  background: rgba(255, 255, 255, .94);
+  font-size: 9px;
+  font-weight: 750;
+}
+
 .car-card:hover .car-card__image img {
   transform: scale(1.045);
 }
@@ -3033,6 +3046,243 @@
   }
 }
 
+  .food-store__grid {
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 225px), 1fr));
+    gap: 18px;
+  }
+
+  .food-product-card {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+  }
+
+  .food-product-card__image {
+    height: 176px;
+  }
+
+  .food-product-card__content {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    padding: 15px;
+  }
+
+  .food-product-card__content h3 {
+    font-size: 1.08rem;
+    line-height: 1.35;
+  }
+
+  .food-product-card__content > p {
+    min-height: 38px;
+    margin: 7px 0 12px;
+    font-size: .78rem;
+  }
+
+  .food-product-card__purchase {
+    margin-top: auto;
+    padding-top: 11px;
+  }
+
+  .food-product-card__actions .kk-button,
+  .food-product-card__buy {
+    min-height: 34px;
+  }
+
+  .car-store__grid {
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 250px), 1fr));
+    gap: 17px;
+  }
+
+  .car-card__image {
+    height: 170px;
+  }
+
+  .car-card__content {
+    padding: 14px;
+  }
+
+  .kk-cart-layer {
+    background: transparent;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+
+  .kk-cart-drawer {
+    background: #fff;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+
+  .kk-checkout {
+    min-height: 100vh;
+    padding-bottom: 48px;
+    color: #172454;
+    background: #f4f6fa;
+  }
+
+  .kk-checkout__back {
+    border: 1px solid #dce1ec;
+    border-radius: 8px;
+    padding: 10px 16px;
+    color: #172454;
+    background: #fff;
+    font: inherit;
+    font-size: .88rem;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .kk-checkout__back:hover {
+    border-color: #172454;
+    background: #f5f7fb;
+  }
+
+  .kk-checkout__main {
+    display: grid;
+    width: min(1180px, calc(100% - 40px));
+    grid-template-columns: minmax(0, 1.55fr) minmax(300px, .85fr);
+    align-items: start;
+    gap: 24px;
+    margin: 38px auto 0;
+  }
+
+  .kk-checkout__panel {
+    border: 1px solid #e1e5ef;
+    border-radius: 13px;
+    padding: clamp(20px, 3vw, 32px);
+    background: #fff;
+    box-shadow: 0 12px 36px rgba(23, 36, 84, .06);
+  }
+
+  .kk-checkout__details h2,
+  .kk-checkout__details h3,
+  .kk-checkout__summary h2,
+  .kk-checkout__summary h3 {
+    color: #172454;
+  }
+
+  .kk-checkout__details h2 {
+    margin: 22px 0 12px;
+    font-size: 1.25rem;
+  }
+
+  .kk-checkout__details h2:first-child {
+    margin-top: 0;
+  }
+
+  .kk-checkout__details input:not([type="radio"]):not([type="checkbox"]),
+  .kk-checkout__details select,
+  .kk-checkout__details textarea {
+    min-height: 46px;
+    border: 1px solid #d9deea;
+    border-radius: 7px;
+    padding: 11px 13px;
+    color: #172454;
+    background: #fff;
+    font: inherit;
+    font-size: .92rem;
+  }
+
+  .kk-checkout__details input:focus,
+  .kk-checkout__details select:focus,
+  .kk-checkout__details textarea:focus {
+    border-color: #50649a;
+    outline: 3px solid rgba(80, 100, 154, .14);
+  }
+
+  .kk-checkout__details label.block {
+    border-radius: 9px;
+    padding: 13px;
+    background: #fff;
+  }
+
+  .kk-checkout__summary .kk-checkout__panel {
+    position: sticky;
+    top: 22px;
+  }
+
+  .kk-checkout__summary ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .kk-checkout__summary li {
+    gap: 11px;
+    border-bottom: 1px solid #edf0f5;
+    padding: 11px 0;
+    color: #394663;
+    font-size: .86rem;
+  }
+
+  .kk-checkout__summary li img {
+    flex: 0 0 auto;
+  }
+
+  .kk-checkout__summary .kk-checkout__empty {
+    color: #68738e;
+    font-size: .9rem;
+  }
+
+  .kk-checkout__summary button {
+    min-height: 47px;
+    margin-top: 12px;
+    border-radius: 7px;
+    font-weight: 700;
+  }
+
+  .kk-checkout__summary button:disabled {
+    cursor: not-allowed;
+    opacity: .55;
+  }
+
+  @media (max-width: 760px) {
+    .food-store__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 13px;
+    }
+
+    .food-product-card__image {
+      height: 145px;
+    }
+
+    .food-product-card__content {
+      padding: 12px;
+    }
+
+    .food-product-card__purchase {
+      align-items: flex-start;
+      flex-direction: column;
+    }
+
+    .food-product-card__actions {
+      width: 100%;
+      justify-content: flex-start;
+    }
+
+    .car-store__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .kk-checkout__main {
+      width: min(100% - 28px, 540px);
+      grid-template-columns: 1fr;
+      margin-top: 22px;
+    }
+
+    .kk-checkout__summary .kk-checkout__panel {
+      position: static;
+    }
+  }
+
+  @media (max-width: 390px) {
+    .food-store__grid,
+    .car-store__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
 /* Admin workspace */
 .kk-admin-shell,
 .kk-admin-login {
@@ -3397,6 +3647,56 @@
   gap: 18px;
 }
 
+.kk-admin-services {
+  margin-bottom: 22px;
+  padding: 22px;
+  border: 1px solid #e7e9f0;
+  border-radius: 17px;
+  background: #fff;
+  box-shadow: 0 8px 24px rgba(23, 36, 84, .035);
+}
+
+.kk-admin-service-links {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 11px;
+}
+
+.kk-admin-service-link {
+  display: grid;
+  min-width: 0;
+  grid-template-columns: 37px minmax(0, 1fr);
+  gap: 10px;
+  padding: 14px;
+  border: 1px solid #edf0f4;
+  border-radius: 12px;
+  color: inherit;
+  text-decoration: none;
+  transition: border-color .2s ease, transform .2s ease, box-shadow .2s ease;
+}
+
+.kk-admin-service-link:hover {
+  transform: translateY(-2px);
+  border-color: #d9deea;
+  box-shadow: 0 8px 18px rgba(23, 36, 84, .07);
+}
+
+.kk-admin-service-link__icon {
+  display: grid;
+  width: 37px;
+  height: 37px;
+  place-items: center;
+  border-radius: 11px;
+  color: #586b9b;
+  background: #f0f3fa;
+}
+
+.kk-admin-service-link__icon svg { width: 17px; height: 17px; }
+.kk-admin-service-link__copy { display: grid; min-width: 0; gap: 4px; }
+.kk-admin-service-link__copy strong { color: #2c3858; font-size: 11px; }
+.kk-admin-service-link__copy small { color: #8a92a2; font-size: 9px; line-height: 1.5; }
+.kk-admin-service-link__action { grid-column: 2; color: #697aa6; font-size: 9px; font-weight: 700; }
+
 .kk-admin-card {
   min-width: 0;
   padding: 22px;
@@ -3587,6 +3887,16 @@
   color: #858da0;
   font-size: 10px;
   line-height: 1.6;
+}
+
+.kk-admin-batch__heading .kk-admin-batch__category-help {
+  color: #78829a;
+  font-size: 9px;
+}
+
+.kk-admin-batch__category-help a {
+  color: #344b88;
+  font-weight: 700;
 }
 
 .kk-admin-batch__count {
@@ -4005,6 +4315,7 @@
 @media (max-width: 1100px) {
   .kk-admin-page { padding-right: 28px; padding-left: 28px; }
   .kk-admin-dashboard-grid { grid-template-columns: minmax(0, 1fr); }
+  .kk-admin-service-links { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .kk-admin-popular__list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
@@ -4056,6 +4367,7 @@
   .kk-admin-metric__copy strong { grid-column: 2; grid-row: 1 / span 2; font-size: 22px; }
   .kk-admin-metric__copy small { grid-column: 1; }
   .kk-admin-card { padding: 16px; }
+  .kk-admin-services { padding: 16px; }
   .kk-admin-recent { overflow: hidden; }
   .kk-admin-table { min-width: 650px; }
   .kk-admin-popular__list { grid-template-columns: 1fr; }
@@ -4082,6 +4394,7 @@
 }
 
 @media (max-width: 460px) {
+  .kk-admin-service-links { grid-template-columns: 1fr; }
   .kk-admin-form-card form.kk-admin-batch__form,
   .kk-admin-batch__car-fields { grid-template-columns: 1fr !important; }
   .kk-admin-batch__form > .kk-admin-batch__description,
@@ -5153,4 +5466,239 @@
     animation-iteration-count: 1 !important;
     transition-duration: .01ms !important;
   }
+}
+
+.kk-admin-shell,
+.kk-admin-login {
+  font-family: "Noto Sans", "Segoe UI", Arial, sans-serif;
+}
+
+.kk-admin-shell { font-size: 14px; }
+.kk-admin-sidebar__link,
+.kk-admin-sidebar__logout { font-size: 15px; }
+.kk-admin-sidebar__section,
+.kk-admin-sidebar__brand small { font-size: 10px; }
+.kk-admin-sidebar__help span { font-size: 14px; }
+.kk-admin-sidebar__help small { font-size: 12px; }
+.kk-admin-sidebar__bottom { gap: 12px; }
+.kk-admin-language { display: grid; gap: 7px; }
+.kk-admin-language > span { color: rgba(255,255,255,.72); font-size: 12px; font-weight: 650; }
+.kk-admin-language select {
+  min-height: 42px;
+  padding: 8px 11px;
+  border: 1px solid rgba(255,255,255,.18);
+  border-radius: 9px;
+  color: #fff;
+  background: rgba(255,255,255,.1);
+  font: inherit;
+  font-size: 13px;
+}
+.kk-admin-language select option { color: #172454; background: #fff; }
+.kk-admin-eyebrow { font-size: 11px; }
+.kk-admin-page-heading p { font-size: 15px; }
+.kk-admin-date,
+.kk-admin-count { font-size: 12px; }
+.kk-admin-metric__copy > span { font-size: 13px; }
+.kk-admin-metric__copy small { font-size: 11px; }
+.kk-admin-card__heading h2 { font-size: 17px; }
+.kk-admin-card__heading p { font-size: 12px; }
+.kk-admin-table,
+.kk-admin-page .kk-admin-card table { font-size: 13px; }
+.kk-admin-table th,
+.kk-admin-page .kk-admin-card table th { font-size: 10px; }
+.kk-admin-status { font-size: 11px; }
+.kk-admin-popular__item strong { font-size: 13px; }
+.kk-admin-popular__item span { font-size: 11px; }
+.kk-admin-batch__heading h2 { font-size: 25px !important; }
+.kk-admin-batch__heading p,
+.kk-admin-batch__queue-heading p { font-size: 13px; }
+.kk-admin-batch__count { font-size: 11px; }
+.kk-admin-batch__form > label,
+.kk-admin-batch__type,
+.kk-admin-batch__form > label > span,
+.kk-admin-batch__type > label { font-size: 13px; }
+.kk-admin-batch__section-title { font-size: 14px; }
+.kk-admin-batch__section-title small { font-size: 11px; }
+.kk-admin-batch__car-fields > label > span { font-size: 12px; }
+.kk-admin-batch__book strong { font-size: 13px; }
+.kk-admin-batch__book small { font-size: 12px; }
+.kk-admin-batch__search-error,
+.kk-admin-batch__notice { font-size: 13px; }
+.kk-admin-batch__queue-heading h3 { font-size: 16px; }
+.kk-admin-batch__queue li strong { font-size: 13px; }
+.kk-admin-batch__queue li small { font-size: 11px; }
+.kk-admin-batch__stock-note { font-size: 12px; }
+.kk-admin-shell input:not([type="checkbox"]):not([type="file"]),
+.kk-admin-shell select,
+.kk-admin-shell textarea { font-family: inherit; font-size: 14px; }
+.kk-admin-shell button:not(.kk-admin-mobilebar button):not(.kk-admin-sidebar__close):not(.kk-admin-sidebar__logout):not(.kk-admin-login button) {
+  font-size: 13px;
+}
+.kk-admin-product-filter { font-size: 13px; }
+.kk-admin-service-link__copy strong { font-size: 13px; }
+.kk-admin-service-link__copy small,
+.kk-admin-service-link__action { font-size: 11px; }
+
+.food-store__grid {
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 225px), 1fr));
+  gap: 18px;
+}
+
+.food-product-card {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+}
+
+.food-product-card__image { height: 176px; }
+
+.food-product-card__content {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  padding: 15px;
+}
+
+.food-product-card__content h3 { font-size: 1.08rem; line-height: 1.35; }
+.food-product-card__purchase { margin-top: auto; padding-top: 11px; }
+.food-product-card__actions .kk-button,
+.food-product-card__buy { min-height: 34px; }
+
+.car-store__grid {
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 250px), 1fr));
+  gap: 17px;
+}
+
+.car-card__image { height: 170px; }
+.car-card__content { padding: 14px; }
+
+.kk-cart-layer {
+  background: transparent;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+.kk-cart-drawer {
+  background: #fff;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+.kk-checkout {
+  min-height: 100vh;
+  padding-bottom: 48px;
+  color: #172454;
+  background: #f4f6fa;
+}
+
+.kk-checkout__back {
+  border: 1px solid #dce1ec;
+  border-radius: 8px;
+  padding: 10px 16px;
+  color: #172454;
+  background: #fff;
+  font: inherit;
+  font-size: .88rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.kk-checkout__back:hover { border-color: #172454; background: #f5f7fb; }
+
+.kk-checkout__main {
+  display: grid;
+  width: min(1180px, calc(100% - 40px));
+  grid-template-columns: minmax(0, 1.55fr) minmax(300px, .85fr);
+  align-items: start;
+  gap: 24px;
+  margin: 38px auto 0;
+}
+
+.kk-checkout__panel {
+  border: 1px solid #e1e5ef;
+  border-radius: 13px;
+  padding: clamp(20px, 3vw, 32px);
+  background: #fff;
+  box-shadow: 0 12px 36px rgba(23, 36, 84, .06);
+}
+
+.kk-checkout__details h2,
+.kk-checkout__details h3,
+.kk-checkout__summary h2,
+.kk-checkout__summary h3 { color: #172454; }
+
+.kk-checkout__details h2 { margin: 22px 0 12px; font-size: 1.25rem; }
+.kk-checkout__details h2:first-child { margin-top: 0; }
+
+.kk-checkout__details input:not([type="radio"]):not([type="checkbox"]),
+.kk-checkout__details select,
+.kk-checkout__details textarea {
+  min-height: 46px;
+  border: 1px solid #d9deea;
+  border-radius: 7px;
+  padding: 11px 13px;
+  color: #172454;
+  background: #fff;
+  font: inherit;
+  font-size: .92rem;
+}
+
+.kk-checkout__details input:focus,
+.kk-checkout__details select:focus,
+.kk-checkout__details textarea:focus {
+  border-color: #50649a;
+  outline: 3px solid rgba(80, 100, 154, .14);
+}
+
+.kk-checkout__details label.block { border-radius: 9px; padding: 13px; background: #fff; }
+
+.kk-checkout__summary .kk-checkout__panel { position: sticky; top: 22px; }
+.kk-checkout__summary ul { margin: 0; padding: 0; list-style: none; }
+
+.kk-checkout__summary li {
+  gap: 11px;
+  border-bottom: 1px solid #edf0f5;
+  padding: 11px 0;
+  color: #394663;
+  font-size: .86rem;
+}
+
+.kk-checkout__summary li img { flex: 0 0 auto; }
+.kk-checkout__summary .kk-checkout__empty { color: #68738e; font-size: .9rem; }
+
+.kk-checkout__summary button {
+  min-height: 47px;
+  margin-top: 12px;
+  border-radius: 7px;
+  font-weight: 700;
+}
+
+.kk-checkout__summary button:disabled { cursor: not-allowed; opacity: .55; }
+
+@media (max-width: 760px) {
+  .food-store__grid,
+  .car-store__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+
+  .food-product-card__image { height: 145px; }
+  .food-product-card__content { padding: 12px; }
+
+  .food-product-card__purchase {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .food-product-card__actions { width: 100%; justify-content: flex-start; }
+
+  .kk-checkout__main {
+    width: min(100% - 28px, 540px);
+    grid-template-columns: 1fr;
+    margin-top: 22px;
+  }
+
+  .kk-checkout__summary .kk-checkout__panel { position: static; }
+}
+
+@media (max-width: 390px) {
+  .food-store__grid,
+  .car-store__grid { grid-template-columns: 1fr; }
 }

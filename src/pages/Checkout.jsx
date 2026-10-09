@@ -9,11 +9,15 @@ import { clearCart } from "../slices/cartSlice";
 
 function Checkout() {
   const location = useLocation();
-  const { cart = [], userId } = location.state || {};
+  const { userId } = location.state || {};
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const { user } = useSelector((state) => state.auth);
+  const savedCart = useSelector((state) => state.cart.items);
+  const cart = location.state?.product
+    ? [{ ...location.state.product, quantity: 1 }]
+    : location.state?.cart || savedCart;
 
   const [deliveryMethod, setDeliveryMethod] = useState("ship");
   const [paymentMethod, setPaymentMethod] = useState("cod");
@@ -72,6 +76,10 @@ function Checkout() {
       : paymentMethod;
 
   const handleOrderClick = async () => {
+    if (!cart.length) {
+      setError("Your cart is empty. Add products before placing an order.");
+      return;
+    }
     setLoading(true);
     setError(null);
 
@@ -82,7 +90,7 @@ function Checkout() {
           name: item.name,
           price: item.price,
           quantity: item.quantity,
-          image: item.images[0]?.url,
+          image: item.images?.[0]?.url || item.image || "",
           product: item._id,
         })),
         paymentMethod: formattedPaymentMethod,
@@ -132,11 +140,11 @@ function Checkout() {
   }, [deliveryMethod]);
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="kk-checkout">
       <Header />
-      <main className="flex flex-col md:flex-row py-10 px-6">
-        <div className="w-full md:w-2/3 md:pr-4 mb-10 md:mb-0">
-          <div className="bg-white p-6 rounded-lg shadow-lg">
+      <main className="kk-checkout__main">
+        <div className="kk-checkout__details">
+          <div className="kk-checkout__panel">
             {/* Delivery Section */}
             <h2 className="text-xl font-semibold mb-4">Delivery</h2>
             <div className="mb-4">
@@ -327,15 +335,15 @@ function Checkout() {
         </div>
 
         {/* Order Summary */}
-        <div className="w-full md:w-1/3">
-          <div className="bg-white p-6 rounded-lg shadow-lg">
+        <aside className="kk-checkout__summary">
+          <div className="kk-checkout__panel">
             <div className="mb-4">
               <h3 className="text-lg font-semibold mb-2">Order Details</h3>
               <ul className="space-y-4 max-h-64 overflow-y-auto pr-2">
                 {cart.map((item, index) => (
                   <li key={index} className="flex items-center">
                     <img
-                      src={item.images[0]?.url}
+                      src={item.images?.[0]?.url || item.image || ""}
                       alt={item.name}
                       className="h-16 w-16 object-cover rounded mr-4 flex-shrink-0"
                     />
@@ -352,6 +360,7 @@ function Checkout() {
                   </li>
                 ))}
               </ul>
+              {!cart.length && <p className="kk-checkout__empty">Your cart is empty. Add products before placing an order.</p>}
             </div>
             <h2 className="text-xl font-semibold mb-4">Order Summary</h2>
             <div className="mb-4 space-y-2">
@@ -373,13 +382,13 @@ function Checkout() {
 
             <button
               onClick={handleOrderClick}
-              disabled={loading}
+              disabled={loading || !cart.length}
               className="bg-blue-950 text-white px-4 py-2 rounded-lg w-full"
             >
               {loading ? "Processing..." : "Place Order"}
             </button>
           </div>
-        </div>
+        </aside>
       </main>
       {loading && (
         <div className="fixed inset-0 bg-white z-50 flex items-center justify-center">

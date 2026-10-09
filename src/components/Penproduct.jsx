@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import debounce from 'lodash/debounce';
 import { FiArrowRight, FiSearch } from 'react-icons/fi';
 import { getProducts } from '../slices/productSlice';
-import { addToCart, increaseQuantity, selectCartItems } from '../slices/cartSlice';
+import { addToCart, increaseQuantity, selectCartItems, setCartDrawerOpen } from '../slices/cartSlice';
 import LoginPopup from './LoginPopup';
 import ServiceStoreHero from './ServiceStoreHero';
 import table from '../components/images/table.jpeg';
@@ -50,6 +50,7 @@ const Penproduct = () => {
     } else {
       dispatch(addToCart({ ...product, quantity: 1 }));
     }
+    dispatch(setCartDrawerOpen(true));
   };
 
   const pageCount = Math.ceil(filteredProducts.length / productsPerPage);
