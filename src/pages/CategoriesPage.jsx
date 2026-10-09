@@ -4,13 +4,19 @@ import CreateEditCategory from '../components/Categories/CreateEditCategory';
 
 const CategoriesPage = () => {
   return (
-    <div className="p-4">
-      <h1 className="text-2xl font-bold mb-4">Categories</h1>
+    <section className="kk-admin-page">
+      <div className="kk-admin-page-heading">
+        <div>
+          <span className="kk-admin-eyebrow">CATALOGUE ORGANIZATION</span>
+          <h1>Categories</h1>
+          <p>Keep your catalogue easy to browse and manage.</p>
+        </div>
+      </div>
       <div className="mb-4">
         <CreateEditCategory />
       </div>
       <CategoryList />
-    </div>
+    </section>
   );
 };
 

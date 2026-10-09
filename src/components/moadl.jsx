@@ -1,17 +1,31 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
 const Modal = ({ isOpen, onClose, children }) => {
-  if (!isOpen) return null;
+  useEffect(() => {
+    if (!isOpen) return undefined;
+    const closeOnEscape = (event) => {
+      if (event.key === 'Escape') onClose();
+    };
+    document.addEventListener('keydown', closeOnEscape);
+    return () => document.removeEventListener('keydown', closeOnEscape);
+  }, [isOpen, onClose]);
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-      <div className="relative bg-white p-8 rounded-lg shadow-lg w-80">
-        <button className="absolute top-2 right-2 bg-red-600 text-white px-2 py-1 rounded" onClick={onClose}>
-          X
-        </button>
-        {children}
+    isOpen && (
+      <div
+        className="kk-popup-backdrop"
+        onMouseDown={(event) => {
+          if (event.target === event.currentTarget) onClose();
+        }}
+      >
+        <section className="kk-popup-dialog" role="dialog" aria-modal="true" aria-label="More information">
+          <button type="button" className="kk-popup-close" onClick={onClose} aria-label="Close dialog">
+            ×
+          </button>
+          {children}
+        </section>
       </div>
-    </div>
+    )
   );
 };
 

@@ -1,5 +1,7 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
+import { FiArrowUpRight, FiDollarSign, FiShoppingBag, FiUsers } from 'react-icons/fi';
 import {
   getTotalSales,
   getTotalOrders,
@@ -7,33 +9,26 @@ import {
   getRecentOrders,
   getPopularProducts,
 } from '../slices/orderSlice';
-import Mkelia from '../assets/Mkelia.png';
-import shopping from '../assets/shopping.png';
-import basket from '../assets/basket.png';
-import userIcon from '../assets/user.png';
 import { fetchProfile } from '../slices/authSlice';
+
+const formatCurrency = (amount) => `RWF ${Number(amount || 0).toLocaleString()}`;
+const formatDate = (date) => (date ? new Date(date).toLocaleDateString() : '—');
 
 const Dashboard = () => {
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
-
   const {
     totalSales,
     totalOrders,
     totalCustomers,
-    recentOrders = [], // Default to empty array
-    popularProducts = [], // Default to empty array
+    recentOrders = [],
+    popularProducts = [],
     status,
     error,
   } = useSelector((state) => state.orders);
 
   useEffect(() => {
-    if (typeof fetchProfile === 'function') {
-      dispatch(fetchProfile());
-    } else {
-      console.error('fetchProfile is not defined');
-    }
-
+    dispatch(fetchProfile());
     dispatch(getTotalSales());
     dispatch(getTotalOrders());
     dispatch(getTotalCustomers());
@@ -41,145 +36,90 @@ const Dashboard = () => {
     dispatch(getPopularProducts());
   }, [dispatch]);
 
-  if (status === 'loading') {
-    return <div className="text-center py-4">Loading...</div>;
-  }
-
-  if (status === 'failed') {
-    return <div className="text-center py-4">Error: {error}</div>;
-  }
+  const metrics = [
+    { label: 'Total sales', value: formatCurrency(totalSales), icon: FiDollarSign, tone: 'gold' },
+    { label: 'Total orders', value: Number(totalOrders || 0).toLocaleString(), icon: FiShoppingBag, tone: 'blue' },
+    { label: 'Customers', value: Number(totalCustomers || 0).toLocaleString(), icon: FiUsers, tone: 'violet' },
+  ];
 
   return (
-    <div className="p-4 bg-gray-100">
-      <header className="flex flex-col md:flex-row justify-between items-center p-4 bg-white shadow mb-4">
-        <div className="flex items-center space-x-4 mb-4 md:mb-0">
-          <input
-            type="text"
-            placeholder="Search..."
-            className="px-4 py-2 border rounded focus:outline-none w-full md:w-64"
-          />
+    <section className="kk-admin-page kk-admin-dashboard">
+      <div className="kk-admin-page-heading">
+        <div>
+          <span className="kk-admin-eyebrow">YOUR BUSINESS AT A GLANCE</span>
+          <h1>Good day, {user?.name?.split(' ')[0] || 'Admin'} <span aria-hidden="true">✦</span></h1>
+          <p>Here’s what’s happening across KarKelly today.</p>
         </div>
-        <div className="flex items-center space-x-4">
-          <button className="p-2 rounded-full hover:bg-gray-100"></button>
-          <button className="p-2 rounded-full hover:bg-gray-100"></button>
-          <div className="w-10 h-10 rounded-full overflow-hidden">
-            {user && user.profilePic && user.profilePic.length > 0 ? (
-              <img
-                src={user.profilePic[0].url}
-                alt="Profile"
-                className="w-full h-full object-cover rounded-full"
-              />
-            ) : (
-              <img
-                src={userIcon}
-                alt="Default Profile"
-                className="w-full h-full object-cover rounded-full"
-              />
-            )}
-          </div>
-        </div>
-      </header>
-
-      {/* Add a check for user existence before accessing user.name */}
-      <h1 className="text-2xl font-bold mb-4">{user?.name || 'User'}</h1>
-      <p className="mb-6"> Welcome to the admin dashboard!</p>
-
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
-        <div className="bg-white p-4 rounded shadow flex items-center justify-between">
-          <div>
-            <img src={basket} alt="Total Sales" className="w-16 h-16" />
-          </div>
-          <div className="text-center">
-            <h2 className="text-xl">Total Sales</h2>
-            <p className="text-2xl text-blue-500">RWF: {totalSales}</p>
-          </div>
-        </div>
-
-        <div className="bg-white p-4 rounded shadow flex items-center justify-between">
-          <div>
-            <img src={userIcon} alt="Total Customers" className="w-16 h-16" />
-          </div>
-          <div className="text-center">
-            <h2 className="text-xl">Total Customers</h2>
-            <p className="text-2xl text-blue-500">{totalCustomers}</p>
-          </div>
-        </div>
-
-        <div className="bg-white p-4 rounded shadow flex items-center justify-between">
-          <div>
-            <img src={shopping} alt="Total Orders" className="w-16 h-16" />
-          </div>
-          <div className="text-center">
-            <h2 className="text-xl">Total Orders</h2>
-            <p className="text-2xl text-blue-500">{totalOrders}</p>
-          </div>
+        <div className="kk-admin-dashboard__actions">
+          <div className="kk-admin-date">{new Date().toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' })}</div>
+          <Link className="kk-admin-quick-add" to="/admin/product">+ Add products</Link>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2 bg-white p-4 rounded shadow">
-          <h2 className="text-xl mb-4 text-gray-600">Recent Orders</h2>
-          <div className="overflow-x-auto">
-            <table className="min-w-full table-auto">
-              <thead className="bg-gray-200">
-                <tr>
-                  <th className="border px-2 py-1 text-left text-sm sm:text-base">User</th>
-                  <th className="border px-2 py-1 text-left text-sm sm:text-base">Items</th>
-                  <th className="border px-2 py-1 text-left text-sm sm:text-base">Total Amount</th>
-                  <th className="border px-2 py-1 text-left text-sm sm:text-base">Status</th>
-                  <th className="border px-2 py-1 text-left text-sm sm:text-base">Date</th>
-                </tr>
-              </thead>
+      {status === 'failed' && (
+        <div className="kk-admin-alert" role="status">
+          Some dashboard information could not be loaded{error ? `: ${error}` : '.'}
+        </div>
+      )}
+
+      <div className="kk-admin-metrics">
+        {metrics.map(({ label, value, icon: Icon, tone }) => (
+          <article className="kk-admin-metric" key={label}>
+            <div className={`kk-admin-metric__icon is-${tone}`}><Icon aria-hidden="true" /></div>
+            <div className="kk-admin-metric__copy">
+              <span>{label}</span>
+              <strong>{value}</strong>
+              <small><FiArrowUpRight aria-hidden="true" /> Business overview</small>
+            </div>
+          </article>
+        ))}
+      </div>
+
+      <div className="kk-admin-dashboard-grid">
+        <section className="kk-admin-card kk-admin-recent">
+          <div className="kk-admin-card__heading">
+            <div><h2>Recent orders</h2><p>Your latest customer activity</p></div>
+            <span className="kk-admin-count">{recentOrders.length} recent</span>
+          </div>
+          <div className="kk-admin-table-wrap">
+            <table className="kk-admin-table">
+              <thead><tr><th>Customer</th><th>Items</th><th>Total</th><th>Status</th><th>Date</th></tr></thead>
               <tbody>
                 {recentOrders.map((order) => (
-                  <tr key={order._id} className="hover:bg-gray-100">
-                    
-                    <td className="border px-2 py-1 text-sm sm:text-base">
-                      <div className="flex items-center space-x-2">
-                       
-                        <span>{order.user?.name}</span>
-                      </div>
-                      
-                    </td>
-                    <td className="border px-2 py-1 text-sm sm:text-base">
-                      {order.orderItems.map(item => (
-                        <div key={item._id} className="flex items-center space-x-2">
-                          
-                          <span>{item.name} x {item.quantity}</span>
-                        </div>
-                      ))}
-                    </td>
-                    <td className="border px-2 py-1 text-sm sm:text-base">RWF: {order.totalAmount}</td>
-                    <td className="border px-2 py-1 text-sm sm:text-base">{order.orderStatus}</td>
-                    <td className="border px-2 py-1 text-sm sm:text-base">{new Date(order.createdAt).toLocaleDateString()}</td>
+                  <tr key={order._id}>
+                    <td><strong>{order.user?.name || 'Unknown customer'}</strong></td>
+                    <td>{(order.orderItems || []).reduce((count, item) => count + Number(item.quantity || 0), 0)} items</td>
+                    <td>{formatCurrency(order.totalAmount)}</td>
+                    <td><span className={`kk-admin-status is-${String(order.orderStatus || 'pending').toLowerCase()}`}>{order.orderStatus || 'Pending'}</span></td>
+                    <td>{formatDate(order.createdAt)}</td>
                   </tr>
                 ))}
+                {!recentOrders.length && (
+                  <tr><td className="kk-admin-empty" colSpan="5">{status === 'loading' ? 'Loading recent orders…' : 'No recent orders to show yet.'}</td></tr>
+                )}
               </tbody>
             </table>
           </div>
-        </div>
+        </section>
 
-        <div className="bg-white p-4 rounded shadow">
-          <h2 className="text-xl mb-4 text-gray-600">Popular Products</h2>
-          <ul className="space-y-2">
+        <section className="kk-admin-card kk-admin-popular">
+          <div className="kk-admin-card__heading">
+            <div><h2>Popular products</h2><p>Items customers are browsing</p></div>
+          </div>
+          <div className="kk-admin-popular__list">
             {popularProducts.map((product) => (
-              <li key={product._id} className="bg-gray-50 p-4 rounded shadow">
-                <img
-                  src={product.images[0]?.url || ''}
-                  alt={product.name}
-                  className="w-full h-32 object-cover rounded mb-4"
-                />
-                <h3 className="text-lg font-semibold mb-2">{product.name}</h3>
-                <p className="text-gray-600 text-sm mb-2">Price: RWF {product.price}</p>
-                <p className="text-gray-600 text-sm mb-2">Stock: {product.stock}</p>
-                <p className="text-gray-600 text-sm">Created: {new Date(product.createdAt).toLocaleDateString()}</p>
-                <p className="text-gray-600 text-sm">Updated: {new Date(product.updatedAt).toLocaleDateString()}</p>
-              </li>
+              <article className="kk-admin-popular__item" key={product._id}>
+                {product.images?.[0]?.url
+                  ? <img src={product.images[0].url} alt="" />
+                  : <div className="kk-admin-popular__placeholder"><FiShoppingBag aria-hidden="true" /></div>}
+                <div><strong>{product.name}</strong><span>{formatCurrency(product.price)} · {product.stock ?? 0} in stock</span></div>
+              </article>
             ))}
-          </ul>
-        </div>
+            {!popularProducts.length && <p className="kk-admin-empty">{status === 'loading' ? 'Loading products…' : 'Popular products will appear here.'}</p>}
+          </div>
+        </section>
       </div>
-    </div>
+    </section>
   );
 };
 

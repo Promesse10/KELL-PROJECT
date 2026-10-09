@@ -1,596 +1,334 @@
-import React, { useState, useRef, useEffect } from "react";
-import { Link as RouterLink, useNavigate, useLocation } from "react-router-dom";
-import { Link as ScrollLink } from "react-scroll";
-import { AiOutlineClose, AiOutlineMenu } from "react-icons/ai";
-import Logo from "../assets/Logo.png";
-import Cart1 from "../assets/Cart1.png";
-import { logout } from "../slices/authSlice";
-import { useSelector, useDispatch } from "react-redux";
-import { removeFromCart } from "../slices/cartSlice";
-import { useTranslation } from "react-i18next";
-import LanguageSwitcher from "./LanguageSwitcher";
-import acount from "../assets/Account.png"
-import myorder from "../assets/order-delivery.png"
-import logot from "../assets/logout.png"
-import Logo1 from "../assets/Logo1.png";
-import Cart from "../assets/Cart.png"
+import React, { useEffect, useRef, useState } from 'react';
+import { Link as RouterLink, useLocation, useNavigate } from 'react-router-dom';
+import { AiOutlineClose, AiOutlineMenu } from 'react-icons/ai';
+import { FiUser } from 'react-icons/fi';
+import { FiArrowRight, FiMinus, FiPlus, FiShoppingBag, FiTrash2, FiX } from 'react-icons/fi';
+import { useDispatch, useSelector } from 'react-redux';
+import { useTranslation } from 'react-i18next';
+import Logo from '../assets/Logo.png';
+import Logo1 from '../assets/Logo1.png';
+import LanguageSwitcher from './LanguageSwitcher';
+import { logout } from '../slices/authSlice';
+import { decreaseQuantity, increaseQuantity, removeFromCart } from '../slices/cartSlice';
 
 const Navbar = () => {
-  const [nav, setNav] = useState(false);
-  const [showAccountDropdown, setShowAccountDropdown] = useState(false);
-  const [dropdown, setDropdown] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isProductsOpen, setIsProductsOpen] = useState(false);
+  const [isAccountOpen, setIsAccountOpen] = useState(false);
+  const [isCartOpen, setIsCartOpen] = useState(false);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
-
-  const accountDropdownRef = useRef(null);
-
+  const accountRef = useRef(null);
   const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
   const dispatch = useDispatch();
-
   const { user, isLoggedIn } = useSelector((state) => state.auth);
   const cartItems = useSelector((state) => state.cart.items) || [];
+  const profileImage = typeof user?.profilePic === 'string'
+    ? user.profilePic
+    : user?.profilePic?.[0]?.url || user?.profilePic?.url;
+  const cartCount = cartItems.reduce((total, item) => total + item.quantity, 0);
+  const cartTotal = cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
+  const isCheckoutPage = location.pathname === '/checkout';
 
-  const handleNav = () => {
-    setNav(!nav);
+  useEffect(() => {
+    const updateScrollState = () => setIsScrolled(window.scrollY > 12);
+    updateScrollState();
+    window.addEventListener('scroll', updateScrollState, { passive: true });
+    return () => window.removeEventListener('scroll', updateScrollState);
+  }, []);
+
+  useEffect(() => {
+    setIsMobileMenuOpen(false);
+    setIsProductsOpen(false);
+    setIsCartOpen(false);
+    setIsAccountOpen(false);
+  }, [location.pathname]);
+
+  useEffect(() => {
+    if (!isMobileMenuOpen && !isCartOpen && !showLogoutConfirm) return undefined;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    const closeOnEscape = (event) => {
+      if (event.key === 'Escape') {
+        setIsMobileMenuOpen(false);
+        setIsCartOpen(false);
+        setShowLogoutConfirm(false);
+      }
+    };
+    document.addEventListener('keydown', closeOnEscape);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      document.removeEventListener('keydown', closeOnEscape);
+    };
+  }, [isMobileMenuOpen, isCartOpen, showLogoutConfirm]);
+
+  useEffect(() => {
+    const closeAccountOnOutsideClick = (event) => {
+      if (accountRef.current && !accountRef.current.contains(event.target)) {
+        setIsAccountOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', closeAccountOnOutsideClick);
+    return () => document.removeEventListener('mousedown', closeAccountOnOutsideClick);
+  }, []);
+
+  const handleSectionClick = (sectionId) => {
+    setIsMobileMenuOpen(false);
+    if (location.pathname === '/') {
+      document.getElementById(sectionId)?.scrollIntoView({ behavior: 'smooth' });
+      return;
+    }
+    navigate('/', { state: { scrollTo: sectionId } });
   };
 
-  const handleRemoveFromCart = (itemId) => {
-    dispatch(removeFromCart(itemId));
+  const goHome = () => {
+    setIsMobileMenuOpen(false);
+    if (location.pathname === '/') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+    navigate('/', { state: { scrollTo: 'hero' } });
   };
 
-  const handleAccountDropdown = (e) => {
-    e.stopPropagation();
-    setShowAccountDropdown((prev) => !prev);
-  };
-
-  const handleProfileClick = () => {
-    navigate("/profile");
-    setShowAccountDropdown(false);
-  };
-
-  const handleOrdersClick = () => {
-    navigate("/myorders");
-    setShowAccountDropdown(false);
-  };
-
-  const handleLogoutClick = () => {
-    setShowLogoutConfirm(true);
+  const closeMenus = () => {
+    setIsMobileMenuOpen(false);
+    setIsProductsOpen(false);
   };
 
   const handleConfirmLogout = () => {
     dispatch(logout());
     setShowLogoutConfirm(false);
-    setShowAccountDropdown(false);
-    navigate("/");
+    setIsAccountOpen(false);
+    closeMenus();
+    navigate('/');
   };
 
-  const handleCancelLogout = () => {
-    setShowLogoutConfirm(false);
-  };
-
-  const handleHomeClick = () => {
-    navigate("/");
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
-
-  const isLoginOrRegisterPage =
-    location.pathname === "/login" || location.pathname === "/createAccount";
-  const isCheckoutPage = location.pathname === "/checkout";
-
-  const calculateCartTotal = () => {
-    return cartItems
-      .reduce((total, item) => total + item.price * item.quantity, 0)
-      .toFixed(2);
-  };
-
-  const handleCartClick = () => {
-    navigate("/cart");
-  };
+  const productLinks = [
+    { label: t('navbar.it'), to: '/infopage' },
+    { label: t('navbar.food'), to: '/food' },
+    { label: t('navbar.cars'), to: '/cars' },
+  ];
 
   const handleCheckout = () => {
-    navigate("/checkout");
+    setIsCartOpen(false);
+    navigate('/checkout', { state: { cart: cartItems } });
   };
-
-  const [isOpen, setIsOpen] = useState(false);
-
-  const toggleMenu = () => {
-    setIsOpen(!isOpen);
-  };
-
-  useEffect(() => {
-    function handleClickOutside(event) {
-      if (
-        accountDropdownRef.current &&
-        !accountDropdownRef.current.contains(event.target)
-      ) {
-        setShowAccountDropdown(false);
-      }
-    }
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
 
   return (
-    <div className="fixed top-0 z-50 w-full flex justify-between items-center h-24 max-w-[2794px] mx-auto px-4 bg-gray-100 shadow-md">
-      <div className="flex items-center flex-shrink-0">
-        <img className="w-28" src={Logo} alt="Logo" onClick={handleHomeClick} />
-      </div>
-
-      {!isCheckoutPage && (
-        <ul
-          className={`hidden md:flex md:ml-14 md:space-x-12 md:text-blue-950 md:cursor-pointer md:font-semibold ${
-            isLoginOrRegisterPage ? "hidden" : ""
-          }`}
-        >
-          <li>
-            <span
-              onClick={handleHomeClick}
-              className="hover:border-b-4 hover:border-blue-950 cursor-pointer"
-            >
-              {t("navbar.home")}
-            </span>
-          </li>
-          {!isLoginOrRegisterPage && (
-            <>
-              <li>
-                <ScrollLink
-                  to="services"
-                  smooth={true}
-                  duration={500}
-                  className="hover:border-b-4 hover:border-blue-950"
-                >
-                  {t("navbar.services")}
-                </ScrollLink>
-              </li>
- 
-
-
-              <li
-                onMouseEnter={() => setDropdown(true)}
-                onMouseLeave={() => setDropdown(false)}
-                className="relative"
-              >
-                <span
-                  className="hover:border-b-4 hover:border-blue-950 cursor-pointer"
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  {t("navbar.products")}
-                </span>
-                {dropdown && (
-                  <ul className="absolute top-full font-thin text-sm left-0 w-52 bg-blue-950 text-white shadow-lg">
-                    <li>
-                      <RouterLink
-                        to="/infopage"
-                        className="block px-4 py-2 hover:bg-blue-900"
-                      >
-                        {t("navbar.it")}
-                      </RouterLink>
-                    </li>
-                    {/* <li>
-                      <RouterLink
-                        to="/Construction"
-                        className="block px-4 py-2 hover:bg-blue-900"
-                      >
-                        {t("navbar.civil")}
-                      </RouterLink>
-                    </li> */}
-                    <li>
-                      <RouterLink
-                        to="/Food"
-                        className="block px-4 py-2 hover:bg-blue-900"
-                      >
-                        {t("navbar.food")}
-                      </RouterLink>
-                    </li>
-                  </ul>
-                )}
-              </li>
-              <li>
-                <RouterLink
-                  to="/aboutus"
-                  className="hover:border-b-4 hover:border-blue-950"
-                >
-                  {t("navbar.about")}
-                </RouterLink>
-              </li>
-              <li>
-                <RouterLink
-                  to="/contactus"
-                  className="hover:border-b-4 hover:border-blue-950"
-                >
-                  {t("navbar.contact")}
-                </RouterLink>
-              </li>
-            </>
-          )}
-        </ul>
-      )}
-
-{/* 
-      <div className="hidden md:flex space-x-6">
-        <LanguageSwitcher />
-        {isLoggedIn && !isCheckoutPage && (
-          <div className="relative">
-            <div
-              className="cursor-pointer flex items-center"
-              onClick={handleAccountDropdown}
-            >
-              <img
-                src={user?.profilePicture}
-                alt="Profile"
-                className="w-10 h-10 rounded-full"
-              />
-            </div>
-            {showAccountDropdown && (
-              <div
-                ref={accountDropdownRef}
-                className="absolute right-0 mt-2 w-48 bg-white border rounded-lg shadow-lg"
-              >
-                <ul className="py-2">
-                  <li>
-                    <span
-                      onClick={handleProfileClick}
-                      className="block px-4 py-2 cursor-pointer hover:bg-gray-100"
-                    >
-                      {t("navbar.profile")}
-                    </span>
-                  </li>
-                  <li>
-                    <span
-                      onClick={handleOrdersClick}
-                      className="block px-4 py-2 cursor-pointer hover:bg-gray-100"
-                    >
-                      {t("navbar.orders")}
-                    </span>
-                  </li>
-                  <li>
-                    <span
-                      onClick={handleLogoutClick}
-                      className="block px-4 py-2 cursor-pointer hover:bg-gray-100"
-                    >
-                      {t("navbar.logout")}
-                    </span>
-                  </li>
-                </ul>
-              </div>
-            )}
-            {showLogoutConfirm && (
-              <div className="absolute right-0 mt-2 w-48 bg-white border rounded-lg shadow-lg">
-                <p className="p-2">{t("navbar.confirmLogout")}</p>
-                <div className="flex justify-between px-4 py-2">
-                  <button
-                    onClick={handleConfirmLogout}
-                    className="text-red-500 hover:underline"
-                  >
-                    {t("navbar.logout")}
-                  </button>
-                  <button
-                    onClick={handleCancelLogout}
-                    className="text-gray-500 hover:underline"
-                  >
-                    {t("navbar.cancel")}
-                  </button>
-                </div>
-              </div>
-            )}
-          </div>
-        )}
-
-        {!isLoggedIn && !isCheckoutPage && (
-          <>
-            <RouterLink to="/login" className="text-blue-950 font-semibold">
-              {t("navbar.login")}
-            </RouterLink>
-            <RouterLink to="/createAccount" className="text-blue-950 font-semibold">
-              {t("navbar.register")}
-            </RouterLink>
-          </>
-        )}
+    <>
+      <header className={`kk-navigation${isScrolled ? ' is-scrolled' : ''}`}>
+        <button type="button" className="kk-navigation__brand" onClick={goHome} aria-label={t('navbar.home')}>
+          <img src={Logo} alt="KarKelly" />
+        </button>
 
         {!isCheckoutPage && (
-          <div className="relative">
-            <img
-              className="w-10 cursor-pointer"
-              src={Cart1}
-              alt="Cart"
-              onClick={handleCartClick}
-            />
-            <span className="absolute -top-2 right-0 px-2 py-1 text-xs font-bold text-white bg-red-500 rounded-full">
-              {cartItems.length}
-            </span>
-          </div>
-        )}
-      </div> */}
-
-<div className="hidden md:flex md:items-center md:gap-5">
-        <LanguageSwitcher />
-        {isLoggedIn ? (
-          <>
-            <img
-              className="h-12 w-12 cursor-pointer rounded-full border border-gray-300"
-              src={user.profilePic[0].url}
-              alt="Account"
-              onClick={handleAccountDropdown}
-            />
-
-            {showAccountDropdown && (
-              <ul
-                ref={accountDropdownRef}
-                className="absolute top-full right-0 mt-2 w-48 bg-white shadow-lg"
-                onClick={(e) => e.stopPropagation()}
+          <nav className="kk-navigation__desktop" aria-label={t('navbar.mainNavigation')}>
+            <button type="button" className="kk-navigation__link" onClick={goHome}>{t('navbar.home')}</button>
+            <button type="button" className="kk-navigation__link" onClick={() => handleSectionClick('services')}>{t('navbar.services')}</button>
+            <div className="kk-navigation__products">
+              <button
+                type="button"
+                className="kk-navigation__link"
+                aria-expanded={isProductsOpen}
+                onClick={() => setIsProductsOpen((open) => !open)}
+                onMouseEnter={() => setIsProductsOpen(true)}
               >
-                <li className="px-4 py-2">
-                  <p className="font-semibold">
-                    {t("navbar.hi")}, {user.name ? user.name : "Guest"}!
-                  </p>
-                </li>
-                <li>
-                  <RouterLink
-                    to="/profile"
-                    className="block px-4 py-2 hover:bg-gray-200"
-                    onClick={handleProfileClick}
-                  >
-                    {t("navbar.profile")}
-                  </RouterLink>
-                </li>
-                <li>
-                  <RouterLink
-                    to="/myorders"
-                    className="block px-4 py-2 hover:bg-gray-200"
-                    onClick={handleOrdersClick}
-                  >
-                    My Orders
-                  </RouterLink>
-                </li>
-                <li>
-                  <button
-                    className="block px-4 py-2 w-full text-left hover:bg-gray-200"
-                    onClick={handleLogoutClick}
-                  >
-                    {t("navbar.logout")}
-                  </button>
-                </li>
-              </ul>
-            )}
-            <button
-              onClick={handleCartClick}
-              className="relative border-blue-950 border-2 p-1 rounded-2xl flex flex-row items-center"
-            >
-              <img className="w-5 h-5" src={Cart1} alt="Cart" />
-              <span className="ml-2">{t("navbar.cart")}</span>
-              {cartItems.length > 0 && (
-                <span className="absolute top-5 right-14 bg-red-500 text-white text-xs rounded-full px-2 py-1">
-                  {cartItems.reduce((total, item) => total + item.quantity, 0)}
-                </span>
-              )}
-            </button>
-          </>
-        ) : (
-          <>
-            <RouterLink to="/login" className="md:cursor-pointer">
-              {t("navbar.login")}
-            </RouterLink>
-            |
-            <RouterLink to="/createAccount" className="md:cursor-pointer">
-              {t("navbar.register")}
-            </RouterLink>
-          </>
-        )}
-      </div>
-
-
-
-      <div onClick={handleNav} className="block md:hidden">
-        {!nav ? (
-          <AiOutlineMenu size={30} className="text-blue-950" />
-        ) : (
-          <AiOutlineClose size={30} className="text-blue-950" />
-        )}
-      </div>
-
-  {/* Menu bar */}
-      {/* Menu bar */}
-    {/* Mobile Navigation */}
-    <ul
-        className={`${
-          nav ? "fixed" : "hidden"
-        } left-0 top-0 w-64 h-full bg-blue-950 font-normal text-white p-4 text-xs transition-transform transform ${nav ? "translate-x-0" : "-translate-x-full"} `}
-      >
-        <img
-          className="w-28 mb-4"
-          src={Logo1}
-          alt="Logo"
-          onClick={handleHomeClick}
-        />
-        <li>
-          <RouterLink
-            to="/"
-            className="block py-2 border-b border-white hover:text-gray-300"
-            onClick={handleNav}
-          >
-            {t("navbar.home")}
-          </RouterLink>
-        </li>
-        {!isLoginOrRegisterPage && (
-          <>
-            <li>
-              <ScrollLink
-                to="service"
-                smooth={true}
-                duration={500}
-                className="block py-2 border-b border-white hover:text-gray-300"
-                onClick={handleNav}
-              >
-                {t("navbar.services")}
-              </ScrollLink>
-            </li>
-            
-            <li className="border-b-2 border-white w-full relative">
-          <span
-            className="block text-white py-2 cursor-pointer"
-            onClick={() => setDropdown(!dropdown)}
-          >
-            {t("navbar.products")}
-          </span>
-          {dropdown && (
-            <ul className="ml-4 bg-blue-950 text-white text-xs">
-              <li className="border-b-2 border-blue-950 w-full ">
-                <RouterLink
-                  to="/infopage"
-                  className="block px-4 py-2 hover:bg-blue-950"
-                  onClick={() => setNav(false)}
-                >
-                  {t("navbar.it")}
-                </RouterLink>
-              </li>
-              <li className="border-b-2 border-blue-950 w-full ">
-                <RouterLink
-                  to="/Food"
-                  className="block px-4 py-2 hover:bg-blue-900"
-                  onClick={() => setNav(false)}
-                >
-                  {t("navbar.food")}
-                </RouterLink>
-              </li>
-            </ul>
-          )}
-        </li>
-
-            <li>
-              <RouterLink
-                to="/aboutus"
-                className="block py-2 border-b border-white hover:text-gray-300"
-                onClick={handleNav}
-              >
-                {t("navbar.about")}
-              </RouterLink>
-            </li>
-            <li>
-              <RouterLink
-                to="/contactus"
-                className="block py-2 border-b border-white hover:text-gray-300"
-                onClick={handleNav}
-              >
-                {t("navbar.contact")}
-              </RouterLink>
-            </li>
-          </>
-        )}
-        {isLoggedIn ? (
-          <>
-           <div className="flex flex-row justify-center ">
-                <RouterLink
-                  to="/profile"
-                  className="block text-white p-3 mt-2"
-                  onClick={() => setNav(false)}
-                >
-                  <img src={acount} className="w-5 mb-2  " />
-
-                  {t("navbar.profile")}
-                </RouterLink>
-                <RouterLink
-                  to="/myorders"
-                  className="block text-white p-3 mt-2"
-                  onClick={() => setNav(false)}
-
-                >
-                  <img src={myorder} className="w-5 mb-2 " />
-                  MyOrders
-                </RouterLink>
-                <button
-                  className="block text-white p-3 mt-2 text-left"
-                  onClick={handleLogoutClick}
-                > <img src={logot} className="w-5 mb-2 " />
-                  {t("navbar.logout")}
-                </button>
-
-              </div>
-
-            <li>
-            <button
-                onClick={handleCartClick}
-                className="relative border-white border-2 p-1 rounded-2xl flex flex-row items-center mt-1 mr-7 pr-6"
-              >
-                <img className="w-5 h-5" src={Cart} alt="Cart" />
-                <span className="ml-2">{t("navbar.cart")}</span>
-                {cartItems.length > 0 && (
-                  <span className="absolute top-5 right-14 bg-red-500 text-white text-xs rounded-full px-2 py-1">
-                    {cartItems.reduce((total, item) => total + item.quantity, 0)}
-                  </span>
-                )}
+                {t('navbar.products')} <span className="kk-navigation__chevron" aria-hidden="true">⌄</span>
               </button>
-              <li className="mt-4">
-                <LanguageSwitcher />
-              </li>
-            </li>
-          </>
-        ) : (
-          <>
-          <div className=" flex flex-row space-x-4 py-3">
-                <button className="border border-white p-0 bg-transparent">
-                  <RouterLink
-                    to="/login"
-                    className="block text-white p-2"
-                    onClick={() => setNav(false)}
-                  >
-                    {t("navbar.login")}
-                  </RouterLink>
-                </button>
-
-               <button className="border border-white p-0 bg-transparent" >
-               <RouterLink
-                  to="/createAccount"
-                  className="block text-white p-2  "
-                  onClick={() => setNav(false)}
-                >
-                  {t("navbar.register")}
-                </RouterLink>
-
-               </button>
-               
+              {isProductsOpen && (
+                <div className="kk-navigation__dropdown" onMouseLeave={() => setIsProductsOpen(false)}>
+                  {productLinks.map((item) => (
+                    <RouterLink className="kk-navigation__dropdown-link" to={item.to} key={item.to} onClick={closeMenus}>
+                      {item.label}<FiArrowRight aria-hidden="true" />
+                    </RouterLink>
+                  ))}
                 </div>
-                <li >
-                <LanguageSwitcher />
-              </li>
-          </>
-        )}
-      </ul>
-
-
-
-
-      {showLogoutConfirm && (
-        <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
-          <div className="bg-white p-6 rounded-lg shadow-lg">
-            <p className="text-lg font-semibold mb-4">
-              {t("navbar.logoutConfirm")}
-            </p>
-            <div className="flex justify-center gap-10">
-              <button
-                className="bg-blue-950 hover:bg-blue-900 text-white py-2 px-4 rounded"
-                onClick={handleConfirmLogout}
-              >
-                {t("Logout")}
-              </button>
-              <button
-                className="bg-gray-300 hover:bg-gray-400 text-gray-700 py-2 px-4 rounded"
-                onClick={handleCancelLogout}
-              >
-                {t("navbar.cancel")}
-              </button>
+              )}
             </div>
-          </div>
+            <button type="button" className="kk-navigation__link" onClick={() => handleSectionClick('aboutus')}>{t('navbar.about')}</button>
+            <button type="button" className="kk-navigation__link" onClick={() => handleSectionClick('contactus')}>{t('navbar.contact')}</button>
+          </nav>
+        )}
+
+        <div className="kk-navigation__actions">
+          <LanguageSwitcher />
+          {!isCheckoutPage && (
+            <button
+              type="button"
+              className="kk-navigation__cart-button"
+              onClick={() => setIsCartOpen(true)}
+              aria-label={t('navbar.cartWithCount', { count: cartCount })}
+            >
+              <FiShoppingBag aria-hidden="true" />
+              <span>{t('navbar.cart')}</span>
+              <span className="kk-navigation__cart-count">{cartCount}</span>
+            </button>
+          )}
+          {isLoggedIn ? (
+            <div className="kk-navigation__account" ref={accountRef}>
+              <button
+                type="button"
+                className="kk-navigation__profile"
+                aria-label={t('navbar.accountMenu')}
+                aria-expanded={isAccountOpen}
+                onClick={() => setIsAccountOpen((open) => !open)}
+              >
+                {profileImage ? <img src={profileImage} alt="" /> : <FiUser aria-hidden="true" />}
+              </button>
+              {isAccountOpen && (
+                <div className="kk-navigation__account-menu">
+                  <strong>{t('navbar.hi')}, {user?.name || 'Guest'}</strong>
+                  <RouterLink to="/profile" onClick={() => setIsAccountOpen(false)}>{t('navbar.profile')}</RouterLink>
+                  <RouterLink to="/myorders" onClick={() => setIsAccountOpen(false)}>{t('navbar.myOrders')}</RouterLink>
+                  <button type="button" onClick={() => setShowLogoutConfirm(true)}>{t('navbar.logout')}</button>
+                </div>
+              )}
+            </div>
+          ) : (
+            <div className="kk-navigation__auth">
+              <RouterLink to="/login">{t('navbar.login')}</RouterLink>
+              <RouterLink to="/createAccount">{t('navbar.register')}</RouterLink>
+            </div>
+          )}
+          <button
+            type="button"
+            className="kk-navigation__menu-toggle"
+            aria-label={isMobileMenuOpen ? t('navbar.closeMenu') : t('navbar.openMenu')}
+            aria-expanded={isMobileMenuOpen}
+            onClick={() => setIsMobileMenuOpen((open) => !open)}
+          >
+            {isMobileMenuOpen ? <AiOutlineClose /> : <AiOutlineMenu />}
+          </button>
+        </div>
+      </header>
+
+      {isMobileMenuOpen && (
+        <div className="kk-navigation__mobile-layer">
+          <button
+            type="button"
+            className="kk-navigation__backdrop"
+            aria-label={t('navbar.closeMenu')}
+            onClick={() => setIsMobileMenuOpen(false)}
+          />
+          <nav className="kk-navigation__mobile-panel" aria-label={t('navbar.mainNavigation')}>
+            <div className="kk-navigation__mobile-heading">
+              <img src={Logo1} alt="KarKelly" />
+              <LanguageSwitcher />
+            </div>
+            <button type="button" className="kk-navigation__mobile-link" onClick={goHome}>{t('navbar.home')}</button>
+            <button type="button" className="kk-navigation__mobile-link" onClick={() => handleSectionClick('services')}>{t('navbar.services')}</button>
+            <button
+              type="button"
+              className="kk-navigation__mobile-link"
+              aria-expanded={isProductsOpen}
+              onClick={() => setIsProductsOpen((open) => !open)}
+            >
+              {t('navbar.products')} <span aria-hidden="true">{isProductsOpen ? '−' : '+'}</span>
+            </button>
+            {isProductsOpen && (
+              <div className="kk-navigation__mobile-products">
+                {productLinks.map((item) => (
+                  <RouterLink to={item.to} key={item.to} onClick={closeMenus}>{item.label}</RouterLink>
+                ))}
+              </div>
+            )}
+            <button type="button" className="kk-navigation__mobile-link" onClick={() => handleSectionClick('aboutus')}>{t('navbar.about')}</button>
+            <button type="button" className="kk-navigation__mobile-link" onClick={() => handleSectionClick('contactus')}>{t('navbar.contact')}</button>
+            {!isLoggedIn && (
+              <div className="kk-navigation__mobile-auth">
+                <RouterLink to="/login" onClick={closeMenus}>{t('navbar.login')}</RouterLink>
+                <RouterLink to="/createAccount" onClick={closeMenus}>{t('navbar.register')}</RouterLink>
+              </div>
+            )}
+            {isLoggedIn && (
+              <div className="kk-navigation__mobile-auth">
+                <RouterLink to="/profile" onClick={closeMenus}>{t('navbar.profile')}</RouterLink>
+                <RouterLink to="/myorders" onClick={closeMenus}>{t('navbar.myOrders')}</RouterLink>
+                <button type="button" onClick={() => setShowLogoutConfirm(true)}>{t('navbar.logout')}</button>
+              </div>
+            )}
+          </nav>
         </div>
       )}
 
+      {isCartOpen && (
+        <div className="kk-cart-layer">
+          <button
+            type="button"
+            className="kk-cart-layer__backdrop"
+            aria-label={t('cart.closeCart')}
+            onClick={() => setIsCartOpen(false)}
+          />
+          <aside className="kk-cart-drawer" role="dialog" aria-modal="true" aria-labelledby="kk-cart-title">
+            <div className="kk-cart-drawer__heading">
+              <div>
+                <span className="kk-eyebrow">{t('cart.yourSelection')}</span>
+                <h2 id="kk-cart-title">{t('cart.shoppingCart')} <span>({cartCount})</span></h2>
+              </div>
+              <button type="button" onClick={() => setIsCartOpen(false)} aria-label={t('cart.closeCart')}>
+                <FiX />
+              </button>
+            </div>
 
+            {cartItems.length === 0 ? (
+              <div className="kk-cart-drawer__empty">
+                    <FiShoppingBag aria-hidden="true" />
+                <p>{t('cart.empty')}</p>
+                <button type="button" className="kk-button kk-button--primary" onClick={() => { setIsCartOpen(false); navigate('/food'); }}>
+                  {t('cart.continueShopping')} <FiArrowRight aria-hidden="true" />
+                </button>
+              </div>
+            ) : (
+              <>
+                <div className="kk-cart-drawer__items">
+                  {cartItems.map((item) => (
+                    <article className="kk-cart-item" key={item._id}>
+                      <img src={item.images?.[0]?.url || item.image || Logo} alt={item.name} />
+                      <div className="kk-cart-item__details">
+                        <h3>{item.name}</h3>
+                        <p>{Number(item.price || 0).toLocaleString()} {t('cart.currency')}</p>
+                        <div className="kk-cart-item__controls">
+                          <button type="button" aria-label={t('cart.decreaseQuantity', { name: item.name })} onClick={() => dispatch(decreaseQuantity(item._id))}><FiMinus /></button>
+                          <span>{item.quantity}</span>
+                          <button type="button" aria-label={t('cart.increaseQuantity', { name: item.name })} onClick={() => dispatch(increaseQuantity(item._id))}><FiPlus /></button>
+                          <button type="button" className="kk-cart-item__remove" aria-label={t('cart.removeItem', { name: item.name })} onClick={() => dispatch(removeFromCart(item._id))}><FiTrash2 /></button>
+                        </div>
+                      </div>
+                    </article>
+                  ))}
+                </div>
+                <div className="kk-cart-drawer__footer">
+                  <div className="kk-cart-drawer__subtotal">
+                    <span>{t('cart.total')}</span>
+                    <strong>{cartTotal.toLocaleString()} {t('cart.currency')}</strong>
+                  </div>
+                  <button type="button" className="kk-button kk-button--primary" onClick={handleCheckout}>
+                    {t('cart.checkout')} <FiArrowRight aria-hidden="true" />
+                  </button>
+                  <button type="button" className="kk-cart-drawer__view-full" onClick={() => { setIsCartOpen(false); navigate('/cart'); }}>
+                    {t('cart.viewFullCart')}
+                  </button>
+                </div>
+              </>
+            )}
+          </aside>
+        </div>
+      )}
 
-      
-    </div>
+      {showLogoutConfirm && (
+        <div className="kk-confirm-backdrop" onMouseDown={(event) => { if (event.target === event.currentTarget) setShowLogoutConfirm(false); }}>
+          <section className="kk-confirm-dialog" role="alertdialog" aria-modal="true" aria-labelledby="kk-logout-title">
+            <h2 id="kk-logout-title">{t('navbar.logoutConfirm')}</h2>
+            <div>
+              <button type="button" className="kk-button kk-button--outline" onClick={() => setShowLogoutConfirm(false)}>{t('navbar.cancel')}</button>
+              <button type="button" className="kk-button kk-button--primary" onClick={handleConfirmLogout}>{t('navbar.logout')}</button>
+            </div>
+          </section>
+        </div>
+      )}
+    </>
   );
 };
 

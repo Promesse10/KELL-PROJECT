@@ -30,7 +30,7 @@ const ProductList = () => {
     setFormData({
       name: product.name,
       price: product.price,
-      imageUrl: product.images[0]?.url || '',
+      imageUrl: product.images?.[0]?.url || '',
       description: product.description,
       stock: product.stock,
     });
@@ -67,17 +67,20 @@ const ProductList = () => {
     : products;
 
   if (status === 'loading') {
-    return <div>Loading...</div>;
+    return <div className="kk-admin-state">Loading products…</div>;
   }
 
   if (status === 'failed') {
-    return <div>Error: {error}</div>;
+    return <div className="kk-admin-state is-error">Could not load products: {error}</div>;
   }
 
   return (
-    <div className="p-4 font-sans text-gray-800">
-      <h2 className="text-2xl font-bold mb-4 text-center">Products List</h2>
-      <div className="flex justify-between items-center mb-4">
+    <div className="kk-admin-card kk-admin-product-list p-4 font-sans text-gray-800">
+      <div className="kk-admin-card__heading">
+        <div><h2>Product inventory</h2><p>Review stock, pricing and product details.</p></div>
+        <span className="kk-admin-count">{filteredProducts.length} products</span>
+      </div>
+      <div className="kk-admin-product-filter flex justify-between items-center mb-4">
         <label htmlFor="category" className="text-lg font-medium">
           Filter by Category:
         </label>
@@ -113,7 +116,7 @@ const ProductList = () => {
               <tr key={product._id} className="border-b">
                 <td className="py-2 px-4">
                   <img
-                    src={product.images[0]?.url || ''}
+                    src={product.images?.[0]?.url || ''}
                     alt={product.name}
                     className="w-16 h-16 object-cover rounded"
                   />
@@ -139,6 +142,7 @@ const ProductList = () => {
                 </td>
               </tr>
             ))}
+            {!filteredProducts.length && <tr><td className="kk-admin-empty" colSpan="7">No products match this category yet.</td></tr>}
           </tbody>
         </table>
       </div>

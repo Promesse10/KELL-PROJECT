@@ -19,7 +19,7 @@ const CreateEditCategory = () => {
   };
 
   return (
-    <div className="p-4 lg:p-8 flex justify-center lg:justify-start">
+    <div className="kk-admin-form-card p-4 lg:p-8 flex justify-center lg:justify-start">
       <div className="w-full max-w-md lg:max-w-md">
         <h2 className="text-2xl font-bold mb-4">Create Category</h2>
         <form onSubmit={handleSubmit} className="space-y-4">

@@ -4,10 +4,17 @@
     "services": "Services",
     "products": "Products",
     "it": "Information and Technology",
-    "civil": "Civil Engineering Projects",
     "food": "Food Service",
     "about": "About us",
     "contact": "Contact us",
+    "cars": "Car sales",
+    "openMenu": "Open navigation menu",
+    "closeMenu": "Close navigation menu",
+    "mainNavigation": "Main navigation",
+    "changeLanguage": "Change language. Current language: {{language}}",
+    "cartWithCount": "Open shopping cart, {{count}} items",
+    "accountMenu": "Account menu",
+    "myOrders": "My orders",
     "hi": "Hi",
     "profile": "Profile",
     "settings": "Settings",
@@ -23,28 +30,75 @@
     "logoutConfirm": "are you sure want to  logout"
   },
   "hero": {
+    "eyebrow": "Good service. Better tomorrows.",
     "welcome": "Welcome to KarKelly ltd",
     "description": "We offer the best services in IT and Food Supply.",
-    "tagline": "\"Karkelly Bright Future ahead\""
+    "tagline": "\"Karkelly Bright Future ahead\"",
+    "exploreService": "Explore service",
+    "ourServices": "Our services",
+    "services": {
+      "food": "Quality beans, maize, potatoes and pantry essentials, carefully supplied for your home and business.",
+      "it": "Technology, school supplies and printing services to help your work and learning move forward.",
+      "cars": "Browse current vehicle listings and filter for the features that matter to you.",
+      "survey": "Accurate land surveying and mapping services to help you understand and plan your property."
+    },
+    "labels": {
+      "food": "Fresh food supply",
+      "it": "IT & school supplies",
+      "cars": "Vehicle sales",
+      "survey": "Land surveying"
+    },
+    "serviceNames": {
+      "food": "Food Supply",
+      "it": "IT & Stationery",
+      "cars": "Car Sales",
+      "survey": "Land Surveying"
+    },
+    "carouselLabel": "Featured KarKelly services",
+    "previousService": "Previous service",
+    "nextService": "Next service",
+    "goToService": "Show {{service}}",
+    "closeServices": "Close services"
   },
   "service": {
+    "eyebrow": "What we do",
     "title": "Our Service",
+    "intro": "Everyday essentials, technology, vehicle sales and land surveying — discover how KarKelly can help.",
     "itAlt": "Information Technology",
     "itTitle": "Information Technology",
     "itDescription": "Computer service and printing activities",
-    "constructionAlt": "Civil Engineering Projects",
-    "constructionTitle": "Civil Engineering Projects",
-    "constructionDescription": "Master plan and land survey",
     "foodAlt": "Food Supply",
     "foodTitle": "Food Supply",
     "foodDescription": "Selling and delivering food",
     "clickHere": "Click here",
-    "popupMessage": "To make add to cart first make Login or Sign up",
+    "viewService": "Explore this service",
+    "items": {
+      "food": {
+        "title": "Food Supply",
+        "description": "Beans, grains and everyday food essentials for homes and businesses."
+      },
+      "it": {
+        "title": "IT & School Supplies",
+        "description": "Computer support, stationery and printing services."
+      },
+      "cars": {
+        "title": "Car Sales",
+        "description": "Browse current vehicle listings and filter by type, fuel and budget."
+      },
+      "survey": {
+        "title": "Land Surveying",
+        "description": "Land surveys, topographic maps and planning support. Contact us to discuss your site."
+      }
+    },
+    "popupMessage": "To add a product to your cart, please log in or sign up.",
     "loginSignup": "Login/Sign Up"
   },
   "aboutus": {
+    "eyebrow": "Our story",
     "title": "About Us",
     "getToKnowUs": "Get to Know Us",
+    "headline": "A brighter future starts with better everyday service.",
+    "teamEyebrow": "The people behind KarKelly",
     "welcomeMessage": "Welcome to Karkelly Company Ltd, Karkelly Company we provide high-quality,beautifully designed stationery that inspires creativity and brings joy to your everyday life ”",
     "visionMission": "Our vision & mission",
     "moreInfo": "More info",
@@ -64,7 +118,9 @@
     "modalDescription": "Our vision is to inspire creativity and bring joy to everyday life through high-quality, beautifully designed stationery. Our mission is to provide exceptional products and services that meet the needs and exceed the expectations of our customers."
   },
   "contactus": {
+    "eyebrow": "We’re here to help",
     "title": "Contact Us",
+    "intro": "Questions about our products or services? We’d love to hear from you.",
     "getInTouch": "Get in touch",
     "emailAlt": "Email",
     "locationAlt": "Location",
@@ -80,6 +136,16 @@
   },
   "infopage": {
     "title": "Information Technology",
+    "eyebrow": "Information technology & school supplies",
+    "intro": "Practical technology, learning and printing services for your home, school and business.",
+    "heroImageAlt": "People working together at computers",
+    "productsEyebrow": "Shop our collection",
+    "productsTitle": "School & office supplies",
+    "productsLoading": "Loading school and office supplies",
+    "searchPlaceholder": "Search school and office supplies",
+    "productBadge": "School & office",
+    "noResults": "No supplies match your search.",
+    "noProductsYet": "No school or office products are available yet. Please check back soon.",
     "schoolOfficeItemServiceAlt": "School & Office Item Service",
     "schoolOfficeItemServiceTitle": "School & Office Item Service",
     "schoolOfficeItem1": "Books, pen, pencils etc.",
@@ -113,6 +179,7 @@
 
   "createAccount": {
     "title": "Create Account",
+    "intro": "Join KarKelly and make your next visit easier.",
     "imageAlt": "Login Illustration",
     "namePlaceholder": "Enter your full names",
     "emailPlaceholder": "Enter your email",
@@ -153,6 +220,7 @@
   },
   "login": {
     "title": "Log In",
+    "intro": "Sign in to your KarKelly account to continue.",
     "emailPlaceholder": "Username/Email",
     "passwordPlaceholder": "Password",
     "visibleAlt": "Visible",
@@ -173,6 +241,13 @@
   },
   "cart": {
     "shoppingCart": "Shopping Cart",
+    "yourSelection": "Your selection",
+    "closeCart": "Close shopping cart",
+    "continueShopping": "Continue shopping",
+    "viewFullCart": "View full cart",
+    "decreaseQuantity": "Decrease {{name}} quantity",
+    "increaseQuantity": "Increase {{name}} quantity",
+    "removeItem": "Remove {{name}} from cart",
     "currency": "rwf",
     "delete": "Delete",
     "total": "Total",
@@ -181,6 +256,92 @@
     "empty": "Your cart is empty",
     "proceedingToCheckout": "Proceeding to checkout!",
     "title": "Cart"
+  },
+  "cars": {
+    "eyebrow": "KarKelly vehicle showroom",
+    "title": "Find your next drive.",
+    "intro": "Explore vehicles available from KarKelly and filter the catalogue to find the details that matter to you.",
+    "inventoryNotice": "Browse current vehicle listings and contact us for availability and details.",
+    "heroImageAlt": "A selection of cars in a showroom lot",
+    "sampleShowroom": "Showroom preview",
+    "inventoryEyebrow": "Browse vehicles",
+    "inventoryTitle": "Find the right fit",
+    "resultCount": "{{count}} vehicles",
+    "loadingCount": "Loading vehicle listings",
+    "loading": "Loading vehicle listings",
+    "searchPlaceholder": "Search make, model or fuel type",
+    "category": "Vehicle category",
+    "allCategories": "All categories",
+    "categories": {
+      "suv": "SUV",
+      "sedan": "Sedan",
+      "hatchback": "Hatchback"
+    },
+    "fuelType": "Fuel type",
+    "allFuelTypes": "All fuel types",
+    "fuel": {
+      "electric": "Electric",
+      "hybrid": "Hybrid",
+      "petrol": "Petrol",
+      "diesel": "Diesel"
+    },
+    "seats": "Seats",
+    "anySeats": "Any seats",
+    "seatLabel": "seats",
+    "maximumPrice": "Maximum price",
+    "noMaximum": "No limit",
+    "sortBy": "Sort by",
+    "sort": {
+      "featured": "Featured",
+      "priceLow": "Price: low to high",
+      "priceHigh": "Price: high to low",
+      "newest": "Newest year"
+    },
+    "clearFilters": "Clear filters",
+    "sampleListing": "Vehicle listing",
+    "samplePhotoAlt": "Vehicle listing",
+    "price": "Price",
+    "vehicleNames": {
+      "KK-01": "City Electric Hatch",
+      "KK-02": "Family Hybrid SUV",
+      "KK-03": "Compact Urban EV",
+      "KK-04": "Executive Road Sedan",
+      "KK-05": "All-Terrain 4x4",
+      "KK-06": "Everyday City Sedan"
+    },
+    "noResults": "No vehicles match those filters. Try adjusting your search.",
+    "noVehiclesYet": "No vehicles are listed yet. Please check back soon.",
+    "loadUnavailable": "Vehicle listings are temporarily unavailable. Please try again.",
+    "tryAgain": "Try again",
+    "notListed": "Not listed",
+    "viewDetails": "View details for {{car}}",
+    "closeDetails": "Close vehicle details",
+    "detailNotice": "Contact KarKelly to confirm availability and vehicle specifications.",
+    "year": "Example year",
+    "transmission": "Transmission",
+    "mileage": "Mileage",
+    "demoMileage": "Not listed",
+    "range": "Range / economy",
+    "vehicleRange": {
+      "electric": "Illustrative 280–320 km range",
+      "hybrid": "Example fuel economy",
+      "petrol": "Example fuel economy",
+      "diesel": "Example fuel economy"
+    },
+    "interestedEyebrow": "Looking for a real vehicle?",
+    "interestedTitle": "Let’s talk about your requirements.",
+    "interestedText": "Contact KarKelly to discuss current vehicle availability and your requirements.",
+    "contactUs": "Contact us",
+    "askAboutCar": "Ask about this vehicle"
+  },
+  "footer": {
+    "eyebrow": "KarKelly Ltd",
+    "tagline": "Good service. Better tomorrows.",
+    "socialLinks": "Follow KarKelly",
+    "services": "Our services",
+    "contactLink": "Get in touch",
+    "allServices": "Explore all services",
+    "rights": "All rights reserved."
   },
   "dashboard": {
     "search": "Search...",
@@ -222,6 +383,25 @@
     "resetError": "Error resetting password: {{error}}"
   },
   "food": {
+    "eyebrow": "From our food store",
+    "title": "Food supply",
+    "intro": "Quality staples and everyday essentials, ready for your home or business.",
+    "heroImageAlt": "Fresh food staples including beans and grains",
+    "searchPlaceholder": "Search food products",
+    "clearSearch": "Clear",
+    "productCount": "{{count}} products",
+    "qualityBadge": "Quality pick",
+    "noResults": "No food products match your search.",
+    "noProductsYet": "No food products are available yet. Please check back soon.",
+    "loadUnavailable": "Food products are temporarily unavailable. Please try again.",
+    "loading": "Loading food products...",
+    "loadError": "We couldn’t load food products right now.",
+    "tryAgain": "Try again",
+    "addToCartSuccess": "Added to your cart.",
+    "pagination": "Food product pages",
+    "previous": "Previous",
+    "next": "Next",
+    "pageCount": "Page {{current}} of {{total}}",
     "services": "Food Services",
     "topImageAlt": "Top Image",
     "addToCart": "Add to Cart",

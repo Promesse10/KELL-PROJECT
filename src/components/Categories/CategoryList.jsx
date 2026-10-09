@@ -44,18 +44,21 @@ const CategoryList = () => {
   };
 
   if (status === 'loading') {
-    return <div className="text-center p-4">Loading...</div>;
+    return <div className="kk-admin-state">Loading categories…</div>;
   }
 
   if (status === 'failed') {
-    return <div className="text-center p-4 text-red-500">Error: {error}</div>;
+    return <div className="kk-admin-state is-error">Could not load categories: {error}</div>;
   }
 
   return (
-    <div className="p-4 lg:p-8">
-      <h2 className="text-2xl font-bold mb-4">Categories</h2>
+    <div className="kk-admin-card kk-admin-category-list p-4 lg:p-8">
+      <div className="kk-admin-card__heading">
+        <div><h2>All categories</h2><p>Organize products into clear collections.</p></div>
+        <span className="kk-admin-count">{categories.length} total</span>
+      </div>
       {isUpdating && (
-        <div className="mb-4">
+        <div className="kk-admin-category-edit mb-4">
           <input
             type="text"
             value={newCategoryName}
@@ -105,6 +108,7 @@ const CategoryList = () => {
               </td>
             </tr>
           ))}
+          {!categories.length && <tr><td className="kk-admin-empty" colSpan="3">No categories created yet.</td></tr>}
         </tbody>
       </table>
       <ToastContainer/>

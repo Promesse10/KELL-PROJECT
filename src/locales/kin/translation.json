@@ -5,10 +5,17 @@
     "services": "Serivisi",
     "products": "Ibicuruzwa",
     "it": "Amakuru n'Ikoranabuhanga",
-    "civil": "Imishinga y'Ubwubatsi",
     "food": "Serivisi y'ibiribwa",
     "about": "Ibitwerekeyeho",
     "contact": "Twandikire",
+    "cars": "Gucuruza imodoka",
+    "openMenu": "Fungura menu",
+    "closeMenu": "Funga menu",
+    "mainNavigation": "Menu nkuru",
+    "changeLanguage": "Hindura ururimi. Ururimi rukoreshwa: {{language}}",
+    "cartWithCount": "Fungura igitebo, ibintu {{count}}",
+    "accountMenu": "Menu ya konti",
+    "myOrders": "Amateka y'ibyo naguze",
     "hi": "Muraho",
     "profile": "Umwirondoro",
     "settings": "Igenamiterere",
@@ -24,28 +31,75 @@
     "logoutConfirm":"uzi neza ko ushaka gusohoka"
   },
   "hero": {
+    "eyebrow": "Serivisi nziza. Ejo heza.",
     "welcome": "Murakaza neza muri KarKelly ltd",
-    "description": "Dutanga serivisi nziza muri IT, gutanga ibiribwa, no kubaka.",
-    "tagline": "\"Karkelly Ejo heza imbere\""
+    "description": "Dutanga serivisi nziza mu ikoranabuhanga, ibiribwa, imodoka no gupima ubutaka.",
+    "tagline": "\"Karkelly Ejo heza imbere\"",
+    "exploreService": "Reba serivisi",
+    "ourServices": "Serivisi zacu",
+    "services": {
+      "food": "Ibishyimbo, ibigori, ibirayi n'ibindi biribwa byiza dutanga ku rugo no ku bucuruzi.",
+      "it": "Ikoranabuhanga, ibikoresho by'ishuri na serivisi zo gucapa bifasha akazi n'imyigire.",
+      "cars": "Reba imodoka ziri ku rutonde maze ushungure ukurikije ibyo ukeneye.",
+      "survey": "Dutanga serivisi zo gupima ubutaka no gukora amakarita agufasha kumenya no gutegura ubutaka bwawe."
+    },
+    "labels": {
+      "food": "Ibiribwa byiza",
+      "it": "Ikoranabuhanga n'ibikoresho",
+      "cars": "Gucuruza imodoka",
+      "survey": "Gupima ubutaka"
+    },
+    "serviceNames": {
+      "food": "Gutanga ibiribwa",
+      "it": "Ikoranabuhanga n'ibikoresho",
+      "cars": "Gucuruza imodoka",
+      "survey": "Gupima ubutaka"
+    },
+    "carouselLabel": "Serivisi za KarKelly",
+    "previousService": "Serivisi ibanza",
+    "nextService": "Serivisi ikurikira",
+    "goToService": "Reba {{service}}",
+    "closeServices": "Funga serivisi"
   },
   "service": {
+    "eyebrow": "Ibyo dukora",
     "title": "Serivisi zacu",
+    "intro": "Ibiribwa, ikoranabuhanga, imodoka no gupima ubutaka — menya uko KarKelly yagufasha.",
     "itAlt": "Ikoranabuhanga ry'Amashini",
     "itTitle": "Ikoranabuhanga ",
     "itDescription": "Serivisi z'Ikoranabuhanga na Papeteri",
-    "constructionAlt": "Imishinga y'Ubugeni bwa Civil",
-    "constructionTitle": "Serivisi z'ubwubatsi",
-    "constructionDescription": "Ibishushanyo mbonera n'ubushakashatsi ku butaka",
     "foodAlt": "Gutanga Ibiribwa",
     "foodTitle": "Ibiribwa",
     "foodDescription": "Kugurisha no kujyemura ibiribwa",
+    "viewService": "Reba serivisi",
+    "items": {
+      "food": {
+        "title": "Gutanga ibiribwa",
+        "description": "Ibishyimbo, ibinyampeke n'ibiribwa bya buri munsi ku rugo no ku bucuruzi."
+      },
+      "it": {
+        "title": "Ikoranabuhanga n'ibikoresho by'ishuri",
+        "description": "Ubufasha bwa mudasobwa, ibikoresho by'ishuri na serivisi zo gucapa."
+      },
+      "cars": {
+        "title": "Gucuruza imodoka",
+        "description": "Reba imodoka ziri ku rutonde, ushakishe ubwoko, lisansi n'igiciro."
+      },
+      "survey": {
+        "title": "Gupima ubutaka",
+        "description": "Gupima ubutaka, gukora amakarita no gufasha igenamigambi. Twandikire tuganire ku butaka bwawe."
+      }
+    },
     "clickHere": "Kanda hano",
     "popupMessage": "Kugira ngo wongere ku isoko, banza winjire cyangwa usinye",
     "loginSignup": "Injira/Sinya"
   },
   "aboutus": {
+    "eyebrow": "Amateka yacu",
     "title": "Ibitwerekeyeho",
     "getToKnowUs": "Tumenye",
+    "headline": "Ejo heza hatangirana na serivisi nziza za buri munsi.",
+    "teamEyebrow": "Abakozi ba KarKelly",
     "welcomeMessage": "Murakaza neza muri Karkelly Company Ltd, Karkelly Company itanga ibikoresho byo mu biro byiza kandi bidasanzwe, bituma ugira ibitekerezo bishya no kunezerwa mu buzima bwawe bwa buri munsi",
     "visionMission": "Intego ",
     "moreInfo": "Ubusobanuro",
@@ -65,7 +119,9 @@
     "modalDescription": "Intego yacu ni uguteza imbere ibitekerezo no kuzana ibyishimo mu buzima bwa buri munsi binyuze mu bikoresho byo mu biro byiza kandi bidasanzwe. Intego yacu ni ugutanga ibicuruzwa n'ibikorwa byiza bihura n'ibyo abakiriya bacu bakeneye kandi bibahe ibyo bashaka."
   },
   "contactus": {
+    "eyebrow": "Turi hano kugufasha",
     "title": "Twandikire",
+    "intro": "Ufite ikibazo ku bicuruzwa cyangwa serivisi zacu? Twifuza kukumva.",
     "getInTouch": "Hura natwe",
     "emailAlt": "Imeyili",
     "locationAlt": "Ahantu",
@@ -81,6 +137,16 @@
   },
   "infopage": {
     "title": "Ikoranabuhanga",
+    "eyebrow": "Ikoranabuhanga n'ibikoresho by'ishuri",
+    "intro": "Serivisi z'ikoranabuhanga, imyigire no gucapa ku rugo, ku ishuri no ku bucuruzi.",
+    "heroImageAlt": "Abantu bakorera hamwe kuri mudasobwa",
+    "productsEyebrow": "Reba ibicuruzwa byacu",
+    "productsTitle": "Ibikoresho by'ishuri n'ibiro",
+    "productsLoading": "Turimo gushaka ibikoresho by'ishuri n'ibiro",
+    "searchPlaceholder": "Shakisha ibikoresho by'ishuri n'ibiro",
+    "productBadge": "Ishuri n'ibiro",
+    "noResults": "Nta bikoresho bihuye n'ibyo washakishije.",
+    "noProductsYet": "Nta bikoresho by'ishuri cyangwa ibiro biraboneka. Ongera uze vuba.",
     "schoolOfficeItemServiceAlt": "Serivisi y'ibikoresho by'ishuri no mubiro",
     "schoolOfficeItemServiceTitle": "Serivisi y'ibikoresho by'ishuri no mubiro",
     "schoolOfficeItem1": "Ibitabo,amakaramu, n'ibindi.",
@@ -113,6 +179,7 @@
   },
   "createAccount": {
     "title": "Fungura Konti",
+    "intro": "Fungura konti ya KarKelly maze woroshye ukoresha serivisi zacu.",
     "imageAlt": "Ishusho yo kwinjira",
     "namePlaceholder": "Injiza amazina ",
     "emailPlaceholder": "Injiza imeyili ",
@@ -153,6 +220,7 @@
   },
   "login": {
     "title": "Injira",
+    "intro": "Injira muri konti yawe ya KarKelly kugira ngo ukomeze.",
     "emailPlaceholder": "Izina ry'umukoresha/Imeli",
     "passwordPlaceholder": "Ijambo ry'ibanga",
     "visibleAlt": "Byagaragaye",
@@ -173,6 +241,13 @@
   },
   "cart": {
     "shoppingCart": "Ibicuruzwa wahisemo",
+    "yourSelection": "Ibyo wahisemo",
+    "closeCart": "Funga igitebo",
+    "continueShopping": "Komeza guhaha",
+    "viewFullCart": "Reba igitebo cyose",
+    "decreaseQuantity": "Gabanya {{name}}",
+    "increaseQuantity": "Ongera {{name}}",
+    "removeItem": "Kuramo {{name}} mu gitebo",
     "currency": "rwf",
     "delete": "Kuramo",
     "total": "Igiteranyo",
@@ -181,6 +256,92 @@
     "empty": "Igare ryawe ririmo ubusa",
     "proceedingToCheckout": "Gukomeza kugura!",
     "title":"igitebo"
+  },
+  "cars": {
+    "eyebrow": "Imodoka za KarKelly",
+    "title": "Hitamo imodoka yawe.",
+    "intro": "Reba imodoka KarKelly yashyize ku rutonde, ushungure ukurikije ibyo ukeneye.",
+    "inventoryNotice": "Reba imodoka ziri ku rutonde ubu maze utwandikire umenye ibisobanuro n'uko zihari.",
+    "heroImageAlt": "Imodoka zitandukanye ziri ahagurishirizwa",
+    "sampleShowroom": "Urugero rw'ahagurishirizwa",
+    "inventoryEyebrow": "Reba imodoka",
+    "inventoryTitle": "Shaka ihuye n'ibyo ukeneye",
+    "resultCount": "Imodoka {{count}}",
+    "loadingCount": "Turimo gushaka imodoka",
+    "loading": "Turimo gushaka imodoka",
+    "searchPlaceholder": "Shakisha ubwoko, izina cyangwa lisansi",
+    "category": "Ubwoko bw'imodoka",
+    "allCategories": "Ubwoko bwose",
+    "categories": {
+      "suv": "SUV",
+      "sedan": "Sedan",
+      "hatchback": "Imodoka nto"
+    },
+    "fuelType": "Ubwoko bwa lisansi",
+    "allFuelTypes": "Ubwoko bwose bwa lisansi",
+    "fuel": {
+      "electric": "Amashanyarazi",
+      "hybrid": "Hybrid",
+      "petrol": "Lisansi",
+      "diesel": "Diesel"
+    },
+    "seats": "Imyanya",
+    "anySeats": "Imyanya yose",
+    "seatLabel": "imyanya",
+    "maximumPrice": "Igiciro ntarengwa",
+    "noMaximum": "Nta rugero",
+    "sortBy": "Shungura",
+    "sort": {
+      "featured": "Ibyatoranyijwe",
+      "priceLow": "Igiciro: gito ku kinini",
+      "priceHigh": "Igiciro: kinini ku gito",
+      "newest": "Umwaka mushya"
+    },
+    "clearFilters": "Siba ibyo wahisemo",
+    "sampleListing": "Imodoka",
+    "samplePhotoAlt": "Imodoka iri ku rutonde",
+    "price": "Igiciro",
+    "vehicleNames": {
+      "KK-01": "Imodoka nto y'amashanyarazi",
+      "KK-02": "SUV ya Hybrid y'umuryango",
+      "KK-03": "Imodoka nto y'amashanyarazi",
+      "KK-04": "Sedan y'abagenzi",
+      "KK-05": "Imodoka ya 4x4",
+      "KK-06": "Sedan yo mu mujyi"
+    },
+    "noResults": "Nta modoka zihuye n'ibyo wahisemo. Gerageza guhindura ibyo ushakisha.",
+    "noVehiclesYet": "Nta modoka ziri ku rutonde ubu. Ongera uze vuba.",
+    "loadUnavailable": "Amakuru y'imodoka ntabonetse ubu. Ongera ugerageze.",
+    "tryAgain": "Ongera ugerageze",
+    "notListed": "Ntabwo byashyizweho",
+    "viewDetails": "Reba amakuru ya {{car}}",
+    "closeDetails": "Funga amakuru y'imodoka",
+    "detailNotice": "Twandikire wemeze ko imodoka ihari n'ibisobanuro byayo.",
+    "year": "Umwaka w'urugero",
+    "transmission": "Ibyuma by'imodoka",
+    "mileage": "Intera yakoze",
+    "demoMileage": "Ntabwo byashyizweho",
+    "range": "Intera / ikoreshwa rya lisansi",
+    "vehicleRange": {
+      "electric": "Urugero: intera ya 280–320 km",
+      "hybrid": "Urugero rw'ikoreshwa rya lisansi",
+      "petrol": "Urugero rw'ikoreshwa rya lisansi",
+      "diesel": "Urugero rw'ikoreshwa rya lisansi"
+    },
+    "interestedEyebrow": "Ukeneye imodoka nyayo?",
+    "interestedTitle": "Tuganire ku byo ukeneye.",
+    "interestedText": "Twandikire tuganire ku modoka zihari n'ibyo ukeneye.",
+    "contactUs": "Twandikire",
+    "askAboutCar": "Baza kuri iyi modoka"
+  },
+  "footer": {
+    "eyebrow": "KarKelly Ltd",
+    "tagline": "Serivisi nziza. Ejo heza.",
+    "socialLinks": "Kurikirana KarKelly",
+    "services": "Serivisi zacu",
+    "contactLink": "Twandikire",
+    "allServices": "Reba serivisi zose",
+    "rights": "Uburenganzira bwose burubahirijwe."
   },
   "dashboard": {
     "search": "Shakisha...",
@@ -222,6 +383,25 @@
     "resetError": "Ikosa ryo guhindura ijambo ry'ibanga: {{error}}"
   },
   "food": {
+    "eyebrow": "Mu iduka ry'ibiribwa",
+    "title": "Gutanga ibiribwa",
+    "intro": "Ibiribwa byiza n'ibikoresho bya buri munsi biboneka ku rugo cyangwa ku bucuruzi bwawe.",
+    "heroImageAlt": "Ibiribwa birimo ibishyimbo n'ibinyampeke",
+    "searchPlaceholder": "Shakisha ibiribwa",
+    "clearSearch": "Siba",
+    "productCount": "Ibicuruzwa {{count}}",
+    "qualityBadge": "Ubuziranenge",
+    "noResults": "Nta biribwa bihuye n'ibyo washakishije.",
+    "noProductsYet": "Nta biribwa biriho ubu. Ongera uze vuba.",
+    "loadUnavailable": "Ibiribwa ntibibasha kugaragara ubu. Ongera ugerageze.",
+    "loading": "Ibiribwa biri gutegurwa...",
+    "loadError": "Ntitwashoboye kwerekana ibiribwa.",
+    "tryAgain": "Ongera ugerageze",
+    "addToCartSuccess": "Byashyizwe mu gitebo.",
+    "pagination": "Impapuro z'ibiribwa",
+    "previous": "Ibanjirije",
+    "next": "Ikurikira",
+    "pageCount": "Urupapuro {{current}} kuri {{total}}",
     "services": "Serivisi z'ibiryo",
     "topImageAlt": "Ifoto Nyamukuru",
     "addToCart": "Ongeramo",

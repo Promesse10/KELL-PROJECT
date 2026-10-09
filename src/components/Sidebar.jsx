@@ -1,7 +1,18 @@
 import React, { useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
+import {
+  FiGrid, FiPackage, FiShoppingBag, FiTag, FiUsers, FiLogOut, FiMenu, FiX,
+} from 'react-icons/fi';
 import { logout } from '../slices/authSlice';
+
+const adminLinks = [
+  { to: '/admin/dashboard', label: 'Overview', icon: FiGrid, end: true },
+  { to: '/admin/product', label: 'Products', icon: FiPackage },
+  { to: '/admin/orders', label: 'Orders', icon: FiShoppingBag },
+  { to: '/admin/categories', label: 'Categories', icon: FiTag },
+  { to: '/admin/users', label: 'Customers', icon: FiUsers },
+];
 
 const Sidebar = () => {
   const dispatch = useDispatch();
@@ -14,109 +25,60 @@ const Sidebar = () => {
   };
 
   return (
-    <div>
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className="md:hidden p-4 text-gray-800"
-      >
-        <svg
-          className="w-6 h-6"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="2"
-            d="M4 6h16M4 12h16m-7 6h7"
-          ></path>
-        </svg>
-      </button>
-
-      <div
-        className={`fixed h-screen bg-gray-800 text-white w-64 transition-transform duration-300 ${
-          isOpen ? 'translate-x-0' : '-translate-x-full'
-        } md:translate-x-0`}
-      >
-        <div className="flex items-center justify-center h-20">
-          <h1 className="text-3xl font-bold">Admin</h1>
+    <>
+      <header className="kk-admin-mobilebar">
+        <button type="button" onClick={() => setIsOpen(true)} aria-label="Open admin navigation">
+          <FiMenu aria-hidden="true" />
+        </button>
+        <span>KarKelly <small>ADMIN</small></span>
+      </header>
+      {isOpen && (
+        <button
+          type="button"
+          className="kk-admin-sidebar__scrim"
+          onClick={() => setIsOpen(false)}
+          aria-label="Close navigation"
+        />
+      )}
+      <aside className={`kk-admin-sidebar${isOpen ? ' is-open' : ''}`}>
+        <div className="kk-admin-sidebar__brand">
+          <span className="kk-admin-sidebar__brand-mark">K</span>
+          <div><strong>KarKelly</strong><small>ADMIN CONSOLE</small></div>
+          <button
+            type="button"
+            className="kk-admin-sidebar__close"
+            onClick={() => setIsOpen(false)}
+            aria-label="Close admin navigation"
+          ><FiX aria-hidden="true" /></button>
         </div>
-        <nav className="flex-1">
-          <ul className="p-4">
-            <li className="mb-4">
-              <NavLink
-                to="/admin/dashboard"
-                className={({ isActive }) =>
-                  isActive
-                    ? 'text-gray-300 bg-gray-700 hover:bg-gray-700 hover:text-white p-3 rounded block'
-                    : 'text-gray-300 hover:bg-gray-700 hover:text-white p-3 rounded block'
-                }
-              >
-                Dashboard
-              </NavLink>
-            </li>
-            <li className="mb-4">
-              <NavLink
-                to="/admin/product"
-                className={({ isActive }) =>
-                  isActive
-                    ? 'text-gray-300 bg-gray-700 hover:bg-gray-700 hover:text-white p-3 rounded block'
-                    : 'text-gray-300 hover:bg-gray-700 hover:text-white p-3 rounded block'
-                }
-              >
-                Products
-              </NavLink>
-            </li>
-            <li className="mb-4">
-              <NavLink
-                to="/admin/orders"
-                className={({ isActive }) =>
-                  isActive
-                    ? 'text-gray-300 bg-gray-700 hover:bg-gray-700 hover:text-white p-3 rounded block'
-                    : 'text-gray-300 hover:bg-gray-700 hover:text-white p-3 rounded block'
-                }
-              >
-                Orders
-              </NavLink>
-            </li>
-            <li className="mb-4">
-              <NavLink
-                to="/admin/categories"
-                className={({ isActive }) =>
-                  isActive
-                    ? 'text-gray-300 bg-gray-700 hover:bg-gray-700 hover:text-white p-3 rounded block'
-                    : 'text-gray-300 hover:bg-gray-700 hover:text-white p-3 rounded block'
-                }
-              >
-                Categories
-              </NavLink>
-            </li>
-            <li className="mb-4">
-              <NavLink
-                to="/admin/users"
-                className={({ isActive }) =>
-                  isActive
-                    ? 'text-gray-300 bg-gray-700 hover:bg-gray-700 hover:text-white p-3 rounded block'
-                    : 'text-gray-300 hover:bg-gray-700 hover:text-white p-3 rounded block'
-                }
-              >
-                Customers
-              </NavLink>
-            </li>
-            <li className="mt-auto mb-4">
-              <button
-                onClick={handleLogout}
-                className="text-gray-300 hover:bg-gray-700 hover:text-white p-3 rounded block w-full text-left"
-              >
-                Logout
-              </button>
-            </li>
-          </ul>
+
+        <p className="kk-admin-sidebar__section">WORKSPACE</p>
+        <nav aria-label="Admin navigation">
+          {adminLinks.map(({ to, label, icon: Icon, end }) => (
+            <NavLink
+              key={to}
+              to={to}
+              end={end}
+              onClick={() => setIsOpen(false)}
+              className={({ isActive }) => `kk-admin-sidebar__link${isActive ? ' is-active' : ''}`}
+            >
+              <Icon aria-hidden="true" />
+              <span>{label}</span>
+            </NavLink>
+          ))}
         </nav>
-      </div>
-    </div>
+
+        <div className="kk-admin-sidebar__bottom">
+          <div className="kk-admin-sidebar__help">
+            <span>Need a hand?</span>
+            <small>Manage your business from one place.</small>
+          </div>
+          <button type="button" className="kk-admin-sidebar__logout" onClick={handleLogout}>
+            <FiLogOut aria-hidden="true" /> Sign out
+          </button>
+        </div>
+      </aside>
+    </>
   );
 };
 

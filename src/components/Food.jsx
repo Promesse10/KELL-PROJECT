@@ -1,173 +1,209 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getProducts } from '../slices/productSlice';
-import { addToCart, increaseQuantity, decreaseQuantity, removeFromCart, selectCartItems } from '../slices/cartSlice';
+import { addToCart, increaseQuantity, selectCartItems } from '../slices/cartSlice';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import LoginPopup from './LoginPopup';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import debounce from 'lodash/debounce';
-import { Spinner } from '@material-tailwind/react';
-import search from "../assets/Search.png"; // Assuming you're using this image for the search icon
+import search from '../assets/Search.png';
+import ServiceStoreHero from './ServiceStoreHero';
+import foodHero from '../assets/foodS.jpg';
 
-const productsPerPage = 9; // Setting number of products per page
+const productsPerPage = 9;
 
 const Food = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const products = useSelector((state) => state.products.products);
+  const status = useSelector((state) => state.products.status);
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
   const cartItems = useSelector(selectCartItems);
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [showPopup, setShowPopup] = useState(false);
-  const [showCart, setShowCart] = useState(false);
-  const [selectedProduct, setSelectedProduct] = useState(null);
-  const [animationState, setAnimationState] = useState('');
-  const [imageLoading, setImageLoading] = useState({});
-  
+
   const debouncedSearch = useCallback(
     debounce((term) => {
-      dispatch(getProducts({ category: "foodservices", searchTerm: term }));
-    }, 1000),
+      dispatch(getProducts({ category: 'foodservices', searchTerm: term }));
+    }, 350),
     [dispatch]
   );
 
   useEffect(() => {
-    if (searchTerm) {
-      debouncedSearch(searchTerm);
+    const term = searchTerm.trim();
+    if (term) {
+      debouncedSearch(term);
     } else {
-      dispatch(getProducts({ category: "foodservices", searchTerm: "" }));
+      dispatch(getProducts({ category: 'foodservices', searchTerm: '' }));
     }
     return debouncedSearch.cancel;
   }, [searchTerm, debouncedSearch, dispatch]);
 
-  useEffect(() => {
-    dispatch(getProducts({ category: "foodservices" }));
-  }, [dispatch]);
-
-  const handleSearchChange = (e) => {
-    setSearchTerm(e.target.value);
+  const handleSearchChange = (event) => {
+    setSearchTerm(event.target.value);
+    setCurrentPage(1);
   };
 
   const handleAddToCart = (product) => {
     if (!isLoggedIn) {
       setShowPopup(true);
-    } else {
-      const existingProduct = cartItems.find(item => item._id === product._id);
-      if (existingProduct) {
-        dispatch(increaseQuantity(product._id));
-      } else {
-        dispatch(addToCart({ ...product, quantity: 1 }));
-        toast.success(t('food.addToCartSuccess'));
-      }
-      setSelectedProduct(product);
-      setAnimationState('slide-in');
-      setShowCart(true);
+      return;
     }
+
+    const existingProduct = cartItems.find((item) => item._id === product._id);
+    if (existingProduct) {
+      dispatch(increaseQuantity(product._id));
+    } else {
+      dispatch(addToCart({ ...product, quantity: 1 }));
+    }
+    toast.success(t('food.addToCartSuccess'));
   };
 
-  const handlePageChange = (page) => {
-    setCurrentPage(page);
-  };
-
-  const filteredProducts = products.filter(product =>
-    product.name.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredProducts = products.filter((product) =>
+    product.name?.toLowerCase().includes(searchTerm.trim().toLowerCase())
   );
-
   const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
   const displayedProducts = filteredProducts.slice(
     (currentPage - 1) * productsPerPage,
     currentPage * productsPerPage
   );
-
-  const handleImageLoadStart = (productId) => {
-    setImageLoading((prevState) => ({
-      ...prevState,
-      [productId]: true,
-    }));
-  };
-
-  const handleImageLoadEnd = (productId) => {
-    setImageLoading((prevState) => ({
-      ...prevState,
-      [productId]: false,
-    }));
-  };
+  const cartCount = cartItems.reduce((total, item) => total + item.quantity, 0);
 
   return (
-    <div className='bg-gray-100 mt-24 flex flex-col'>
-      <ToastContainer />
+    <main className="food-store">
+      <ToastContainer position="bottom-right" />
       {showPopup && <LoginPopup onClose={() => setShowPopup(false)} />}
 
-      {/* Search Bar */}
-      <div className="flex justify-center mt-6">
-        <input
-          type="text"
-          value={searchTerm}
-          onChange={handleSearchChange}
-          placeholder={t('food.searchPlaceholder')}
-          className="px-4 py-2 w-full sm:w-96 border rounded-md"
-        />
-      </div>
+      <ServiceStoreHero namespace="food" image={foodHero} imageAlt={t('food.heroImageAlt')} />
 
-      {/* Product Grid */}
-      <div className="flex-grow mt-10">
-        {displayedProducts.length === 0 ? (
-          <div className="flex justify-center items-center">
-            {searchTerm ? t('food.noResults') : <Spinner color="blue" />}
+      <section className="food-store__catalog" aria-labelledby="food-catalog-title">
+        <div className="food-store__catalog-heading">
+          <div>
+            <span className="kk-eyebrow">{t('food.eyebrow')}</span>
+            <h2 id="food-catalog-title">{t('food.title')}</h2>
           </div>
-        ) : (
-          <div className='flex flex-wrap justify-center gap-10 px-4 md:px-0'>
-            {displayedProducts.map((item) => (
-              <div key={item._id} className='bg-gray-300 pb-8 flex flex-col justify-center items-center w-full sm:w-72 transform transition-transform duration-500 hover:scale-105'>
-                {imageLoading[item._id] && <Spinner />} {/* Show spinner while loading */}
-                <img
-                  className='w-full h-56 object-cover'
-                  src={item.images[0].url}
-                  alt={t(`${item.name}`)}
-                  onLoadStart={() => handleImageLoadStart(item._id)}
-                  onLoad={() => handleImageLoadEnd(item._id)}
-                />
-                <p className='mt-5 text-center font-bold'>{t(`${item.name}`)}</p>
-                <p className='mt-2 text-center text-gray-600'>{item.description}</p>
-                <div className='flex justify-between items-center gap-5 mx-8'>
-                  <button
-                    className="text-white bg-blue-950 px-2 py-1 rounded-md mt-2 transition duration-300 transform hover:scale-110 hover:bg-white hover:text-blue-950 hover:shadow-lg hover:font-bold text-sm"
-                    onClick={() => handleAddToCart(item)}
-                  >
-                    {t('food.addToCart')}
-                  </button>
-                  <button
-                    onClick={() => navigate('/checkout', { state: { product: item } })}
-                    className="text-blue-950 bg-white px-2 py-1 rounded-md mt-2 transition duration-300 transform hover:scale-110 hover:bg-blue-950 hover:text-white hover:shadow-lg hover:font-bold text-sm"
-                  >
-                    {t('food.buyNow')}
-                  </button>
+          <p>{t('food.productCount', { count: status === 'succeeded' ? filteredProducts.length : 0 })}</p>
+        </div>
+
+        <label className="food-store__search">
+          <img src={search} alt="" aria-hidden="true" />
+          <span className="sr-only">{t('food.searchPlaceholder')}</span>
+          <input
+            type="search"
+            value={searchTerm}
+            onChange={handleSearchChange}
+            placeholder={t('food.searchPlaceholder')}
+          />
+          {searchTerm && (
+            <button
+              type="button"
+              onClick={() => {
+                setSearchTerm('');
+                setCurrentPage(1);
+              }}
+            >
+              {t('food.clearSearch')}
+            </button>
+          )}
+        </label>
+
+        {status === 'loading' || status === 'idle' ? (
+          <div className="food-store__grid food-store__grid--skeleton" role="status" aria-label={t('food.loading')}>
+            {Array.from({ length: 6 }, (_, index) => (
+              <div className="food-product-skeleton" key={index} aria-hidden="true">
+                <div className="food-product-skeleton__image" />
+                <div className="food-product-skeleton__content">
+                  <span />
+                  <span />
+                  <div><i /><i /></div>
                 </div>
               </div>
             ))}
           </div>
-        )}
-
-        {/* Pagination */}
-        {totalPages > 1 && (
-          <div className="flex justify-center mt-10">
-            {[...Array(totalPages)].map((_, index) => (
-              <button
-                key={index}
-                onClick={() => handlePageChange(index + 1)}
-                className={`px-4 py-2 mx-1 rounded-lg ${index + 1 === currentPage ? 'bg-blue-950 text-white' : 'bg-gray-200 text-black'}`}
-              >
-                {index + 1}
-              </button>
+        ) : status === 'failed' ? (
+          <div className="food-store__feedback" role="alert">
+            <span className="food-store__empty-icon" aria-hidden="true">⌕</span>
+            <p>{t('food.loadUnavailable')}</p>
+            <button
+              className="kk-button kk-button--outline"
+              type="button"
+              onClick={() => dispatch(getProducts({ category: 'foodservices', searchTerm: searchTerm.trim() }))}
+            >
+              {t('food.tryAgain')}
+            </button>
+          </div>
+        ) : displayedProducts.length === 0 ? (
+          <div className="food-store__feedback">
+            <span className="food-store__empty-icon" aria-hidden="true">⌕</span>
+            <p>{searchTerm ? t('food.noResults') : t('food.noProductsYet')}</p>
+          </div>
+        ) : (
+          <div className="food-store__grid">
+            {displayedProducts.map((item) => (
+              <article className="food-product-card" key={item._id}>
+                <div className="food-product-card__image">
+                  {item.images?.[0]?.url ? (
+                    <img src={item.images[0].url} alt={item.name || ''} loading="lazy" />
+                  ) : (
+                    <div className="food-product-card__image-placeholder" aria-hidden="true">✳</div>
+                  )}
+                  <span className="food-product-card__badge">{t('food.qualityBadge')}</span>
+                </div>
+                <div className="food-product-card__content">
+                  <h3>{t(item.name || '')}</h3>
+                  {item.description && <p>{item.description}</p>}
+                  <div className="food-product-card__purchase">
+                    <span className="food-product-card__price">
+                      {item.price} <small>{t('cart.currency')}</small>
+                    </span>
+                    <div className="food-product-card__actions">
+                      <button
+                        className="kk-button kk-button--primary"
+                        type="button"
+                        onClick={() => handleAddToCart(item)}
+                      >
+                        {t('food.addToCart')}
+                      </button>
+                      <button
+                        className="food-product-card__buy"
+                        type="button"
+                        onClick={() => navigate('/checkout', { state: { product: item } })}
+                      >
+                        {t('food.buyNow')}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </article>
             ))}
           </div>
         )}
-      </div>
-    </div>
+
+        {totalPages > 1 && (
+          <nav className="food-store__pagination" aria-label={t('food.pagination')}>
+            <button
+              type="button"
+              onClick={() => setCurrentPage((page) => Math.max(1, page - 1))}
+              disabled={currentPage === 1}
+            >
+              {t('food.previous')}
+            </button>
+            <span>{t('food.pageCount', { current: currentPage, total: totalPages })}</span>
+            <button
+              type="button"
+              onClick={() => setCurrentPage((page) => Math.min(totalPages, page + 1))}
+              disabled={currentPage === totalPages}
+            >
+              {t('food.next')}
+            </button>
+          </nav>
+        )}
+      </section>
+    </main>
   );
 };
 

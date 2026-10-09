@@ -5,9 +5,25 @@ import Aboutus from '../components/Aboutus';
 import Contactus from '../components/Contactus';
 import Footer from '../components/Footer';
 import { ToastContainer, toast } from 'react-toastify';
+import { useLocation, useNavigate } from 'react-router-dom';
 import 'react-toastify/dist/ReactToastify.css';
 
 const Landingpage = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const sectionId = location.state?.scrollTo;
+    if (!sectionId) return undefined;
+
+    const frame = window.requestAnimationFrame(() => {
+      document.getElementById(sectionId)?.scrollIntoView({ behavior: 'smooth' });
+      navigate('/', { replace: true, state: null });
+    });
+
+    return () => window.cancelAnimationFrame(frame);
+  }, [location.state, navigate]);
+
   useEffect(() => {
     // Check local storage for product notification
     const notification = localStorage.getItem('productNotification');
@@ -32,7 +48,7 @@ const Landingpage = () => {
   }, []);
 
   return (
-    <>
+    <main className="landing-page">
       <Hero />
       <Service />
       <Aboutus />
@@ -49,7 +65,7 @@ const Landingpage = () => {
         draggable
         pauseOnHover
       />
-    </>
+    </main>
   );
 };
 

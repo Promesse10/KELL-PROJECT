@@ -1,61 +1,66 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import foodS from '../assets/foodS.jpg';
-import Itpic from '../assets/Itpic.png';
+import foodImage from '../assets/foodS.jpg';
+import itImage from '../assets/Itpic.png';
+import carImage from '../assets/car-showroom-sample.png';
+import surveyImage from './image-food/plott.jpeg';
+
+const services = [
+  { key: 'food', image: foodImage, href: '/food' },
+  { key: 'it', image: itImage, href: '/infopage' },
+  { key: 'cars', image: carImage, href: '/cars' },
+  { key: 'survey', image: surveyImage, href: null },
+];
 
 const Service = () => {
-  const [showPopup, setShowPopup] = useState(false);
   const navigate = useNavigate();
   const { t } = useTranslation();
 
-  const handleClosePopup = () => {
-    setShowPopup(false);
+  const openService = (href) => {
+    if (href) {
+      navigate(href);
+      return;
+    }
+    navigate('/', { state: { scrollTo: 'contactus' } });
   };
 
   return (
-    <div id="services" className='mt-15'>
-      <section id="service" className="my-9">
-        <h1 className="text-center text-blue-950 font-bold underline text-2xl sm:text-2xl lg:text-3xl mb-8">
-          {t('service.title')}
-        </h1>
-
-        <div className="flex flex-col gap-8 lg:flex-row lg:gap-32 justify-center items-center mx-4 sm:mx-12">
-          {/* First Card */}
-          <div className="p-4 border-blue-950 border-2 rounded-2xl hover:bg-blue-50 hover:text-blue-950 transform transition-transform flex flex-col justify-between h-full w-full sm:w-52 md:w-60 lg:w-64 min-h-[20rem]">
-            <img className="w-full h-36 object-cover transition duration-300 ease-in-out transform hover:scale-105" src={Itpic} alt={t('service.itAlt')} />
-            <div className="flex flex-col justify-center mt-4">
-              <h2 className="text-center font-semibold">{t('service.itTitle')}</h2>
-              <p className="text-center text-xs truncate">{t('service.itDescription')}</p>
-            </div>
-            <div className="flex justify-center mt-4">
-              <button 
-                className="bg-blue-950 text-white text-xs p-2 rounded-lg hover:bg-white hover:text-blue-950"
-                onClick={() => navigate('/infopage')}
-              >
-                {t('service.clickHere')}
-              </button>
-            </div>
-          </div>
-
-          {/* Second Card */}
-          <div className="p-4 border-blue-950 border-2 rounded-2xl hover:bg-blue-50 hover:text-blue-950 transform transition-transform flex flex-col justify-between h-full w-full sm:w-52 md:w-60 lg:w-64 min-h-[20rem]">
-            <img className="w-full h-36 object-cover transition duration-300 ease-in-out transform hover:scale-105" src={foodS} alt={t('service.foodAlt')} />
-            <div className="flex flex-col justify-center mt-4">
-              <h2 className="text-center font-semibold">{t('service.foodTitle')}</h2>
-              <p className="text-center text-xs truncate">{t('service.foodDescription')}</p>
-            </div>
-            <div className="flex justify-center mt-4">
-              <button className="bg-blue-950 text-white text-xs p-2 rounded-lg hover:bg-white hover:text-blue-950 shadow-2xl transition-all"
-                onClick={() => navigate('/Food')}
-              >
-                {t('service.clickHere')}
-              </button>
-            </div>
-          </div>
+    <section id="services" className="kk-services">
+      <div className="kk-section">
+        <div className="kk-section-heading">
+          <span className="kk-eyebrow">{t('service.eyebrow')}</span>
+          <h2>{t('service.title')}</h2>
+          <p>{t('service.intro')}</p>
         </div>
-      </section>
-    </div>
+
+        <div className="kk-service-grid">
+          {services.map((service, index) => (
+            <article className="kk-service-card" key={service.key}>
+              <div className="kk-service-card__image">
+                <img src={service.image} alt="" loading="lazy" />
+              </div>
+              <div className="kk-service-card__copy">
+                <span className="kk-service-card__number">
+                  {String(index + 1).padStart(2, '0')}
+                </span>
+                <h3>{t(`service.items.${service.key}.title`)}</h3>
+                <p>{t(`service.items.${service.key}.description`)}</p>
+              </div>
+              <div className="kk-service-card__action">
+                <button
+                  className="kk-text-link"
+                  type="button"
+                  onClick={() => openService(service.href)}
+                >
+                  {t('service.viewService')} <span aria-hidden="true">↗</span>
+                </button>
+              </div>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
   );
 };
 

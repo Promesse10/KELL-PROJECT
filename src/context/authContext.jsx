@@ -27,7 +27,7 @@ export const AuthProvider = ({ children }) => {
 
   const loginUser = (credentials) => {
     setFetchProfileAfterLogin(true); // Set flag to fetch profile after login
-    return dispatch(login(credentials));
+    return dispatch(login(credentials)).unwrap();
   };
 
   const logoutUser = () => {

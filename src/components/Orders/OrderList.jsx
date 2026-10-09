@@ -28,19 +28,26 @@ const OrderList = () => {
   };
 
   if (status === 'loading') {
-    return <div className="p-4 text-lg">Loading...</div>;
+    return <div className="kk-admin-state">Loading orders…</div>;
   }
 
   if (status === 'failed') {
-    return <div className="p-4 text-lg text-red-600">Error: {error}</div>;
+    return <div className="kk-admin-state is-error">Could not load orders: {error}</div>;
   }
 
   // Sort orders by createdAt date, newest first
   const sortedOrders = [...orders].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
   return (
-    <div className="p-4 max-w-screen-2xl mx-auto">
-      <h2 className="text-2xl font-bold mb-6 text-blue-950 text-center">Orders</h2>
+    <section className="kk-admin-page">
+      <div className="kk-admin-page-heading">
+        <div>
+          <span className="kk-admin-eyebrow">FULFILMENT</span>
+          <h1>Orders</h1>
+          <p>Review customer orders and keep delivery status up to date.</p>
+        </div>
+        <span className="kk-admin-count">{orders.length} total</span>
+      </div>
       <div className="overflow-x-auto shadow-lg rounded-lg border border-gray-200">
         <table className="min-w-full bg-white">
           <thead className="bg-blue-950 text-white">
@@ -126,10 +133,11 @@ const OrderList = () => {
                 </td>
               </tr>
             ))}
+            {!sortedOrders.length && <tr><td className="kk-admin-empty" colSpan="8">No orders have been placed yet.</td></tr>}
           </tbody>
         </table>
       </div>
-    </div>
+    </section>
   );
 };
 

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   BrowserRouter as Router,
   Routes,
@@ -11,13 +11,11 @@ import Footer from "./components/Footer";
 import Landingpage from "./pages/Landingpage";
 import LoginSignup from "./pages/LoginSignup";
 import Cart from "./pages/Cart";
-import CreateAccount from "./components/CreateAccountForm/CreateAccount";
 import Service from "./components/Service";
 import Infopage from "./components/Infopage";
 import Hero from "./components/Hero";
 import Aboutus from "./components/Aboutus";
 import Contactus from "./components/Contactus";
-import Construction from "./components/Construction";
 import Food from "./components/Food";
 import Terms from "./components/CreateAccountForm/terms";
 import Penproduct from "./components/Penproduct";
@@ -39,9 +37,14 @@ import MyOrders from "./components/myorders";
 import Receipt from "./components/Receipt";
 import VerifyEmail from "./components/VerifyEmail";
 import CheckEmail from "./components/CheckEmail";
+import CarSales from "./pages/CarSales";
 
 function App() {
   const location = useLocation();
+  useEffect(() => {
+    if (location.state?.scrollTo) return;
+    window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+  }, [location.pathname]);
   const isAdminRoute = location.pathname.startsWith("/admin");
   const isLoginAdminPage = location.pathname === "/login-admin";
   const isDashboardPage = location.pathname === "/admin/dashboard";
@@ -51,7 +54,11 @@ function App() {
   const shouldShowNavbar =
     !isAdminRoute && !isLoginAdminPage && !isDashboardPage && !isCheckoutPage;
   const shouldShowFooter =
-    !isAdminRoute && !isNotFoundPage && !isLandingPage && !isCheckoutPage;
+    !isAdminRoute &&
+    !isLoginAdminPage &&
+    !isNotFoundPage &&
+    !isLandingPage &&
+    !isCheckoutPage;
 
   return (
     <>
@@ -61,17 +68,17 @@ function App() {
         <Route path="/" element={<Landingpage />} />
         {/* <Route path="/infopage" element={<Infopage />} /> */}
         <Route path="/login" element={<LoginSignup />} />
+        <Route path="/createAccount" element={<LoginSignup />} />
         <Route path="/login-admin" element={<LoginAdmin />} />
         <Route path="/cart" element={<Cart />} />
-        <Route path="/createAccount" element={<CreateAccount />} />
         <Route path="/hero" element={<Hero />} />
         <Route path="/aboutus" element={<Aboutus />} />
         <Route path="/contactus" element={<Contactus />} />
         <Route path="/terms" element={<Terms />} />
         <Route path="/penproduct" element={<Penproduct />} />
         <Route path="/service" element={<Service />} />
-        <Route path="/construction" element={<Construction />} />
         <Route path="/food" element={<Food />} />
+        <Route path="/cars" element={<CarSales />} />
         <Route path="/infopage" element={<Infopage />} />
         <Route path="/profile" element={<ProfileManager />} />
         <Route path="/ForgotPassword" element={<ForgotPasswordForm />} />

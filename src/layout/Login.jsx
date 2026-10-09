@@ -1,108 +1,100 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import visible from '../assets/visible.png';
-import unvisible from '../assets/Unvisible.png';
+import { Link, useNavigate } from 'react-router-dom';
+import { FiArrowLeft, FiEye, FiEyeOff, FiLock, FiMail } from 'react-icons/fi';
 import { useAuth } from '../context/authContext';
-
-const Spinner = () => (
-  <svg
-    className="w-5 h-5 animate-spin text-white"
-    xmlns="http://www.w3.org/2000/svg"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-  >
-    <path
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth="2"
-      d="M4 12a8 8 0 118 8V4a8 8 0 00-8 8z"
-    />
-  </svg>
-);
+import Logo1 from '../assets/Logo1.png';
 
 const LoginAdmin = () => {
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [passwordVisible, setPasswordVisible] = useState(false);
-  const [loading, setLoading] = useState(false); // State for loading
-  const [notification, setNotification] = useState(''); // State for notifications
+  const [loading, setLoading] = useState(false);
+  const [notification, setNotification] = useState('');
   const { loginUser } = useAuth();
   const navigate = useNavigate();
 
-  const togglePasswordVisibility = () => {
-    setPasswordVisible(!passwordVisible);
-  };
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    setLoading(true);
+    setNotification('');
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true); // Start loading
-    setNotification(''); // Clear previous notifications
     try {
-      await loginUser({ email: username, password });
-      navigate('/admin/dashboard'); // Redirect to admin dashboard on successful login
-      toast.success('Login successful!');
-    } catch (err) {
-      // Display the error message from the backend response if available
-      if (err.response && err.response.data && err.response.data.message) {
-        setNotification(err.response.data.message);
-        toast.error(err.response.data.message);
-      } else {
-        setNotification(err.toString());
-        toast.error(err.toString());
-      }
+      await loginUser({ email: email.trim(), password });
+      navigate('/admin/dashboard');
+    } catch (error) {
+      setNotification(error.response?.data?.message || error.message || 'Unable to sign in. Please try again.');
     } finally {
-      setLoading(false); // Stop loading
+      setLoading(false);
     }
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-blue-950">
-      <form onSubmit={handleSubmit} className="p-10 bg-white shadow-md rounded relative">
-        <h2 className="mb-4 text-xl font-bold">Admin ~ Login</h2>
-        <div className="mb-4">
-          <label className="block mb-2 text-sm">Username</label>
-          <input
-            type="text"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            className="w-full p-2 border rounded"
-            required
-          />
+    <main className="kk-admin-login">
+      <div className="kk-admin-login__decor kk-admin-login__decor--one" aria-hidden="true" />
+      <div className="kk-admin-login__decor kk-admin-login__decor--two" aria-hidden="true" />
+      <Link className="kk-admin-login__back" to="/">
+        <FiArrowLeft aria-hidden="true" /> Back to website
+      </Link>
+
+      <section className="kk-admin-login__panel">
+        <div className="kk-admin-login__brand">
+          <img src={Logo1} alt="KarKelly" />
+          <span>MANAGEMENT PORTAL</span>
         </div>
-        <div className="mb-4 relative">
-          <label className="block mb-2 text-sm">Password</label>
-          <input
-            type={passwordVisible ? 'text' : 'password'}
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="w-full p-2 border rounded"
-            required
-          />
-          <button
-            type="button"
-            onClick={togglePasswordVisibility}
-            className="absolute inset-y-0 right-0 flex items-center pr-3"
-          >
-            {passwordVisible ? (
-              <img src={visible} className="w-7 mt-7" alt="Show password" />
-            ) : (
-              <img src={unvisible} className="w-7 mt-7" alt="Hide password" />
-            )}
+        <div className="kk-admin-login__intro">
+          <span className="kk-admin-login__eyebrow">Welcome back</span>
+          <h1>Sign in to your<br />workspace.</h1>
+          <p>Manage products, orders and customers from your KarKelly dashboard.</p>
+        </div>
+
+        <form className="kk-admin-login__form" onSubmit={handleSubmit}>
+          {notification && <div className="kk-admin-login__error" role="alert">{notification}</div>}
+          <label htmlFor="admin-email">Username or email</label>
+          <div className="kk-admin-login__input">
+            <FiMail aria-hidden="true" />
+            <input
+              id="admin-email"
+              type="text"
+              autoComplete="username"
+              value={email}
+              onChange={(event) => setEmail(event.target.value)}
+              placeholder="Enter username or email"
+              required
+            />
+          </div>
+
+          <div className="kk-admin-login__password-label">
+            <label htmlFor="admin-password">Password</label>
+          </div>
+          <div className="kk-admin-login__input">
+            <FiLock aria-hidden="true" />
+            <input
+              id="admin-password"
+              type={passwordVisible ? 'text' : 'password'}
+              autoComplete="current-password"
+              value={password}
+              onChange={(event) => setPassword(event.target.value)}
+              placeholder="Enter your password"
+              required
+            />
+            <button
+              type="button"
+              className="kk-admin-login__password-toggle"
+              onClick={() => setPasswordVisible((visible) => !visible)}
+              aria-label={passwordVisible ? 'Hide password' : 'Show password'}
+            >
+              {passwordVisible ? <FiEyeOff aria-hidden="true" /> : <FiEye aria-hidden="true" />}
+            </button>
+          </div>
+
+          <button className="kk-admin-login__submit" type="submit" disabled={loading}>
+            {loading ? <><span className="kk-admin-login__spinner" /> Signing in…</> : 'Sign in securely'}
           </button>
-        </div>
-        <button
-          type="submit"
-          className="w-full p-2 bg-blue-950 text-white rounded flex items-center justify-center"
-          disabled={loading} 
-        >
-          {loading ? <Spinner /> : 'Login'}
-        </button>
-      </form>
-      <ToastContainer />
-    </div>
+          <p className="kk-admin-login__security"><FiLock aria-hidden="true" /> Protected access for authorized administrators</p>
+        </form>
+      </section>
+      <footer className="kk-admin-login__footer">© {new Date().getFullYear()} KarKelly · Good service. Better tomorrows.</footer>
+    </main>
   );
 };
 

@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getUsers } from '../../slices/userSlice';
+import defaultAvatar from '../../assets/Account.png';
 
 const UserList = () => {
   const dispatch = useDispatch();
@@ -11,32 +12,41 @@ const UserList = () => {
   }, [dispatch]);
 
   if (status === 'loading') {
-    return <div className="text-center p-4">Loading...</div>;
+    return <div className="kk-admin-state">Loading customers…</div>;
   }
 
   if (status === 'failed') {
-    return <div className="text-center p-4 text-red-500">Error: {error}</div>;
+    return <div className="kk-admin-state is-error">Could not load customers: {error}</div>;
   }
 
   return (
-    <div className="p-4 lg:p-8 max-w-2xl mx-auto">
-      <h2 className="text-2xl font-bold mb-4">Custommers</h2>
-      <ul className="space-y-2">
+    <section className="kk-admin-page">
+      <div className="kk-admin-page-heading">
+        <div>
+          <span className="kk-admin-eyebrow">CUSTOMER DIRECTORY</span>
+          <h1>Customers</h1>
+          <p>View the people who shop with KarKelly.</p>
+        </div>
+        <span className="kk-admin-count">{users.length} customers</span>
+      </div>
+      <ul className="kk-admin-customer-list">
         {users.map((user) => (
-          <li key={user._id} className="bg-white p-4 border rounded-lg shadow-md flex items-center space-x-4">
+          <li key={user._id} className="kk-admin-customer">
             <img 
-              src={user.profilePic[0].url} 
+              src={user.profilePic?.[0]?.url || defaultAvatar}
               alt={user.name} 
-              className="w-12 h-12 rounded-full object-cover" 
+              className="kk-admin-customer__avatar"
             />
-            <div>
-              <div className="text-lg font-semibold">{user.name}</div>
-              <div className="text-sm text-gray-600">{user.email}</div>
+            <div className="kk-admin-customer__identity">
+              <strong>{user.name || 'Unnamed customer'}</strong>
+              <span>{user.email}</span>
             </div>
+            <span className="kk-admin-customer__badge">Customer</span>
           </li>
         ))}
+        {!users.length && <li className="kk-admin-empty">No customers to display yet.</li>}
       </ul>
-    </div>
+    </section>
   );
 };
 

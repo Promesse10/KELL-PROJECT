@@ -1,49 +1,50 @@
-
-
-
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import kiny from '../assets/kiny.png';
 import eng from '../assets/eng.png';
 
 const LanguageSwitcher = () => {
-  const { i18n } = useTranslation();
+  const { i18n, t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
+  const switcherRef = useRef(null);
+  const isKinyarwanda = i18n.resolvedLanguage === 'kin' || i18n.language.startsWith('kin');
+  const currentFlag = isKinyarwanda ? kiny : eng;
 
-  const changeLanguage = (lng) => {
-    i18n.changeLanguage(lng);
-    setIsOpen(false); // Close the dropdown after selection
+  useEffect(() => {
+    const closeOnOutsideClick = (event) => {
+      if (switcherRef.current && !switcherRef.current.contains(event.target)) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', closeOnOutsideClick);
+    return () => document.removeEventListener('mousedown', closeOnOutsideClick);
+  }, []);
+
+  const changeLanguage = (language) => {
+    i18n.changeLanguage(language);
+    setIsOpen(false);
   };
 
-  const currentLanguage = i18n.language;
-  const isKinyarwanda = currentLanguage === 'kin';
-  const flag = isKinyarwanda ? kiny : eng;
-  const languageLabel = isKinyarwanda ? 'Kiny' : 'Eng';
-
   return (
-    <div className="relative inline-block text-left">
-      <button 
-        onClick={() => setIsOpen(!isOpen)} 
-        className="flex items-center px-4 py-2 bg-gray-200 rounded hover:bg-gray-300 focus:outline-none"
+    <div className="kk-language" ref={switcherRef}>
+      <button
+        type="button"
+        className="kk-language__trigger"
+        onClick={() => setIsOpen((open) => !open)}
+        aria-label={t('navbar.changeLanguage', { language: isKinyarwanda ? 'Kinyarwanda' : 'English' })}
+        aria-expanded={isOpen}
       >
-        <img src={flag} alt={languageLabel} className="w-4 h-4 rounded-full mr-2" />
-        {languageLabel}
+        <img src={currentFlag} alt="" />
       </button>
       {isOpen && (
-        <div className="absolute left-0 mt-2 w-40 bg-white border border-gray-300 rounded shadow-lg">
-          <button 
-            onClick={() => changeLanguage('en')} 
-            className="flex items-center px-2 py-2 text-gray-700 hover:bg-gray-100 w-full text-left"
-          >
-            <img src={eng} alt="English" className="w-4 h-4 rounded-full mr-2" />
-            Eng
+        <div className="kk-language__menu" role="menu">
+          <button type="button" role="menuitem" onClick={() => changeLanguage('en')}>
+            <img src={eng} alt="" />
+            English
           </button>
-          <button 
-            onClick={() => changeLanguage('kin')} 
-            className="flex items-center px-2 py-2 text-gray-700 hover:bg-gray-100 w-full text-left"
-          >
-            <img src={kiny} alt="Kinyarwanda" className="w-4 h-4 rounded-full mr-2" />
-            Kiny
+          <button type="button" role="menuitem" onClick={() => changeLanguage('kin')}>
+            <img src={kiny} alt="" />
+            Kinyarwanda
           </button>
         </div>
       )}

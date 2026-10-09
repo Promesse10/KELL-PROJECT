@@ -1,71 +1,235 @@
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { FiArrowRight } from 'react-icons/fi';
+import { getProducts } from '../slices/productSlice';
+import { addToCart, increaseQuantity, selectCartItems } from '../slices/cartSlice';
+import LoginPopup from './LoginPopup';
+import { toast, ToastContainer } from 'react-toastify';
+import debounce from 'lodash/debounce';
 import './Infopage.css';
-import computer from "../components/images/computer.jpeg";
-import Service from "../assets/Service.jpg";
-import printer from "../components/images/printer.png";
-import table from "../components/images/table.jpeg";
+import computer from '../components/images/computer.jpeg';
+import serviceImage from '../assets/Service.jpg';
+import search from '../assets/Search.png';
+import printer from '../components/images/printer.png';
+import table from '../components/images/table.jpeg';
+import Modal from './moadl';
+import ServiceStoreHero from './ServiceStoreHero';
 
-const Popup = ({ title, content, onClose }) => (
-  <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-    <div className="bg-white p-8 rounded-lg shadow-lg max-w-lg w-full">
-      <h3 className="text-xl sm:text-2xl font-bold text-blue-950 mb-4 ">{title}</h3>
-      <p className="mb-4">{content}</p>
-      <button onClick={onClose} className="bg-red-600 text-white py-2 px-4 rounded-md">close</button>
-    </div>
-  </div>
-);
-
-function Infopage() {
+const Infopage = () => {
   const [popupContent, setPopupContent] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [showLoginPopup, setShowLoginPopup] = useState(false);
   const { t } = useTranslation();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const products = useSelector((state) => state.products.products);
+  const status = useSelector((state) => state.products.status);
+  const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
+  const cartItems = useSelector(selectCartItems);
+  const filteredProducts = products.filter((product) =>
+    t(`product_names.${product._id}`, { defaultValue: product.name || '' })
+      .toLowerCase()
+      .includes(searchTerm.trim().toLowerCase())
+  );
+  const debouncedSearch = useCallback(
+    debounce((term) => dispatch(getProducts({ category: 'schoolmatetial', searchTerm: term })), 350),
+    [dispatch]
+  );
 
-  const handlePopupOpen = (content) => {
-    setPopupContent(content);
+  useEffect(() => {
+    const term = searchTerm.trim();
+    if (term) debouncedSearch(term);
+    else dispatch(getProducts({ category: 'schoolmatetial', searchTerm: '' }));
+    return debouncedSearch.cancel;
+  }, [searchTerm, debouncedSearch, dispatch]);
+
+  const handleAddToCart = (product) => {
+    if (!isLoggedIn) {
+      setShowLoginPopup(true);
+      return;
+    }
+    const existing = cartItems.find((item) => item._id === product._id);
+    if (existing) dispatch(increaseQuantity(product._id));
+    else dispatch(addToCart({ ...product, quantity: 1 }));
+    toast.success(t('food.addToCartSuccess'));
   };
 
-  const handlePopupClose = () => {
-    setPopupContent(null);
-  };
+  const infoCards = [
+    {
+      imgSrc: table,
+      alt: t('infopage.schoolOfficeItemServiceAlt'),
+      title: t('infopage.schoolOfficeItemServiceTitle'),
+      items: [
+        t('infopage.schoolOfficeItem1'),
+        t('infopage.schoolOfficeItem2'),
+        t('infopage.schoolOfficeItem3'),
+      ],
+      href: '/penproduct',
+    },
+    {
+      imgSrc: computer,
+      alt: t('infopage.teachingComputerServiceAlt'),
+      title: t('infopage.teachingComputerServiceTitle'),
+      items: [
+        t('infopage.teachingComputerServiceItem1'),
+        t('infopage.teachingComputerServiceItem2'),
+        t('infopage.teachingComputerServiceItem3'),
+        t('infopage.teachingComputerServiceItem4'),
+      ],
+      content: t('infopage.teachingComputerServiceContent'),
+    },
+    {
+      imgSrc: printer,
+      alt: t('infopage.printingServiceAlt'),
+      title: t('infopage.printingServiceTitle'),
+      items: [
+        t('infopage.printingServiceItem1'),
+        t('infopage.printingServiceItem2'),
+        t('infopage.printingServiceItem3'),
+        t('infopage.printingServiceItem4'),
+        t('infopage.printingServiceItem5'),
+        t('infopage.printingServiceItem6'),
+      ],
+      content: t('infopage.printingServiceContent'),
+    },
+    {
+      imgSrc: serviceImage,
+      alt: t('infopage.onlineServiceAlt'),
+      title: t('infopage.onlineServiceTitle'),
+      items: [
+        t('infopage.onlineServiceItem1'),
+        t('infopage.onlineServiceItem2'),
+        t('infopage.onlineServiceItem3'),
+        t('infopage.onlineServiceItem4'),
+      ],
+      content: t('infopage.onlineServiceContent'),
+    },
+  ];
 
   return (
-    <div className="p-4 sm:p-6 md:p-8 bg-gray-100 mt-20">
-      <h1 className="text-2xl sm:text-2xl font-bold text-blue-950 text-center mb-8 mt-5">{t('infopage.title')}</h1>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
-        {[
-          { imgSrc: table, alt: t('infopage.schoolOfficeItemServiceAlt'), title: t('infopage.schoolOfficeItemServiceTitle'), items: [t('infopage.schoolOfficeItem1'), t('infopage.schoolOfficeItem2'), t('infopage.schoolOfficeItem3')], link: "/penproduct" },
-          { imgSrc: computer, alt: t('infopage.teachingComputerServiceAlt'), title: t('infopage.teachingComputerServiceTitle'), items: [t('infopage.teachingComputerServiceItem1'), t('infopage.teachingComputerServiceItem2'), t('infopage.teachingComputerServiceItem3'), t('infopage.teachingComputerServiceItem4')], popupContent: t('infopage.teachingComputerServiceContent') },
-          { imgSrc: printer, alt: t('infopage.printingServiceAlt'), title: t('infopage.printingServiceTitle'), items: [t('infopage.printingServiceItem1'), t('infopage.printingServiceItem2'), t('infopage.printingServiceItem3'), t('infopage.printingServiceItem4'), t('infopage.printingServiceItem5'), t('infopage.printingServiceItem6')], popupContent: t('infopage.printingServiceContent') },
-          { imgSrc: Service, alt: t('infopage.onlineServiceAlt'), title: t('infopage.onlineServiceTitle'), items: [t('infopage.onlineServiceItem1'), t('infopage.onlineServiceItem2'), t('infopage.onlineServiceItem3'), t('infopage.onlineServiceItem4')], popupContent: t('infopage.onlineServiceContent') },
-        ].map((info, idx) => (
-          <div key={idx} className="p-4 border rounded-lg shadow-lg flex flex-col sm:flex-row justify-center items-center text-center sm:text-left">
-            <img src={info.imgSrc} alt={info.alt} className="w-full sm:w-1/3 h-48 object-cover mb-4 sm:mb-0 rounded-lg" />
-            <div className="sm:ml-6 sm:flex-grow">
-              <h3 className="text-xl sm:text-2xl font-bold text-blue-950 mb-2">{info.title}</h3>
-              <ul className="mb-4 text-left">
-                {info.items.map((item, i) => (
-                  <li key={i} className="font-inter">{item}</li>
-                ))}
-              </ul>
-              {info.link ? (
-                <button onClick={() => window.location.href=info.link} className="bg-blue-950 text-white py-2 px-4 rounded-md">{t('infopage.clickHere')}</button>
-              ) : (
-                <button onClick={() => handlePopupOpen({ title: info.title, content: info.popupContent })} className="bg-blue-950 text-white py-2 px-4 rounded-md">{t('infopage.clickHere')}</button>
-              )}
-            </div>
-          </div>
-        ))}
-      </div>
+    <main className="info-store">
+      <ToastContainer position="bottom-right" />
+      {showLoginPopup && <LoginPopup onClose={() => setShowLoginPopup(false)} />}
+      <ServiceStoreHero
+        namespace="infopage"
+        image={computer}
+        imageAlt={t('infopage.heroImageAlt')}
+        imageClassName="service-store-hero__image--contain"
+        eyebrow={t('infopage.eyebrow')}
+        title={t('infopage.title')}
+        intro={t('infopage.intro')}
+      />
 
-      {popupContent && (
-        <Popup 
-          title={popupContent.title}
-          content={popupContent.content}
-          onClose={handlePopupClose}
-        />
-      )}
-    </div>
+      <section className="info-store__catalog" aria-label={t('infopage.title')}>
+        <div className="info-store__products-heading">
+          <div>
+            <span className="kk-eyebrow">{t('infopage.productsEyebrow')}</span>
+            <h2>{t('infopage.productsTitle')}</h2>
+          </div>
+          {status === 'succeeded' && <p>{t('food.productCount', { count: filteredProducts.length })}</p>}
+        </div>
+        <label className="food-store__search info-store__search">
+          <img src={search} alt="" aria-hidden="true" />
+          <span className="sr-only">{t('infopage.searchPlaceholder')}</span>
+          <input
+            type="search"
+            value={searchTerm}
+            onChange={(event) => setSearchTerm(event.target.value)}
+            placeholder={t('infopage.searchPlaceholder')}
+          />
+        </label>
+        {status === 'loading' || status === 'idle' ? (
+          <div className="food-store__grid food-store__grid--skeleton" role="status" aria-label={t('infopage.productsLoading')}>
+            {Array.from({ length: 6 }, (_, index) => (
+              <div className="food-product-skeleton" key={index} aria-hidden="true">
+                <div className="food-product-skeleton__image" />
+                <div className="food-product-skeleton__content"><span /><span /><div><i /><i /></div></div>
+              </div>
+            ))}
+          </div>
+        ) : status === 'failed' ? (
+          <div className="food-store__feedback" role="alert">
+            <span className="food-store__empty-icon" aria-hidden="true">⌕</span>
+            <p>{t('food.loadUnavailable')}</p>
+            <button className="kk-button kk-button--outline" type="button" onClick={() => dispatch(getProducts({ category: 'schoolmatetial', searchTerm }))}>
+              {t('food.tryAgain')}
+            </button>
+          </div>
+        ) : filteredProducts.length === 0 ? (
+          <div className="food-store__feedback">
+            <span className="food-store__empty-icon" aria-hidden="true">⌕</span>
+            <p>{searchTerm ? t('infopage.noResults') : t('infopage.noProductsYet')}</p>
+          </div>
+        ) : (
+          <div className="food-store__grid">
+            {filteredProducts.map((product) => (
+              <article className="food-product-card" key={product._id}>
+                <div className="food-product-card__image">
+                  {product.images?.[0]?.url
+                    ? <img src={product.images[0].url} alt={product.name || ''} loading="lazy" />
+                    : <div className="food-product-card__image-placeholder" aria-hidden="true">✳</div>}
+                  <span className="food-product-card__badge">{t('infopage.productBadge')}</span>
+                </div>
+                <div className="food-product-card__content">
+                  <h3>{t(`product_names.${product._id}`, { defaultValue: product.name })}</h3>
+                  {product.description && <p>{product.description}</p>}
+                  <div className="food-product-card__purchase">
+                    <span className="food-product-card__price">{product.price} <small>{t('cart.currency')}</small></span>
+                    <button className="kk-button kk-button--primary" type="button" onClick={() => handleAddToCart(product)}>
+                      {t('food.addToCart')}
+                    </button>
+                  </div>
+                </div>
+              </article>
+            ))}
+          </div>
+        )}
+        <div className="info-store__grid">
+          {infoCards.map((info) => (
+            <article className="info-service-card" key={info.title}>
+              <div className="info-service-card__image">
+                <img src={info.imgSrc} alt={info.alt} loading="lazy" />
+              </div>
+              <div className="info-service-card__content">
+                <h2>{info.title}</h2>
+                <ul>
+                  {info.items.map((item) => <li key={item}>{item}</li>)}
+                </ul>
+                {info.href ? (
+                  <button
+                    type="button"
+                    className="kk-button kk-button--primary"
+                    onClick={() => navigate(info.href)}
+                  >
+                    {t('infopage.clickHere')} <FiArrowRight aria-hidden="true" />
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    className="kk-button kk-button--outline"
+                    onClick={() => setPopupContent({ title: info.title, content: info.content })}
+                  >
+                    {t('infopage.clickHere')} <FiArrowRight aria-hidden="true" />
+                  </button>
+                )}
+              </div>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <Modal isOpen={Boolean(popupContent)} onClose={() => setPopupContent(null)}>
+        {popupContent && (
+          <>
+            <h2>{popupContent.title}</h2>
+            <p>{popupContent.content}</p>
+          </>
+        )}
+      </Modal>
+    </main>
   );
-}
+};
 
 export default Infopage;

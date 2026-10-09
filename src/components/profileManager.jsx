@@ -27,7 +27,7 @@ const ProfileManager = () => {
       setAddress(user.address || '');
       setPhone(user.phone || '');
       // Assuming profilePic is a URL
-      setImage(user.profilePic[0].url || null);
+      setImage(user.profilePic?.[0]?.url || null);
     }
   }, [user]);
 
@@ -97,7 +97,7 @@ const ProfileManager = () => {
               aria-label="Upload profile picture"
             >
               {image && typeof image === 'string' ? (
-                <img src={user.profilePic[0].url} alt="Avatar" className="w-full h-full object-cover rounded-full" />
+                <img src={image} alt="Avatar" className="w-full h-full object-cover rounded-full" />
               ) : image instanceof File ? (
                 <img src={URL.createObjectURL(image)} alt="Avatar" className="w-full h-full object-cover rounded-full" />
               ) : (

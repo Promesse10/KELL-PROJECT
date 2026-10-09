@@ -1,263 +1,157 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { getProducts } from '../slices/productSlice';
-import search from "../assets/Search.png";
-import { useTranslation } from 'react-i18next';
-import LoginPopup from './LoginPopup';
 import { useNavigate } from 'react-router-dom';
-import { addToCart } from '../slices/cartSlice';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import { Spinner } from '@material-tailwind/react';
+import { useTranslation } from 'react-i18next';
 import debounce from 'lodash/debounce';
+import { FiArrowRight, FiSearch } from 'react-icons/fi';
+import { getProducts } from '../slices/productSlice';
+import { addToCart, increaseQuantity, selectCartItems } from '../slices/cartSlice';
+import LoginPopup from './LoginPopup';
+import ServiceStoreHero from './ServiceStoreHero';
+import table from '../components/images/table.jpeg';
 
 const productsPerPage = 9;
 
-function Home() {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
-  const [showPopup, setShowPopup] = useState(false);
-  const [showCart, setShowCart] = useState(false);
-  const [selectedProduct, setSelectedProduct] = useState(null);
-  const [animationState, setAnimationState] = useState('');
-  const [selectedQuantity, setSelectedQuantity] = useState(1);
-  const [imageLoading, setImageLoading] = useState({});
-
-  const dispatch = useDispatch();
-  const { products, isLoading } = useSelector((state) => state.products);
-  const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
+const Penproduct = () => {
   const { t } = useTranslation();
-  const cartItems = useSelector((state) => state.cart.items);
-
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const products = useSelector((state) => state.products.products);
+  const status = useSelector((state) => state.products.status);
+  const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
+  const cartItems = useSelector(selectCartItems);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [showLoginPopup, setShowLoginPopup] = useState(false);
+  const filteredProducts = products.filter((product) =>
+    t(`product_names.${product._id}`, { defaultValue: product.name || '' })
+      .toLowerCase()
+      .includes(searchTerm.trim().toLowerCase())
+  );
   const debouncedSearch = useCallback(
-    debounce((term) => {
-      dispatch(getProducts({ category: "schoolmatetial", searchTerm: term }));
-    }, 1000),
+    debounce((term) => dispatch(getProducts({ category: 'schoolmatetial', searchTerm: term })), 350),
     [dispatch]
   );
 
   useEffect(() => {
-    if (searchTerm) {
-      debouncedSearch(searchTerm);
-    } else {
-      dispatch(getProducts({ category: "schoolmatetial", searchTerm: "" }));
-    }
+    const term = searchTerm.trim();
+    if (term) debouncedSearch(term);
+    else dispatch(getProducts({ category: 'schoolmatetial', searchTerm: '' }));
     return debouncedSearch.cancel;
   }, [searchTerm, debouncedSearch, dispatch]);
 
-  const translateProductName = (product) => {
-    return t(`product_names.${product._id}`, { defaultValue: product.name });
+  const handleAddToCart = (product) => {
+    if (!isLoggedIn) {
+      setShowLoginPopup(true);
+      return;
+    }
+    if (cartItems.some((item) => item._id === product._id)) {
+      dispatch(increaseQuantity(product._id));
+    } else {
+      dispatch(addToCart({ ...product, quantity: 1 }));
+    }
   };
 
-  const handleViewProduct = (product) => {
-    setSelectedProduct(product);
-    const existingCartItem = cartItems.find(item => item._id === product._id);
-    setSelectedQuantity(existingCartItem ? existingCartItem.quantity : 1);
-    setAnimationState('slide-in');
-    setShowCart(true);
-  };
-
-  const handlePageChange = (page) => {
-    setCurrentPage(page);
-  };
-
-  const handleClosePopup = () => {
-    setShowPopup(false);
-  };
-
-  const handleCartPopupClose = () => {
-    setAnimationState('slide-out');
-    setTimeout(() => {
-      setShowCart(false);
-      setSelectedProduct(null);
-      setAnimationState('');
-    }, 300);
-  };
-
-  const filteredProducts = products.filter(product =>
-    translateProductName(product).toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
-  const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
+  const pageCount = Math.ceil(filteredProducts.length / productsPerPage);
   const displayedProducts = filteredProducts.slice(
     (currentPage - 1) * productsPerPage,
     currentPage * productsPerPage
   );
 
-  const navigate = useNavigate();
-
-  const handleAddToCart = () => {
-    if (!isLoggedIn) {
-      setShowPopup(true);
-      return;
-    }
-
-    if (selectedProduct) {
-      const existingCartItem = cartItems.find(item => item._id === selectedProduct._id);
-
-      if (existingCartItem) {
-        const updatedProduct = {
-          ...selectedProduct,
-          quantity: existingCartItem.quantity + selectedQuantity
-        };
-        dispatch(addToCart(updatedProduct));
-      } else {
-        dispatch(addToCart({ ...selectedProduct, quantity: selectedQuantity }));
-      }
-
-      toast.success('Your product was added to the cart successfully');
-
-      if (window.innerWidth < 768) {
-        navigate('/cart');
-      } else {
-        handleCartPopupClose();
-      }
-    }
-  };
-
-  const handleCheckout = () => {
-    if (selectedProduct) {
-      navigate('/checkout', { state: { product: selectedProduct, quantity: selectedQuantity } });
-      handleCartPopupClose();
-    }
-  };
-
-  const handleImageLoadStart = (productId) => {
-    setImageLoading((prevState) => ({
-      ...prevState,
-      [productId]: true,
-    }));
-  };
-
-  const handleImageLoadEnd = (productId) => {
-    setImageLoading((prevState) => ({
-      ...prevState,
-      [productId]: false,
-    }));
-  };
-
   return (
-    <section className="min-h-screen flex flex-col bg-gray-100">
-      <ToastContainer />
-      {showPopup && <LoginPopup onClose={handleClosePopup} />}
-
-      <div
-        className={`fixed right-0 top-0 w-full md:w-[35%] h-full bg-gray-50 text-black shadow-lg z-50 transform transition-transform duration-300 ${
-          animationState === 'slide-in' ? 'translate-x-0' : 'translate-x-full'
-        }`}
-      >
-        <button onClick={handleCartPopupClose} className="absolute top-4 right-4 text-2xl">×</button>
-
-        <div className="p-4 border-b">
-          {selectedProduct ? (
-            <div className="flex items-center flex-col">
-              {imageLoading[selectedProduct._id] && (
-                <Spinner color="blue" size="lg" />
-              )}
-              <img
-                src={selectedProduct.images[0].url}
-                alt={selectedProduct.name}
-                className="w-64 h-96 object-cover mr-4"
-                onLoadStart={() => handleImageLoadStart(selectedProduct._id)}
-                onLoad={() => handleImageLoadEnd(selectedProduct._id)}
-              />
-              <div className="flex flex-col items-center">
-                <p className="text-gray-600 text-sm">{selectedProduct.company}</p>
-                <p className="font-semibold text-lg mb-1">{selectedProduct.name}</p>
-                <p className="text-2xl mb-4">{selectedProduct.price} RWF</p>
-              </div>
-            </div>
-          ) : (
-            <p>{t('navbar.cartEmpty')}</p>
-          )}
-        </div>
-
-        <div className="p-4">
-          <button
-            onClick={handleAddToCart}
-            className="mt-4 px-4 py-2 bg-blue-950 text-white rounded-lg w-full"
-          >
-            {t('Add ToCart & Buy Now')}
-          </button>
-        </div>
-      </div>
-
-      <div className="flex flex-col items-center w-full p-4 mt-28">
-        <div className="text-center mb-8">
-          <h1 className="text-blue-950 text-3xl font-semibold">{t('products')}</h1>
-          <hr className="w-20 h-1 mx-auto my-4 bg-blue-950 border-0 rounded dark:bg-blue-950" />
-        </div>
-
-  <div className="relative flex items-center mb-8 ">
-  <input
-    type="text"
-    value={searchTerm}
-    onChange={(e) => setSearchTerm(e.target.value)}
-    placeholder={t('search...')}
-    className="p-2 border-gray-950 rounded-2xl w-full bg-gray-300 text-blue-950 pl-10  shadow-gray-900 " // Added padding on the left for the icon space
-  />
-  <img
-    src={search}
-    alt="Search"
-    className="absolute left-3 w-6 h-6 cursor-pointer" // Positioning the icon inside the input field
-  />
-</div>
-
-        {isLoading ? (
-          <div className="flex justify-center items-center min-h-[50vh]">
-            <Spinner color="blue" size="lg" />
+    <main className="info-store">
+      {showLoginPopup && <LoginPopup onClose={() => setShowLoginPopup(false)} />}
+      <ServiceStoreHero
+        namespace="infopage"
+        image={table}
+        imageAlt={t('infopage.schoolOfficeItemServiceAlt')}
+        imageClassName="service-store-hero__image--contain"
+        eyebrow={t('infopage.suppliesEyebrow')}
+        title={t('infopage.suppliesTitle')}
+        intro={t('infopage.suppliesIntro')}
+      />
+      <section className="info-store__catalog" aria-label={t('infopage.suppliesTitle')}>
+        <div className="info-store__products-heading">
+          <div>
+            <span className="kk-eyebrow">{t('infopage.productsEyebrow')}</span>
+            <h2>{t('infopage.suppliesTitle')}</h2>
           </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {displayedProducts.map(product => (
-              <div
-                key={product._id}
-                className="bg-white p-4 flex flex-col items-center relative group"
-              >
-                {imageLoading[product._id] && (
-                  <Spinner color="blue" size="lg" />
-                )}
-                <img
-                  src={product.images[0].url}
-                  className="w-24 h-24 object-cover"
-                  alt={translateProductName(product)}
-                  onLoadStart={() => handleImageLoadStart(product._id)}
-                  onLoad={() => handleImageLoadEnd(product._id)}
-                />
-                <p className="mt-2 text-lg font-semibold">
-                  {translateProductName(product)}
-                </p>
-                <p className="text-gray-600">{product.description}</p>
-                <p className="text-gray-600">{t('per_piece')} {product.price} {t('currency')}</p>
-
-                <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  <button
-                    onClick={() => handleViewProduct(product)}
-                    className="text-white bg-blue-950 px-4 py-2 rounded-full"
-                  >
-                    {t('Click to View')}
-                  </button>
-                </div>
+          {status === 'succeeded' && <p>{t('food.productCount', { count: filteredProducts.length })}</p>}
+        </div>
+        <label className="food-store__search info-store__search">
+          <FiSearch aria-hidden="true" />
+          <span className="sr-only">{t('infopage.searchPlaceholder')}</span>
+          <input
+            type="search"
+            value={searchTerm}
+            onChange={(event) => {
+              setSearchTerm(event.target.value);
+              setCurrentPage(1);
+            }}
+            placeholder={t('infopage.searchPlaceholder')}
+          />
+        </label>
+        {status === 'loading' || status === 'idle' ? (
+          <div className="food-store__grid food-store__grid--skeleton" role="status" aria-label={t('infopage.productsLoading')}>
+            {Array.from({ length: 6 }, (_, index) => (
+              <div className="food-product-skeleton" key={index} aria-hidden="true">
+                <div className="food-product-skeleton__image" />
+                <div className="food-product-skeleton__content"><span /><span /><div><i /><i /></div></div>
               </div>
             ))}
           </div>
-        )}
-        <Spinner color="blue" size={"lg mt-8 text-blue-950"} />
-
-        <div className="flex justify-center mt-4">
-          {Array.from({ length: totalPages }).map((_, index) => (
-            <button
-              key={index}
-              onClick={() => handlePageChange(index + 1)}
-              className={`px-4 py-2 mx-1 border rounded ${currentPage === index + 1 ? 'bg-blue-950 text-white' : 'bg-gray-300 text-black'}`}
-            >
-              {index + 1}
+        ) : status === 'failed' ? (
+          <div className="food-store__feedback" role="alert">
+            <span className="food-store__empty-icon" aria-hidden="true">⌕</span>
+            <p>{t('food.loadUnavailable')}</p>
+            <button className="kk-button kk-button--outline" type="button" onClick={() => dispatch(getProducts({ category: 'schoolmatetial', searchTerm }))}>
+              {t('food.tryAgain')}
             </button>
-          ))}
-        </div>
-      </div>
-    </section>
+          </div>
+        ) : displayedProducts.length === 0 ? (
+          <div className="food-store__feedback">
+            <span className="food-store__empty-icon" aria-hidden="true">⌕</span>
+            <p>{searchTerm ? t('infopage.noResults') : t('infopage.noProductsYet')}</p>
+          </div>
+        ) : (
+          <div className="food-store__grid">
+            {displayedProducts.map((product) => (
+              <article className="food-product-card" key={product._id}>
+                <div className="food-product-card__image">
+                  {product.images?.[0]?.url
+                    ? <img src={product.images[0].url} alt={product.name || ''} loading="lazy" />
+                    : <div className="food-product-card__image-placeholder" aria-hidden="true">✳</div>}
+                  <span className="food-product-card__badge">{t('infopage.productBadge')}</span>
+                </div>
+                <div className="food-product-card__content">
+                  <h3>{t(`product_names.${product._id}`, { defaultValue: product.name })}</h3>
+                  {product.description && <p>{product.description}</p>}
+                  <div className="food-product-card__purchase">
+                    <span className="food-product-card__price">{product.price} <small>{t('cart.currency')}</small></span>
+                    <div className="food-product-card__actions">
+                      <button className="kk-button kk-button--primary" type="button" onClick={() => handleAddToCart(product)}>
+                        {t('food.addToCart')}
+                      </button>
+                      <button className="food-product-card__buy" type="button" onClick={() => navigate('/checkout', { state: { product } })}>
+                        {t('food.buyNow')} <FiArrowRight aria-hidden="true" />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </article>
+            ))}
+          </div>
+        )}
+        {pageCount > 1 && (
+          <nav className="food-store__pagination" aria-label={t('food.pagination')}>
+            <button type="button" onClick={() => setCurrentPage((page) => Math.max(1, page - 1))} disabled={currentPage === 1}>{t('food.previous')}</button>
+            <span>{t('food.pageCount', { current: currentPage, total: pageCount })}</span>
+            <button type="button" onClick={() => setCurrentPage((page) => Math.min(pageCount, page + 1))} disabled={currentPage === pageCount}>{t('food.next')}</button>
+          </nav>
+        )}
+      </section>
+    </main>
   );
-}
+};
 
-export default Home;
+export default Penproduct;
